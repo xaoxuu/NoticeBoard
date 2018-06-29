@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		33E2B6CF0D9BD11D8C027DE6 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB925B38880FB296AF5D219F /* Pods_Example.framework */; };
 		CD2B7F1220E48A18009D8055 /* DebuggerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2B7F1120E48A18009D8055 /* DebuggerWindow.swift */; };
+		CD682F6920E6861F00BA1013 /* TestOCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD682F6820E6861F00BA1013 /* TestOCViewController.m */; };
 		CDA4E03C20D3935B00CD2A0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA4E03B20D3935B00CD2A0C /* AppDelegate.swift */; };
 		CDA4E03E20D3935B00CD2A0C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA4E03D20D3935B00CD2A0C /* ViewController.swift */; };
 		CDA4E04120D3935B00CD2A0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDA4E03F20D3935B00CD2A0C /* Main.storyboard */; };
@@ -22,6 +23,8 @@
 		CA1298266BE89D7950DE99F2 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		CD2B7F1120E48A18009D8055 /* DebuggerWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebuggerWindow.swift; sourceTree = "<group>"; };
 		CD59584620E36DA8000F6427 /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
+		CD682F6720E6861F00BA1013 /* TestOCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestOCViewController.h; sourceTree = "<group>"; };
+		CD682F6820E6861F00BA1013 /* TestOCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestOCViewController.m; sourceTree = "<group>"; };
 		CDA4E03820D3935B00CD2A0C /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA4E03B20D3935B00CD2A0C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CDA4E03D20D3935B00CD2A0C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +87,8 @@
 				CDA4E03B20D3935B00CD2A0C /* AppDelegate.swift */,
 				CDA4E03D20D3935B00CD2A0C /* ViewController.swift */,
 				CD2B7F1120E48A18009D8055 /* DebuggerWindow.swift */,
+				CD682F6720E6861F00BA1013 /* TestOCViewController.h */,
+				CD682F6820E6861F00BA1013 /* TestOCViewController.m */,
 				CDA4E03F20D3935B00CD2A0C /* Main.storyboard */,
 				CDA4E04220D3935C00CD2A0C /* Assets.xcassets */,
 				CDA4E04420D3935C00CD2A0C /* LaunchScreen.storyboard */,
@@ -228,6 +233,7 @@
 			files = (
 				CDA4E03E20D3935B00CD2A0C /* ViewController.swift in Sources */,
 				CDA4E03C20D3935B00CD2A0C /* AppDelegate.swift in Sources */,
+				CD682F6920E6861F00BA1013 /* TestOCViewController.m in Sources */,
 				CD2B7F1220E48A18009D8055 /* DebuggerWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

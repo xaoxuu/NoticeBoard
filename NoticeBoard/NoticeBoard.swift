@@ -148,11 +148,11 @@ public extension NoticeBoard {
     /// post一条消息
     ///
     /// - Parameters:
-    ///   - message: 消息内容
     ///   - theme: 主题
+    ///   - message: 消息内容
     ///   - duration: 持续时间
     @discardableResult
-    public class func post(message: String?, theme: Notice.Theme, duration: TimeInterval) -> Notice {
+    public class func post(_ theme: Notice.Theme, message: String?, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
         notice.setTheme(theme)
         post(notice, duration: duration)
@@ -161,30 +161,29 @@ public extension NoticeBoard {
     /// post一条消息
     ///
     /// - Parameters:
+    ///   - color: 主题
     ///   - message: 消息内容
-    ///   - theme: 主题
     ///   - duration: 持续时间
     @discardableResult
-    public class func post(message: String?, theme: UIColor, duration: TimeInterval) -> Notice {
+    public class func post(_ color: UIColor, message: String?, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.setTheme(theme)
+        notice.setTheme(color)
         post(notice, duration: duration)
         return notice
     }
     /// post一条消息
     ///
     /// - Parameters:
+    ///   - blurEffect: 主题
     ///   - message: 消息内容
-    ///   - theme: 主题
     ///   - duration: 持续时间
     @discardableResult
-    public class func post(message: String?, theme: UIBlurEffectStyle, duration: TimeInterval) -> Notice {
+    public class func post(_ blurEffectTheme: UIBlurEffectStyle, message: String?, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.setTheme(theme)
+        notice.setTheme(blurEffectTheme)
         post(notice, duration: duration)
         return notice
     }
-    
     
 }
 
