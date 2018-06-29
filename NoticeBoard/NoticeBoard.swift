@@ -140,7 +140,7 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(message: String?, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.set(theme: .normal)
+        notice.setTheme(.normal)
         post(notice, duration: duration)
         return notice
     }
@@ -154,7 +154,7 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(message: String?, theme: Notice.Theme, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.set(theme: theme)
+        notice.setTheme(theme)
         post(notice, duration: duration)
         return notice
     }
@@ -167,7 +167,7 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(message: String?, theme: UIColor, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.set(theme: theme)
+        notice.setTheme(theme)
         post(notice, duration: duration)
         return notice
     }
@@ -180,7 +180,7 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(message: String?, theme: UIBlurEffectStyle, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.set(theme: theme)
+        notice.setTheme(theme)
         post(notice, duration: duration)
         return notice
     }

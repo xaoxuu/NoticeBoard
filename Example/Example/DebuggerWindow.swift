@@ -495,7 +495,7 @@ extension DebuggerWindow{
                 
                 NoticeBoard.post(n, duration: duration, layout: layout(index: seg_layout.selectedSegmentIndex))
                
-                n.setAction { (notice, sender) in
+                n.actionButtonDidTapped { (notice, sender) in
                     notice.body = notice.body + "\n\(Date.init().description(with: Locale.current)) 点击了→"
                 }
                 
@@ -584,19 +584,19 @@ extension DebuggerWindow {
         let selectedSegmentIndex = seg.selectedSegmentIndex
         if seg == seg_color {
             if selectedSegmentIndex == 1 {
-                notice.set(theme: .normal)
+                notice.setTheme(.normal)
             } else if selectedSegmentIndex == 2 {
-                notice.set(theme: .warning)
+                notice.setTheme(.warning)
             } else if selectedSegmentIndex == 3 {
-                notice.set(theme: .error)
+                notice.setTheme(.error)
             }
         } else if seg == seg_blur {
             if selectedSegmentIndex == 1 {
-                notice.set(theme: .light)
+                notice.setTheme(.light)
             } else if selectedSegmentIndex == 2 {
-                notice.set(theme: .extraLight)
+                notice.setTheme(.extraLight)
             } else if selectedSegmentIndex == 3 {
-                notice.set(theme: .dark)
+                notice.setTheme(.dark)
             }
         }
     }

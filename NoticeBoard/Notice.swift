@@ -179,7 +179,27 @@ open class Notice: UIWindow {
             return (titleLabel?.text)!
         }
         set {
-            set(title: newValue)
+            self.contentView.addSubview(loadTitleLabel())
+            
+            var animated = false
+            if let t = titleLabel?.text {
+                if t.count > 0 {
+                    animated = true
+                }
+            }
+            titleLabel?.text = newValue
+            titleLabel?.textColor = tintColor
+            
+            actionButton?.setTitleColor(tintColor, for: .normal)
+            updateContentFrame()
+            
+            if animated {
+                UIView.animate(withDuration: 0.38, animations: {
+                    self.updateSelfFrame()
+                })
+            } else {
+                self.updateSelfFrame()
+            }
         }
     }
     public var body: String {
@@ -187,7 +207,30 @@ open class Notice: UIWindow {
             return (bodyView?.text)!
         }
         set {
-            set(body: newValue)
+            self.contentView.addSubview(loadTextView())
+            var animated = false
+            if let t = bodyView?.text {
+                if t.count > 0 {
+                    animated = true
+                }
+            }
+            bodyView?.text = newValue
+            bodyView?.textColor = tintColor
+            updateContentFrame()
+            
+            
+            if animated {
+                UIView.animate(withDuration: 0.38, animations: {
+                    self.updateSelfFrame()
+                }) { (completed) in
+                    if let btn = self.dragButton {
+                        btn.alpha = 1
+                    }
+                }
+            } else {
+                self.updateSelfFrame()
+            }
+            loadProgressLayer()
         }
     }
     public var icon: UIImage? {
@@ -196,13 +239,26 @@ open class Notice: UIWindow {
         }
         set {
             if let i = newValue {
-                set(icon: i)
+                let v = loadIconView()
+                v.image = i
+                v.tintColor = tintColor
+                if let _ = titleLabel {
+                    self.contentView.addSubview(v)
+                } else {
+                    v.removeFromSuperview()
+                }
+                updateContentFrame()
             }
         }
     }
     public var progress = CGFloat(0) {
         didSet {
-            set(progress: progress)
+            loadProgressLayer()
+            if let _ = progressLayer {
+                var f = self.contentView.bounds
+                f.size.width = progress * f.size.width
+                self.progressLayer?.frame = f
+            }
         }
     }
     let time: Date = {
@@ -250,87 +306,13 @@ open class Notice: UIWindow {
     
     // MARK: - public func
     
-    /// 设置标题
-    ///
-    /// - Parameter title: 标题
-    open func set(title: String) {
-        self.contentView.addSubview(loadTitleLabel())
-        
-        var animated = false
-        if let t = titleLabel?.text {
-            if t.count > 0 {
-                animated = true
-            }
-        }
-        titleLabel?.text = title
-        titleLabel?.textColor = tintColor
-        
-        actionButton?.setTitleColor(tintColor, for: .normal)
-        updateContentFrame()
-        
-        if animated {
-            UIView.animate(withDuration: 0.38, animations: {
-                self.updateSelfFrame()
-            })
-        } else {
-            self.updateSelfFrame()
-        }
-        
-    }
-    
-    /// 设置正文
-    ///
-    /// - Parameter body: 正文
-    open func set(body: String) {
-        self.contentView.addSubview(loadTextView())
-        var animated = false
-        if let t = bodyView?.text {
-            if t.count > 0 {
-                animated = true
-            }
-        }
-        bodyView?.text = body
-        bodyView?.textColor = tintColor
-        updateContentFrame()
-        
-        
-        if animated {
-            UIView.animate(withDuration: 0.38, animations: {
-                self.updateSelfFrame()
-            }) { (completed) in
-                if let btn = self.dragButton {
-                    btn.alpha = 1
-                }
-            }
-        } else {
-            self.updateSelfFrame()
-        }
-        loadProgressLayer()
-    }
-    
-    /// 设置图标
-    ///
-    /// - Parameter icon: 图标
-    open func set(icon: UIImage) {
-        let v = loadIconView()
-        v.image = icon
-        v.tintColor = tintColor
-        if let _ = titleLabel {
-            self.contentView.addSubview(v)
-        } else {
-            v.removeFromSuperview()
-        }
-        updateContentFrame()
-        
-    }
-    
     
     /// 设置主题
     ///
     /// - Parameters:
     ///   - backgroundColor: 背景色
     ///   - textColor: 文本色
-    open func set(backgroundColor: UIColor, textColor: UIColor){
+    open func setTheme(backgroundColor: UIColor, textColor: UIColor){
         contentView.backgroundColor = backgroundColor
         tintColor = textColor
     }
@@ -338,26 +320,26 @@ open class Notice: UIWindow {
     /// 设置主题
     ///
     /// - Parameter theme: 主题
-    open func set(theme: Theme) {
-        set(backgroundColor: theme.rawValue, textColor: theme.rawValue.textColor())
+    open func setTheme(_ theme: Theme) {
+        setTheme(backgroundColor: theme.rawValue, textColor: theme.rawValue.textColor())
         tags.append(theme.stringValue)
     }
     
     /// 设置主题
     ///
     /// - Parameter backgroundColor: 背景色
-    open func set(theme: UIColor) {
-        set(backgroundColor: theme, textColor: theme.textColor())
+    open func setTheme(_ color: UIColor) {
+        setTheme(backgroundColor: color, textColor: color.textColor())
     }
     
     
     /// 设置主题
     ///
     /// - Parameter effect: 模糊效果
-    open func set(theme: UIBlurEffectStyle){
+    open func setTheme(_ blurEffect: UIBlurEffectStyle){
         let vev = UIVisualEffectView.init(frame: self.bounds)
-        vev.effect = UIBlurEffect.init(style: theme)
-        if theme == UIBlurEffectStyle.dark {
+        vev.effect = UIBlurEffect.init(style: blurEffect)
+        if blurEffect == UIBlurEffectStyle.dark {
             tintColor = .white
         }
         vev.layer.masksToBounds = true
@@ -368,23 +350,10 @@ open class Notice: UIWindow {
         self.visualEffectView = vev
     }
     
-    
-    /// 设置进度（0~1）
-    ///
-    /// - Parameter progress: 进度（0~1）
-    internal func set(progress: CGFloat) {
-        loadProgressLayer()
-        if let _ = progressLayer {
-            var f = self.contentView.bounds
-            f.size.width = progress * f.size.width
-            self.progressLayer?.frame = f
-        }
-    }
-    
     /// "→"按钮的事件
     ///
     /// - Parameter action: "→"按钮的事件
-    open func setAction(action: @escaping(Notice, UIButton) -> Void){
+    open func actionButtonDidTapped(action: @escaping(Notice, UIButton) -> Void){
         block_action = action
     }
     
@@ -408,13 +377,13 @@ open class Notice: UIWindow {
         }
         
         if let text = text(title) {
-            set(title: text)
+            self.title = text
         }
         if let image = icon {
-            set(icon: image)
+            self.icon = image
         }
         if let text = text(body) {
-            set(body: text)
+            self.body = text
         }
         
     }
