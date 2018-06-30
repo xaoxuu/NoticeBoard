@@ -345,6 +345,7 @@ extension DebuggerWindow{
         tf.backgroundColor = UIColor.init(white: 1, alpha: 0.1)
         tf.returnKeyType = .done
         tf.textColor = .white
+        tf.clearButtonMode = .whileEditing
         tf.placeholder = placeholder
         tf.text = text
         tf.addTarget(self, action: #selector(self.tfInputBegin(_:)), for: .editingDidBegin)
