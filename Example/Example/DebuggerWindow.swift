@@ -34,7 +34,7 @@ func bottomSafeMargin() -> CGFloat {
 
 let margin = CGFloat(8)
 let padding = CGFloat(4)
-let minH = CGFloat(80)
+let minH = CGFloat(100)
 let titleH = CGFloat(36)
 let cellH = CGFloat(36)
 let screenSize = UIScreen.main.bounds.size
