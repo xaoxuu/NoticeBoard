@@ -494,7 +494,7 @@ extension DebuggerWindow{
                 }
                 
                 NoticeBoard.post(n, duration: duration, layout: layout(index: seg_layout.selectedSegmentIndex))
-               
+                
                 n.actionButtonDidTapped { (notice, sender) in
                     notice.body = notice.body + "\n\(Date.init().description(with: Locale.current)) 点击了→"
                 }
@@ -592,6 +592,9 @@ extension DebuggerWindow {
             }
         } else if seg == seg_blur {
             if selectedSegmentIndex == 1 {
+                if notice.contentView.backgroundColor == UIColor.clear {
+                    notice.setTheme(UIColor.init(white: 1, alpha: 0.3))
+                }
                 notice.setTheme(.light)
             } else if selectedSegmentIndex == 2 {
                 notice.setTheme(.extraLight)

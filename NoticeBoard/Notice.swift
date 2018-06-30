@@ -94,13 +94,14 @@ internal extension Notice {
             } else {
                 bodyView?.textContainerInset = defaultInset
             }
+            f.size.height = bodyMaxHeight
             t1.frame = f
             f.size.height = min(t1.contentSize.height, bodyMaxHeight)
             UIView.animate(withDuration: 0.38) {
                 t1.frame = f
             }
             
-            if t1.needScroll() {
+            if t1.contentSize.height > f.size.height {
                 self.contentView.addSubview(loadDragButton())
                 if let btn = visible(dragButton) {
                     var ff = btn.frame
@@ -341,6 +342,8 @@ open class Notice: UIWindow {
         vev.effect = UIBlurEffect.init(style: blurEffect)
         if blurEffect == UIBlurEffectStyle.dark {
             tintColor = .white
+        } else {
+            tintColor = .black
         }
         vev.layer.masksToBounds = true
         self.contentView.insertSubview(vev, at: 0)
@@ -419,6 +422,7 @@ open class Notice: UIWindow {
             titleLabel?.textColor = tintColor
             bodyView?.textColor = tintColor
             actionButton?.setTitleColor(tintColor, for: .normal)
+            dragButton?.setTitleColor(tintColor, for: .normal)
         }
     }
     deinit {

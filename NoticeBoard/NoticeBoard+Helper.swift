@@ -130,15 +130,3 @@ internal extension UIColor {
     
 }
 
-internal extension UITextView {
-    func needScroll() -> Bool {
-        if self.contentSize.height >= self.frame.height + self.textContainerInset.top + self.textContainerInset.bottom {
-            return true
-        } else {
-            return false
-        }
-    }
-    
-}
-
-

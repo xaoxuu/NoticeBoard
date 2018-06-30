@@ -5,8 +5,8 @@ target 'Example' do
 
 pod 'NoticeBoard',   :path => '..'
 
-pod 'AXKit'
-pod 'AXTableKit'
+pod 'AXKit', '0.3.3'
+pod 'AXTableKit', '0.0.3'
 
 end
 

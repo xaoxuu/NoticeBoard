@@ -54,8 +54,6 @@ class ViewController: UIViewController {
             web.load(.init(url: url))
         }
         
-        NoticeBoard.post(.error, message: "haha", duration: 2)
-        NoticeBoard.post(.light, message: "haha", duration: 2)
     }
     override func viewDidAppear(_ animated: Bool) {
         let _ = debugger
