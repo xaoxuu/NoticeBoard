@@ -8,6 +8,8 @@
 
 import UIKit
 import NoticeBoard
+import WebKit
+
 
 let isIPhoneX: Bool = {
     if UIScreen.main.bounds.size.equalTo(CGSize.init(width: 375, height: 812)) || UIScreen.main.bounds.size.equalTo(CGSize.init(width: 812, height: 375)) {
@@ -34,9 +36,9 @@ func bottomSafeMargin() -> CGFloat {
 
 let margin = CGFloat(8)
 let padding = CGFloat(4)
-let minH = CGFloat(100)
+let minH = CGFloat(80)
 let titleH = CGFloat(36)
-let cellH = CGFloat(40)
+let cellH = CGFloat(36)
 let screenSize = UIScreen.main.bounds.size
 
 let defSize = CGSize.init(width: screenSize.width - 2 * margin, height: screenSize.height - topSafeMargin() - bottomSafeMargin())
@@ -97,20 +99,25 @@ class DebuggerWindow: UIWindow,UITextViewDelegate {
     }
     
     var lastFrame = collapseFrame
-    lazy var tf_title = loadTextField(placeholder: "notice title", text: "notice title")
-    lazy var tv_body = loadTextView()
-    lazy var lb_duration = loadLabel(text: "0s")
-    lazy var s_duration = loadSlider(min: 0, max: 60)
+    lazy var tf_title = UITextField()
+    lazy var tv_body = UITextView()
+    lazy var lb_duration = UILabel()
+    lazy var s_duration = UISlider()
 
     lazy var seg_icon = UISegmentedControl.init()
     lazy var seg_color = UISegmentedControl.init()
     lazy var seg_blur = UISegmentedControl.init()
     lazy var seg_level = UISegmentedControl.init()
     lazy var seg_layout = UISegmentedControl.init()
+    lazy var seg_bg = UISegmentedControl.init()
     
+    var contentView = UIView()
+    func axBlueColor(alpha: CGFloat) -> UIColor {
+        return UIColor.init(red: 82/255, green: 161/255, blue: 248/255, alpha: alpha)
+    }
     // MARK: - life cycle
     func textViewDidBeginEditing(_ textView: UITextView) {
-        textView.layer.borderWidth = 1
+        textView.layer.borderWidth = 2
         windowExpand()
     }
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -124,21 +131,30 @@ class DebuggerWindow: UIWindow,UITextViewDelegate {
         super.init(frame: frame)
         windowLevel = 9000
         makeKeyAndVisible()
-        tintColor = .white
-        layer.masksToBounds = true
-        layer.cornerRadius = 12
+        tintColor = axBlueColor(alpha: 1)
+        
+        
+        
+        layer.shadowRadius = 12
+        layer.shadowOffset = .init(width: 0, height: 8)
+        layer.shadowOpacity = 0.45
+        
         let vev = UIVisualEffectView.init(frame: .init(origin: .zero, size: defSize))
-        vev.effect = UIBlurEffect.init(style: .dark)
-        addSubview(vev)
+        vev.effect = UIBlurEffect.init(style: .light)
+        
+        contentView = UIView.init(frame: self.bounds)
+        contentView.layer.cornerRadius = 12
+        contentView.clipsToBounds = true
+        contentView.insertSubview(vev, at: 0)
+        contentView.layer.backgroundColor = UIColor.init(white: 1, alpha: 0.5).cgColor
+        self.addSubview(self.contentView)
+        
+        
+        
         
         let pan = UIPanGestureRecognizer.init(target: self, action: #selector(self.pan(_:)))
         self.addGestureRecognizer(pan)
-        transform = .init(translationX: 0, y: minH)
-        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.5, options: [.allowUserInteraction,.curveEaseOut], animations: {
-            self.transform = .identity
-        }) { (completed) in
-            
-        }
+        
         
         // first install
         let notFirstLaunch = UserDefaults.standard.bool(forKey: "notFirstLaunch")
@@ -155,121 +171,120 @@ class DebuggerWindow: UIWindow,UITextViewDelegate {
         // subviews
         
         let lb_title = loadLabel(text: "NoticeBoard Debugger")
-        lb_title.backgroundColor = UIColor.init(white: 1, alpha: 0.1)
+        lb_title.backgroundColor = UIColor(white: 1, alpha: 0.1)
         lb_title.textAlignment = .center
         lb_title.font = UIFont.boldSystemFont(ofSize: 15)
-        addSubview(lb_title)
+        self.contentView.addSubview(lb_title)
         var f = lb_title.frame
         
+        let width = defSize.width - 2*margin
+        let h = cellH
+        var x = margin
+        var y = lb_title.frame.maxY
+        func newLine() -> CGFloat {
+            y += h + margin
+            return y
+        }
         
+        let btnW = (width - 2 * margin) / 3
         let btn_remove = loadButton(title: "clean")
-        f.origin.x = margin
-        f.origin.y += f.size.height + margin
-        f.size.width = (defSize.width - 4 * margin) / 3
-        f.size.height = cellH
-        btn_remove.frame = f
-        addSubview(btn_remove)
-        f = btn_remove.frame
+        btn_remove.frame = .init(x: x, y: y, width: btnW, height: h)
+        self.contentView.addSubview(btn_remove)
         
         let btn_progress = loadButton(title: "progress")
-        f.origin.x += f.size.width + margin
-        btn_progress.frame = f
-        addSubview(btn_progress)
-        f = btn_progress.frame
+        btn_progress.frame = .init(x: x+btnW+margin, y: y, width: btnW, height: h)
+        self.contentView.addSubview(btn_progress)
         
         let btn_post = loadButton(title: "post")
-        f.origin.x += f.size.width + margin
-        btn_post.frame = f
-        addSubview(btn_post)
-        f = btn_post.frame
+        btn_post.frame = .init(x: x+btnW+margin+btnW+margin, y: y, width: btnW, height: h)
+        self.contentView.addSubview(btn_post)
+        
         
         // title
-        f.origin.x = margin
-        f.origin.y += f.size.height + margin
-        f.size.width = defSize.width - 2 * margin
-        tf_title.frame = f
-        tf_title.layer.borderColor = UIColor.white.cgColor
-        addSubview(tf_title)
+        tf_title = loadTextField(y: newLine(), title: "title", placeholder: "notice title", text: "notice title")
+        self.contentView.addSubview(tf_title)
         tf_title.tag = Tag.title.rawValue
         tf_title.text = UserDefaults.standard.string(forKey: Tag.title.cacheKey)
-        f = tf_title.frame
         
         // body
-        f.origin.y += f.size.height + margin
-        f.size.height = 80
-        tv_body.frame = f
+        tv_body = loadTextView(y: newLine(), title: "body")
         tv_body.tag = Tag.body.rawValue
         tv_body.text = UserDefaults.standard.string(forKey: Tag.body.cacheKey)
-        tv_body.layer.borderColor = UIColor.white.cgColor
-        addSubview(tv_body)
-        f = tv_body.frame
-        
+        self.contentView.addSubview(tv_body)
         
         // icon
-        f.origin.y += f.size.height + margin
-        seg_icon = loadSegment(y: f.origin.y, title: "icon", items: ["none","alert-circle"], tag: Tag.icon.rawValue)
+        y = tv_body.frame.maxY + margin
+        seg_icon = loadSegment(y: y, title: "icon", items: ["none","alert-circle"], tag: Tag.icon.rawValue)
         seg_icon.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.icon.cacheKey)
-        addSubview(seg_icon)
-        f = seg_icon.frame
+        self.contentView.addSubview(seg_icon)
         
-        // duration
-        f.origin.y += f.size.height + margin
-        f.origin.x = margin
-        f.size.width = 50
-        lb_duration.frame = f
-        addSubview(lb_duration)
         
         // duration
         f.origin.x += f.size.width + margin
         f.size.width = defSize.width - 3 * margin - f.size.width
-        s_duration.frame = f
-        addSubview(s_duration)
+        s_duration = loadSlider(y: newLine(), title: "duration", min: 0, max: 60)
+        self.contentView.addSubview(s_duration)
         f = s_duration.frame
         
         // color
         f.origin.y += f.size.height + margin
         f.origin.x = margin
-        seg_color = loadSegment(y: f.origin.y, title: "color", items: ["clear", "normal", "warning", "error"], tag: Tag.color.rawValue)
+        seg_color = loadSegment(y: newLine(), title: "color", items: ["clear", "normal", "warning", "error"], tag: Tag.color.rawValue)
         seg_color.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.color.cacheKey)
-        addSubview(seg_color)
+        self.contentView.addSubview(seg_color)
         
         
         // blur
         f.origin.y += f.size.height + margin
-        seg_blur = loadSegment(y: f.origin.y, title: "blur", items: ["none", "light", "extraLight", "dark"], tag: Tag.blur.rawValue)
+        seg_blur = loadSegment(y: newLine(), title: "blur", items: ["none", "light", "extraLight", "dark"], tag: Tag.blur.rawValue)
         seg_blur.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.blur.cacheKey)
-        addSubview(seg_blur)
+        self.contentView.addSubview(seg_blur)
         
         
         
         // level
         f.origin.y += f.size.height + margin
-        seg_level = loadSegment(y: f.origin.y, title: "level", items: ["low", "normal", "high"], tag: Tag.level.rawValue)
+        seg_level = loadSegment(y: newLine(), title: "level", items: ["low", "normal", "high"], tag: Tag.level.rawValue)
         seg_level.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.level.cacheKey)
-        addSubview(seg_level)
+        self.contentView.addSubview(seg_level)
         
         
         // layout
         f.origin.y += f.size.height + margin
-        seg_layout = loadSegment(y: f.origin.y, title: "layout", items: ["tile", "replace", "remove", "stack"], tag: Tag.layout.rawValue)
+        seg_layout = loadSegment(y: newLine(), title: "layout", items: ["tile", "replace", "remove", "stack"], tag: Tag.layout.rawValue)
         seg_layout.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.layout.cacheKey)
-        addSubview(seg_layout)
+        self.contentView.addSubview(seg_layout)
         
+        // bg
+        f.origin.y += f.size.height + margin
+        seg_bg = loadSegment(y: newLine(), title: "bg", items: ["white", "web"], tag: Tag.bg.rawValue)
+        seg_bg.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.bg.cacheKey)
+        segmentChanged(seg_bg)
+        self.contentView.addSubview(seg_bg)
         
         
         // footer
-        f.origin.y += f.size.height + margin
+        f.origin.y += f.size.height
         f.size = .init(width: defSize.width - 2*margin, height: 24)
         let lb_footer = loadLabel(text: "@xaoxuu")
         lb_footer.font = UIFont.systemFont(ofSize: 12)
         lb_footer.textAlignment = .right
         lb_footer.frame = f
-        addSubview(lb_footer)
+        self.contentView.addSubview(lb_footer)
         
         
         var ff = self.frame
         ff.size.height = f.maxY + margin
         self.frame = ff
+        ff.origin = .zero
+        self.contentView.frame = ff
+        
+        transform = .init(translationX: 0, y: minH-ff.size.height-margin)
+        UIView.animate(withDuration: 2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.allowUserInteraction,.curveEaseInOut], animations: {
+            self.transform = .identity
+        }) { (completed) in
+            
+        }
         
     }
     convenience init() {
@@ -318,14 +333,18 @@ extension DebuggerWindow{
     }
     func loadLabel(text: String?) -> UILabel {
         let lb = UILabel.init(frame: .init(x: 0, y: 0, width: defSize.width, height: titleH))
-        lb.textColor = .white
+        lb.textColor = .darkText
         lb.textAlignment = .justified
         lb.text = text
         return lb
     }
     
-    func loadSlider(min: Float, max: Float) -> UISlider{
-        let s = UISlider.init(frame: .init(x: 0, y: 0, width: defSize.width, height: cellH))
+    func loadSlider(y: CGFloat, title: String, min: Float, max: Float) -> UISlider{
+        lb_duration = loadLabel(text: "duration")
+        lb_duration.frame = .init(x: margin, y: y, width: 50, height: cellH)
+        self.contentView.addSubview(lb_duration)
+        
+        let s = UISlider.init(frame: .init(x: margin+50+margin, y: y, width: defSize.width - lb_duration.frame.maxX, height: cellH))
         s.minimumValue = min
         s.maximumValue = max
         let value = UserDefaults.standard.integer(forKey: Tag.duration.cacheKey)
@@ -338,25 +357,43 @@ extension DebuggerWindow{
         s.addTarget(self, action: #selector(self.sliderChanged(_:)), for: .valueChanged)
         return s
     }
-    func loadTextField(placeholder: String?, text: String?) -> UITextField {
-        let tf = UITextField.init(frame: .init(x: 0, y: 0, width: defSize.width, height: cellH))
+    func loadTextField(y: CGFloat, title: String, placeholder: String?, text: String?) -> UITextField {
+        let f = createTitleLabelForCell(y: y, title: title)
+        
+        let tf = UITextField.init(frame: f)
         tf.borderStyle = .roundedRect
         tf.layer.cornerRadius = 4
-        tf.backgroundColor = UIColor.init(white: 1, alpha: 0.1)
+        tf.backgroundColor = UIColor(white: 0, alpha: 0.1)
         tf.returnKeyType = .done
-        tf.textColor = .white
+        tf.textColor = .darkText
         tf.clearButtonMode = .whileEditing
         tf.placeholder = placeholder
         tf.text = text
+        tf.layer.borderColor = axBlueColor(alpha: 1).cgColor
         tf.addTarget(self, action: #selector(self.tfInputBegin(_:)), for: .editingDidBegin)
         tf.addTarget(self, action: #selector(self.tfInputEnd(_:)), for: [.editingDidEnd, .editingDidEndOnExit])
         return tf
     }
-    func loadTextView() -> UITextView {
-        let tv = UITextView.init(frame: .init(x: 0, y: 0, width: defSize.width, height: 100))
-        tv.backgroundColor = UIColor.init(white: 1, alpha: 0.1)
+    func createTitleLabelForCell(y: CGFloat, title: String) -> CGRect {
+        // title
+        var f = CGRect.init(x: margin, y: y, width: 50, height: cellH)
+        let lb = loadLabel(text: title)
+        lb.frame = f
+        self.contentView.addSubview(lb)
+        f = lb.frame
+        f.origin.x += f.size.width + margin
+        f.size.width = defSize.width - 3 * margin - f.size.width
+        return f
+    }
+    func loadTextView(y: CGFloat, title: String) -> UITextView {
+        // title
+        var f = createTitleLabelForCell(y: y, title: title)
+        f.size.height = 80
+        let tv = UITextView.init(frame: f)
+        tv.backgroundColor = UIColor(white: 0, alpha: 0.1)
         tv.layer.cornerRadius = 4
-        tv.textColor = .white
+        tv.layer.borderColor = axBlueColor(alpha: 1).cgColor
+        tv.textColor = .darkText
         tv.font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
         tv.delegate = self
         return tv
@@ -365,7 +402,6 @@ extension DebuggerWindow{
         let seg = UISegmentedControl.init(items: items)
         seg.tag = tag
         seg.frame = CGRect.init(x: margin, y: margin, width: 0.5*defSize.width, height: cellH)
-        seg.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.bg.cacheKey)
         seg.addTarget(self, action: #selector(self.segmentChanged(_:)), for: .valueChanged)
         return seg
     }
@@ -374,7 +410,7 @@ extension DebuggerWindow{
         var f = CGRect.init(x: margin, y: y, width: 50, height: cellH)
         let lb = loadLabel(text: title)
         lb.frame = f
-        addSubview(lb)
+        self.contentView.addSubview(lb)
         f = lb.frame
         
         f.origin.x += f.size.width + margin
@@ -382,13 +418,13 @@ extension DebuggerWindow{
         
         let seg = loadSegment(items: items, tag: tag)
         seg.frame = f
-        addSubview(seg)
+        self.contentView.addSubview(seg)
         return seg
     }
     
     func loadButton(title: String?) -> UIButton {
         let btn = UIButton.init(frame: .init(x: 0, y: 0, width: defSize.width, height: cellH))
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(UIColor.white, for: .normal)
         btn.layer.cornerRadius = 4
         btn.setTitle(title, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
@@ -396,23 +432,6 @@ extension DebuggerWindow{
         btn.addTarget(self, action: #selector(self.btnUp(_:)), for: [.touchUpInside, .touchUpOutside, .touchCancel])
         btn.addTarget(self, action: #selector(self.btnDown(_:)), for: .touchDown)
         btnUp(btn)
-        return btn
-    }
-    func loadButton(title: String?, normal: String?, selected: String?) -> UIButton{
-        let btn = UIButton.init(frame: .init(x: 0, y: 0, width: defSize.width, height: cellH))
-        btn.setTitleColor(.white, for: .normal)
-        btn.setTitle(title, for: .normal)
-        if let t  = title {
-            if let n = normal {
-                btn.setTitle(t + ": " + n, for: .normal)
-                if let s = selected {
-                    btn.setTitle(t + ": " + s, for: .selected)
-                }
-            } else {
-                btn.setTitle(t, for: .normal)
-            }
-        }
-        btn.addTarget(self, action: #selector(self.selectBtn(_:)), for: .touchUpInside)
         return btn
     }
     
@@ -428,6 +447,11 @@ extension DebuggerWindow{
     @objc func segmentChanged(_ sender: UISegmentedControl) {
         if sender.tag == Tag.bg.rawValue {
             UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.bg.cacheKey)
+            if sender.selectedSegmentIndex == 0 {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "web"), object: true)
+            } else {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "web"), object: false)
+            }
         } else if sender.tag == Tag.icon.rawValue {
             UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.icon.cacheKey)
         } else if sender.tag == Tag.color.rawValue {
@@ -442,7 +466,7 @@ extension DebuggerWindow{
     }
     @objc func tfInputBegin(_ sender: UITextField) {
         windowExpand()
-        sender.layer.borderWidth = 1
+        sender.layer.borderWidth = 2
     }
     @objc func tfInputEnd(_ sender: UITextField) {
         sender.resignFirstResponder()
@@ -510,10 +534,10 @@ extension DebuggerWindow{
         sender.isSelected = !sender.isSelected
     }
     @objc func btnDown(_ sender: UIButton) {
-        sender.backgroundColor = UIColor.init(white: 1, alpha: 0.3)
+        sender.backgroundColor = axBlueColor(alpha: 0.5)
     }
     @objc func btnUp(_ sender: UIButton) {
-        sender.backgroundColor = UIColor.init(white: 1, alpha: 0.1)
+        sender.backgroundColor = axBlueColor(alpha: 1)
     }
     
     @objc func pan(_ sender: UIPanGestureRecognizer) {
@@ -594,7 +618,7 @@ extension DebuggerWindow {
         } else if seg == seg_blur {
             if selectedSegmentIndex == 1 {
                 if notice.contentView.backgroundColor == UIColor.clear {
-                    notice.setTheme(UIColor.init(white: 1, alpha: 0.3))
+                    notice.setTheme(UIColor.init(white: 1, alpha: 0.4))
                 }
                 notice.setTheme(.light)
             } else if selectedSegmentIndex == 2 {
