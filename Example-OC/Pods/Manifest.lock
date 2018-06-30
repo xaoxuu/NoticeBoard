@@ -1,0 +1,16 @@
+PODS:
+  - NoticeBoard (1.0)
+
+DEPENDENCIES:
+  - NoticeBoard (from `..`)
+
+EXTERNAL SOURCES:
+  NoticeBoard:
+    :path: ..
+
+SPEC CHECKSUMS:
+  NoticeBoard: 11211bd70aac6fac57f8101d18073019bbc510d6
+
+PODFILE CHECKSUM: 30b0107e8d1a297352a59b1d9e12d36e910c28d0
+
+COCOAPODS: 1.4.0

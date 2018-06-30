@@ -8,8 +8,6 @@
 
 import UIKit
 import NoticeBoard
-import WebKit
-
 
 let isIPhoneX: Bool = {
     if UIScreen.main.bounds.size.equalTo(CGSize.init(width: 375, height: 812)) || UIScreen.main.bounds.size.equalTo(CGSize.init(width: 812, height: 375)) {
@@ -617,7 +615,7 @@ extension DebuggerWindow {
             }
         } else if seg == seg_blur {
             if selectedSegmentIndex == 1 {
-                if notice.contentView.backgroundColor == UIColor.clear {
+                if notice.contentView.backgroundColor == nil {
                     notice.setTheme(UIColor.init(white: 1, alpha: 0.4))
                 }
                 notice.setTheme(.light)
