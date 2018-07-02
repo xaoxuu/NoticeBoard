@@ -51,6 +51,17 @@ internal func visible(_ view: UITextView?) -> UITextView?{
     }
 }
 
+private enum Tag: Int {
+    typealias RawValue = Int
+    
+    case iconView = 101
+    case titleView = 102
+    case actionButton = 103
+    case bodyView = 201
+    case dragButton = 301
+    
+}
+
 // MARK: - frame
 internal extension Notice {
     
@@ -205,7 +216,11 @@ open class Notice: UIWindow {
     }
     public var body: String {
         get {
-            return (bodyView?.text)!
+            if let t = bodyView?.text {
+                return t
+            } else {
+                return ""
+            }
         }
         set {
             self.contentView.addSubview(loadTextView())
@@ -432,17 +447,22 @@ open class Notice: UIWindow {
     // MARK: - action
     @objc func touchDown(_ sender: UIButton) {
         debugPrint("touchDown: " + (sender.titleLabel?.text)!)
-        if sender.tag == 101 {
-            dragButton?.backgroundColor = UIColor.init(white: 0, alpha: 0.3)
+        if sender.tag == Tag.dragButton.rawValue {
+            sender.backgroundColor = UIColor.init(white: 0, alpha: 0.3)
+        } else if sender.tag == Tag.actionButton.rawValue {
+            
         }
     }
     @objc func touchUp(_ sender: UIButton) {
         debugPrint("touchUp: " + (sender.titleLabel?.text)!)
-        if sender.tag == 101 {
-            dragButton?.backgroundColor = UIColor.init(white: 0, alpha: 0.1)
+        if sender.tag == Tag.dragButton.rawValue {
+            sender.backgroundColor = UIColor.init(white: 0, alpha: 0.1)
+        } else if sender.tag == Tag.actionButton.rawValue {
+            
         }
     }
     @objc func touchUpInside(_ sender: UIButton) {
+        touchUp(sender)
         debugPrint("touchUpInside: " + (sender.titleLabel?.text)!)
         if sender == actionButton {
             if let action = block_action {
@@ -525,6 +545,7 @@ internal extension Notice {
                 y = titleLabel.frame.maxY
             }
             bodyView = UITextView.init(frame: .init(x: 0, y: y, width: self.frame.size.width, height: self.frame.size.height-y))
+            bodyView?.tag = Tag.bodyView.rawValue
             bodyView?.font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
             bodyView?.showsHorizontalScrollIndicator = false
             bodyView?.textAlignment = .justified
@@ -542,6 +563,7 @@ internal extension Notice {
             return view
         } else {
             iconView = UIImageView.init(frame: .init(x: padding10, y: 2*padding4, width: titleHeight-4*padding4, height: titleHeight-4*padding4))
+            iconView?.tag = Tag.iconView.rawValue
             iconView?.contentMode = .scaleAspectFit
             if debugMode {
                 iconView?.backgroundColor = UIColor.init(white: 0, alpha: 0.3)
@@ -557,10 +579,13 @@ internal extension Notice {
             return btn
         } else {
             actionButton = UIButton.init(frame: .init(x: self.frame.size.width-38, y: 0, width: 38, height: titleHeight))
+            actionButton?.tag = Tag.actionButton.rawValue
             actionButton?.setTitleColor(.black, for: .normal)
             actionButton?.setTitle("→", for: .normal)
             actionButton?.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
             actionButton?.addTarget(self, action: #selector(self.touchUpInside(_:)), for: .touchUpInside)
+            actionButton?.addTarget(self, action: #selector(self.touchDown(_:)), for: [.touchDown,])
+            actionButton?.addTarget(self, action: #selector(self.touchUp(_:)), for: [.touchUpInside,.touchUpOutside])
             return actionButton!
         }
     }
@@ -572,6 +597,7 @@ internal extension Notice {
             return lb
         } else {
             titleLabel = UILabel.init(frame: .init(x: padding10, y: 0, width: self.frame.size.width-2*padding10, height: titleHeight))
+            titleLabel?.tag = Tag.titleView.rawValue
             titleLabel?.textAlignment = .justified
             titleLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.labelFontSize-1)
             self.contentView.addSubview(loadActionButton())
@@ -609,10 +635,10 @@ internal extension Notice {
             return btn
         } else {
             dragButton = UIButton.init(frame: .init(x: 0, y: 0, width: self.frame.width, height: dragButtonHeight))
+            dragButton?.tag = Tag.dragButton.rawValue
             dragButton?.backgroundColor = UIColor.init(white: 0, alpha: 0.1)
             dragButton?.setTitle("——", for: .normal)
-            dragButton?.tag = 101
-            dragButton?.setTitleColor(self.backgroundColor, for: .normal)
+            dragButton?.setTitleColor(tintColor, for: .normal)
             dragButton?.addTarget(self, action: #selector(self.touchDown(_:)), for: [.touchDown,])
             dragButton?.addTarget(self, action: #selector(self.touchUp(_:)), for: [.touchUpInside,.touchUpOutside])
             return dragButton!
