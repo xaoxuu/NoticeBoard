@@ -75,6 +75,11 @@ internal extension Notice {
         
         self.contentView.frame = CGRect.init(x: 0, y: 0, width: frame.size.width, height: totalHeight)
         self.visualEffectView?.frame = self.contentView.bounds
+        if let p = progressLayer {
+            var f = p.frame
+            f.size.height = totalHeight
+            p.frame = f
+        }
         if self.frame.height != totalHeight {
             var f = self.frame
             f.size.height = totalHeight
