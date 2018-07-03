@@ -12,12 +12,12 @@ internal let margin = CGFloat(8)
 internal let padding10 = CGFloat(8)
 internal let padding4 = CGFloat(4)
 
-internal let cornerRadius = 12 as CGFloat
-internal let titleHeight = 36 as CGFloat
-internal let dragButtonHeight = 24 as CGFloat
+internal let cornerRadius = CGFloat(12)
+internal let titleHeight = CGFloat(36)
+internal let dragButtonHeight = CGFloat(24)
 
 internal let defaultInset = UIEdgeInsets.init(top: padding10, left: padding4, bottom: padding10, right: padding4)
-internal let bodyMaxHeight = 120 as CGFloat
+
 
 internal func topSafeMargin() -> CGFloat {
     if NoticeBoard.isIPhoneX {
@@ -110,9 +110,9 @@ internal extension Notice {
             } else {
                 bodyView?.textContainerInset = defaultInset
             }
-            f.size.height = bodyMaxHeight
+            f.size.height = max(bodyMaxHeight, 0)
             t1.frame = f
-            f.size.height = min(t1.contentSize.height, bodyMaxHeight)
+            f.size.height = min(t1.contentSize.height, max(bodyMaxHeight, 0))
             UIView.animate(withDuration: 0.38) {
                 t1.frame = f
             }
@@ -179,6 +179,11 @@ open class Notice: UIWindow {
     }
     
     // MARK: - public property
+    public var bodyMaxHeight = CGFloat(200) {
+        didSet {
+            updateContentFrame()
+        }
+    }
     // MARK: subviews
     public var contentView = UIView()
     public var iconView : UIImageView?
@@ -622,7 +627,7 @@ internal extension Notice {
             progressLayer = CALayer.init()
             var f = self.contentView.bounds
             f.size.width = 0
-            f.size.height = titleHeight + bodyMaxHeight
+            f.size.height = titleHeight + max(bodyMaxHeight, 0)
             progressLayer?.frame = f
             progressLayer?.backgroundColor = UIColor.init(white: 0, alpha: 0.2).cgColor
             if let blur = visualEffectView {

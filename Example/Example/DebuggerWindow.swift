@@ -38,7 +38,7 @@ let minH = CGFloat(100)
 let titleH = CGFloat(36)
 let cellH = CGFloat(36)
 let screenSize = UIScreen.main.bounds.size
-
+let leftViewW = CGFloat(50)
 let defSize = CGSize.init(width: screenSize.width - 2 * margin, height: screenSize.height - topSafeMargin() - bottomSafeMargin())
 let collapsePoint = CGPoint.init(x: margin, y: screenSize.height - minH)
 let expandPoint = CGPoint.init(x: margin, y: topSafeMargin())
@@ -47,8 +47,8 @@ let collapseFrame = CGRect.init(origin: collapsePoint, size: defSize)
 let expandFrame = CGRect.init(origin: expandPoint, size: defSize)
 
 
-class DebuggerWindow: UIWindow,UITextViewDelegate {
-
+class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
+    
     enum Tag: Int {
         typealias RawValue = Int
         
@@ -109,21 +109,43 @@ class DebuggerWindow: UIWindow,UITextViewDelegate {
     lazy var seg_layout = UISegmentedControl.init()
     lazy var seg_bg = UISegmentedControl.init()
     
+    lazy var table = loadTableView()
+    
     var contentView = UIView()
     func axBlueColor(alpha: CGFloat) -> UIColor {
         return UIColor.init(red: 82/255, green: 161/255, blue: 248/255, alpha: alpha)
     }
-    // MARK: - life cycle
+    // MARK: - delegate
     func textViewDidBeginEditing(_ textView: UITextView) {
         textView.layer.borderWidth = 2
-        windowExpand()
+        windowExpand(y: textView.frame.origin.y)
+        // tableview
+        var f = table.frame
+        f.origin.y = textView.frame.maxY + margin
+        f.size.height = 200
+        table.frame = f
+        table.isHidden = false
+        table.type = .body
     }
     func textViewDidEndEditing(_ textView: UITextView) {
         textView.resignFirstResponder()
         textView.layer.borderWidth = 0
         windowResume()
         UserDefaults.standard.set(textView.text, forKey: Tag.body.cacheKey)
+        
+        // tableview
+        table.isHidden = true
     }
+    func tableView(_ tableView: TableView, didSelectTitle: String) {
+        if tf_title.isFirstResponder == true {
+            tf_title.text = didSelectTitle
+        } else if tv_body.isFirstResponder == true {
+            tv_body.text = didSelectTitle
+        }
+    }
+    
+    
+    // MARK: - life cycle
     public override init(frame: CGRect) {
         
         super.init(frame: frame)
@@ -284,6 +306,10 @@ class DebuggerWindow: UIWindow,UITextViewDelegate {
             
         }
         
+        // table view
+        table.isHidden = true
+        self.contentView.addSubview(table)
+        
     }
     convenience init() {
         self.init(frame: collapseFrame)
@@ -292,11 +318,11 @@ class DebuggerWindow: UIWindow,UITextViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func windowExpand() {
+    func windowExpand(y: CGFloat) {
         lastFrame = frame
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.allowUserInteraction, .curveEaseOut], animations: {
             var f = self.frame
-            f.origin = expandPoint
+            f.origin.y = expandPoint.y - y
             self.frame = f
         }) { (completed) in
             
@@ -326,6 +352,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate {
 
 
 extension DebuggerWindow{
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.endEditing(true)
     }
@@ -339,10 +366,10 @@ extension DebuggerWindow{
     
     func loadSlider(y: CGFloat, title: String, min: Float, max: Float) -> UISlider{
         lb_duration = loadLabel(text: "duration")
-        lb_duration.frame = .init(x: margin, y: y, width: 50, height: cellH)
+        lb_duration.frame = .init(x: margin, y: y, width: leftViewW, height: cellH)
         self.contentView.addSubview(lb_duration)
         
-        let s = UISlider.init(frame: .init(x: margin+50+margin, y: y, width: defSize.width - margin - lb_duration.frame.maxX - margin, height: cellH))
+        let s = UISlider.init(frame: .init(x: margin+leftViewW+margin, y: y, width: defSize.width - margin - lb_duration.frame.maxX - margin, height: cellH))
         s.minimumValue = min
         s.maximumValue = max
         let value = UserDefaults.standard.integer(forKey: Tag.duration.cacheKey)
@@ -374,7 +401,7 @@ extension DebuggerWindow{
     }
     func createTitleLabelForCell(y: CGFloat, title: String) -> CGRect {
         // title
-        var f = CGRect.init(x: margin, y: y, width: 50, height: cellH)
+        var f = CGRect.init(x: margin, y: y, width: leftViewW, height: cellH)
         let lb = loadLabel(text: title)
         lb.frame = f
         self.contentView.addSubview(lb)
@@ -405,7 +432,7 @@ extension DebuggerWindow{
     }
     func loadSegment(y: CGFloat, title: String, items: [String], tag: Int) -> UISegmentedControl{
         // title
-        var f = CGRect.init(x: margin, y: y, width: 50, height: cellH)
+        var f = CGRect.init(x: margin, y: y, width: leftViewW, height: cellH)
         let lb = loadLabel(text: title)
         lb.frame = f
         self.contentView.addSubview(lb)
@@ -433,6 +460,14 @@ extension DebuggerWindow{
         return btn
     }
     
+    func loadTableView() -> TableView {
+        let table = TableView.init(frame: .init(x: margin, y: 0, width: defSize.width - 2*margin, height: 180), style: .plain)
+        table.layer.borderColor = tintColor.cgColor
+        table.layer.borderWidth = 2
+        table.layer.cornerRadius = 4
+        table.myDelegate = self
+        return table
+    }
     @objc func sliderChanged(_ sender: UISlider) {
         let value = Int(sender.value)
         UserDefaults.standard.set(value, forKey: Tag.duration.cacheKey)
@@ -463,14 +498,23 @@ extension DebuggerWindow{
         }
     }
     @objc func tfInputBegin(_ sender: UITextField) {
-        windowExpand()
+        windowExpand(y: sender.frame.origin.y)
         sender.layer.borderWidth = 2
+        // tableview
+        var f = table.frame
+        f.origin.y = sender.frame.maxY + margin
+        f.size.height = 240
+        table.frame = f
+        table.isHidden = false
+        table.type = .title
     }
     @objc func tfInputEnd(_ sender: UITextField) {
         sender.resignFirstResponder()
         windowResume()
         sender.layer.borderWidth = 0
         UserDefaults.standard.set(sender.text, forKey: Tag.title.cacheKey)
+        // tableview
+        table.isHidden = true
     }
     
     @objc func tapBtn(_ sender: UIButton) {
@@ -515,6 +559,7 @@ extension DebuggerWindow{
                 if t == "progress" {
                     updateProgress(notice: n, pro: 0)
                 }
+                
                 
                 NoticeBoard.post(n, duration: duration, layout: layout(index: seg_layout.selectedSegmentIndex))
                 
