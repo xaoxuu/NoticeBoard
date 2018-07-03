@@ -342,7 +342,7 @@ extension DebuggerWindow{
         lb_duration.frame = .init(x: margin, y: y, width: 50, height: cellH)
         self.contentView.addSubview(lb_duration)
         
-        let s = UISlider.init(frame: .init(x: margin+50+margin, y: y, width: defSize.width - lb_duration.frame.maxX, height: cellH))
+        let s = UISlider.init(frame: .init(x: margin+50+margin, y: y, width: defSize.width - margin - lb_duration.frame.maxX - margin, height: cellH))
         s.minimumValue = min
         s.maximumValue = max
         let value = UserDefaults.standard.integer(forKey: Tag.duration.cacheKey)
