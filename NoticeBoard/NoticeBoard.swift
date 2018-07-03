@@ -201,7 +201,7 @@ extension NoticeBoard {
         if layout == .remove {
             clean(animate: animate, delay: 0)
         }
-        
+        notice.updateContentFrame()
         notice.translate(animate, .buildOut)
         notice.makeKeyAndVisible()
         
