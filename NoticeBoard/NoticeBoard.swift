@@ -191,6 +191,12 @@ public extension NoticeBoard {
 extension NoticeBoard {
     
     internal func post(_ notice: Notice, duration: TimeInterval, layout: LayoutStyle, animate: AnimationStyle) {
+        let t = notice.title
+        let b = notice.body
+        if t.count == 0 && b.count == 0 {
+            return
+        }
+        
         layoutStyle = layout
         if layout == .remove {
             clean(animate: animate, delay: 0)

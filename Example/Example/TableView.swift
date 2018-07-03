@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import AXKit
 
 
 protocol MyTableViewDelegate {
@@ -24,7 +23,8 @@ class TableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         didSet {
             switch type {
             case .title:
-                texts = ["操作成功",
+                texts = ["（清空）",
+                         "操作成功",
                          "操作失败",
                          "这个标题比较长比较长",
                          "这个标题非常长非常长非常长非常长非常长",
@@ -33,7 +33,8 @@ class TableView: UITableView, UITableViewDataSource, UITableViewDelegate {
                          "这真是让人尴尬",
                          "正在处理一些事情"]
             case .body:
-                texts = ["请稍后重试",
+                texts = ["（清空）",
+                         "请稍后重试",
                          "不要说我们没有警告过你",
                          "不要怪我们没有警告过你\n我们都有不顺利的时候\nSomething happened\n这真是让人尴尬\n请坐和放宽\n滚回以前的版本\n这就是你的人生\n是的，你的人生\n作者：Windows",
                          "正在处理一些事情"]

@@ -109,7 +109,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
     lazy var seg_layout = UISegmentedControl.init()
     lazy var seg_bg = UISegmentedControl.init()
     
-    lazy var table = loadTableView()
+    lazy var table = TableView()
     
     var contentView = UIView()
     func axBlueColor(alpha: CGFloat) -> UIColor {
@@ -138,9 +138,18 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
     }
     func tableView(_ tableView: TableView, didSelectTitle: String) {
         if tf_title.isFirstResponder == true {
-            tf_title.text = didSelectTitle
+            if didSelectTitle != "（清空）" {
+                tf_title.text = didSelectTitle
+            } else {
+                tf_title.text = ""
+            }
         } else if tv_body.isFirstResponder == true {
-            tv_body.text = didSelectTitle
+            if didSelectTitle != "（清空）" {
+                tv_body.text = didSelectTitle
+            } else {
+                tv_body.text = ""
+            }
+            
         }
     }
     
@@ -307,6 +316,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         }
         
         // table view
+        table = loadTableView()
         table.isHidden = true
         self.contentView.addSubview(table)
         
@@ -564,7 +574,7 @@ extension DebuggerWindow{
                 NoticeBoard.post(n, duration: duration, layout: layout(index: seg_layout.selectedSegmentIndex))
                 
                 n.actionButtonDidTapped { (notice, sender) in
-                    notice.body = notice.body + "\n\(Date.init().description(with: Locale.current)) 点击了→"
+                    notice.body = notice.body + "\n\(Date.init().description(with: Locale.current)) 点击了\"→\""
                 }
                 
             } else if t == "clean" {

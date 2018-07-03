@@ -179,7 +179,7 @@ open class Notice: UIWindow {
     }
     
     // MARK: - public property
-    public var bodyMaxHeight = CGFloat(200) {
+    public var bodyMaxHeight = CGFloat(360) {
         didSet {
             updateContentFrame()
         }
@@ -198,7 +198,11 @@ open class Notice: UIWindow {
     // MARK: model
     public var title: String {
         get {
-            return (titleLabel?.text)!
+            if let t = titleLabel?.text {
+                return t
+            } else {
+                return ""
+            }
         }
         set {
             self.contentView.addSubview(loadTitleLabel())

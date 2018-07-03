@@ -15,6 +15,9 @@
 		CD02DA0C20E76BE8002C8D84 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD02DA0A20E76BE8002C8D84 /* LaunchScreen.storyboard */; };
 		CD02DA0F20E76BE8002C8D84 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CD02DA0E20E76BE8002C8D84 /* main.m */; };
 		CD02DA1920E76F0F002C8D84 /* DebuggerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD02DA1820E76F0F002C8D84 /* DebuggerWindow.swift */; };
+		CD6353C320EB23D900B49FE9 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD6353C120EB23D800B49FE9 /* TableViewCell.xib */; };
+		CD6353C420EB23D900B49FE9 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6353C220EB23D800B49FE9 /* TableViewCell.swift */; };
+		CD6353C620EB23FC00B49FE9 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6353C520EB23FB00B49FE9 /* TableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +34,9 @@
 		CD02DA0E20E76BE8002C8D84 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CD02DA1520E76C20002C8D84 /* Example-OC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-OC-Bridging-Header.h"; sourceTree = "<group>"; };
 		CD02DA1820E76F0F002C8D84 /* DebuggerWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DebuggerWindow.swift; path = ../../Example/Example/DebuggerWindow.swift; sourceTree = "<group>"; };
+		CD6353C120EB23D800B49FE9 /* TableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TableViewCell.xib; path = ../../Example/Example/TableViewCell.xib; sourceTree = "<group>"; };
+		CD6353C220EB23D800B49FE9 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewCell.swift; path = ../../Example/Example/TableViewCell.swift; sourceTree = "<group>"; };
+		CD6353C520EB23FB00B49FE9 /* TableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableView.swift; path = ../../Example/Example/TableView.swift; sourceTree = "<group>"; };
 		DCDCCEDA52E93F184229E229 /* Pods-Example-OC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-OC.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example-OC/Pods-Example-OC.release.xcconfig"; sourceTree = "<group>"; };
 		E17AFD8D65290112029ACD95 /* Pods_Example_OC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example_OC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -81,6 +87,9 @@
 				CD02DA0220E76BE7002C8D84 /* ViewController.h */,
 				CD02DA0320E76BE7002C8D84 /* ViewController.m */,
 				CD02DA1820E76F0F002C8D84 /* DebuggerWindow.swift */,
+				CD6353C520EB23FB00B49FE9 /* TableView.swift */,
+				CD6353C220EB23D800B49FE9 /* TableViewCell.swift */,
+				CD6353C120EB23D800B49FE9 /* TableViewCell.xib */,
 				CD02DA0520E76BE7002C8D84 /* Main.storyboard */,
 				CD02DA0820E76BE8002C8D84 /* Assets.xcassets */,
 				CD02DA0A20E76BE8002C8D84 /* LaunchScreen.storyboard */,
@@ -162,6 +171,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CD02DA0C20E76BE8002C8D84 /* LaunchScreen.storyboard in Resources */,
+				CD6353C320EB23D900B49FE9 /* TableViewCell.xib in Resources */,
 				CD02DA0920E76BE8002C8D84 /* Assets.xcassets in Resources */,
 				CD02DA0720E76BE7002C8D84 /* Main.storyboard in Resources */,
 			);
@@ -228,6 +238,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD6353C420EB23D900B49FE9 /* TableViewCell.swift in Sources */,
+				CD6353C620EB23FC00B49FE9 /* TableView.swift in Sources */,
 				CD02DA1920E76F0F002C8D84 /* DebuggerWindow.swift in Sources */,
 				CD02DA0420E76BE7002C8D84 /* ViewController.m in Sources */,
 				CD02DA0F20E76BE8002C8D84 /* main.m in Sources */,
