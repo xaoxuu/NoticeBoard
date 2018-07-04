@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,17 +21,17 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rzu-9D-x7R">
-                        <rect key="frame" x="8" y="8" width="304" height="27.5"/>
+                        <rect key="frame" x="16" y="11" width="288" height="22"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="rzu-9D-x7R" secondAttribute="bottom" constant="8" id="2VY-DY-XFf"/>
-                    <constraint firstItem="rzu-9D-x7R" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="gii-Ld-DW7"/>
-                    <constraint firstAttribute="trailing" secondItem="rzu-9D-x7R" secondAttribute="trailing" constant="8" id="sGd-4W-LEB"/>
-                    <constraint firstItem="rzu-9D-x7R" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="xsM-CO-k34"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="rzu-9D-x7R" secondAttribute="bottom" id="2hR-Lr-pMG"/>
+                    <constraint firstItem="rzu-9D-x7R" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="Dcx-vL-bfO"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="rzu-9D-x7R" secondAttribute="trailing" id="IFC-KP-0Xe"/>
+                    <constraint firstItem="rzu-9D-x7R" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="WFf-Hs-wZ7"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

@@ -46,6 +46,7 @@ let expandPoint = CGPoint.init(x: margin, y: topSafeMargin())
 let collapseFrame = CGRect.init(origin: collapsePoint, size: defSize)
 let expandFrame = CGRect.init(origin: expandPoint, size: defSize)
 
+var keyboardHeight = CGFloat(0)
 
 class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
     
@@ -122,10 +123,13 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         // tableview
         var f = table.frame
         f.origin.y = textView.frame.maxY + margin
-        f.size.height = 200
+        if f.size.height < 200 {
+            f.size.height = 200
+        }
         table.frame = f
         table.isHidden = false
-        table.type = .body
+        table.loadData(.body)
+        updateTableHeight()
     }
     func textViewDidEndEditing(_ textView: UITextView) {
         textView.resignFirstResponder()
@@ -138,18 +142,9 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
     }
     func tableView(_ tableView: TableView, didSelectTitle: String) {
         if tf_title.isFirstResponder == true {
-            if didSelectTitle != "（清空）" {
-                tf_title.text = didSelectTitle
-            } else {
-                tf_title.text = ""
-            }
+            tf_title.text = didSelectTitle
         } else if tv_body.isFirstResponder == true {
-            if didSelectTitle != "（清空）" {
-                tv_body.text = didSelectTitle
-            } else {
-                tv_body.text = ""
-            }
-            
+            tv_body.text = didSelectTitle
         }
     }
     
@@ -314,6 +309,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         }) { (completed) in
             
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(note:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
         // table view
         table = loadTableView()
@@ -403,6 +399,7 @@ extension DebuggerWindow{
         tf.textColor = .darkText
         tf.clearButtonMode = .whileEditing
         tf.placeholder = placeholder
+        tf.font = UIFont.systemFont(ofSize: 15)
         tf.text = text
         tf.layer.borderColor = axBlueColor(alpha: 1).cgColor
         tf.addTarget(self, action: #selector(self.tfInputBegin(_:)), for: .editingDidBegin)
@@ -471,7 +468,7 @@ extension DebuggerWindow{
     }
     
     func loadTableView() -> TableView {
-        let table = TableView.init(frame: .init(x: margin, y: 0, width: defSize.width - 2*margin, height: 180), style: .plain)
+        let table = TableView.init(frame: .init(x: margin+leftViewW+margin, y: 0, width: defSize.width - 3*margin-leftViewW, height: 180), style: .grouped)
         table.layer.borderColor = tintColor.cgColor
         table.layer.borderWidth = 2
         table.layer.cornerRadius = 4
@@ -513,10 +510,13 @@ extension DebuggerWindow{
         // tableview
         var f = table.frame
         f.origin.y = sender.frame.maxY + margin
-        f.size.height = 240
+        if f.size.height < 240 {
+            f.size.height = 240
+        }
         table.frame = f
         table.isHidden = false
-        table.type = .title
+        table.loadData(.title)
+        updateTableHeight()
     }
     @objc func tfInputEnd(_ sender: UITextField) {
         sender.resignFirstResponder()
@@ -567,7 +567,7 @@ extension DebuggerWindow{
                     return NoticeBoard.LayoutStyle.tile
                 }
                 if t == "progress" {
-                    updateProgress(notice: n, pro: 0)
+                    updateProgress(notice: n, pro: 0, showTitle: n.title.count == 0)
                 }
                 
                 
@@ -642,18 +642,38 @@ extension DebuggerWindow{
     
     
     
-    @objc func updateProgress(notice: Notice, pro: CGFloat){
+    @objc func updateProgress(notice: Notice, pro: CGFloat, showTitle: Bool){
         notice.progress = pro
-        notice.title = "已完成：\(Int(pro*100))%\n"
+        if showTitle {
+            notice.title = "已完成：\(Int(pro*100))%\n"
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             if pro <= 1 {
-                self.updateProgress(notice: notice, pro: pro + 0.02)
+                self.updateProgress(notice: notice, pro: pro + 0.02, showTitle: showTitle)
             } else {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                     NoticeBoard.remove(notice)
                 }
             }
         }
+    }
+    @objc func keyboardWillShow(note: Notification){
+        //获取键盘的高度
+        if let userinfo = note.userInfo {
+            let value = userinfo[UIKeyboardFrameEndUserInfoKey]
+            if let keyboardRect = value as? CGRect {
+                keyboardHeight = keyboardRect.height
+                updateTableHeight()
+            }
+        }
+    }
+    func updateTableHeight(){
+        var f = self.table.frame
+        f.size.height = UIScreen.main.bounds.height - topSafeMargin() - bottomSafeMargin() - margin - margin - keyboardHeight
+        if f.maxY > self.frame.height {
+            f.size.height -= f.maxY - self.frame.height + margin
+        }
+        self.table.frame = f
     }
 }
 

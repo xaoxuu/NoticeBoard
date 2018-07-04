@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>title</key>
+	<array>
+		<dict>
+			<key>header</key>
+			<string>正常</string>
+			<key>items</key>
+			<array>
+				<string>正在加载...</string>
+				<string>操作成功</string>
+				<string>操作失败</string>
+				<string>请稍后重试</string>
+			</array>
+		</dict>
+		<dict>
+			<key>header</key>
+			<string>微软</string>
+			<key>items</key>
+			<array>
+				<string>不要说我们没有警告过你</string>
+				<string>我们都有不顺利的时候</string>
+				<string>这真是让人尴尬</string>
+				<string>正在处理一些事情</string>
+				<string>坐和放宽</string>
+				<string>我们正在帮你搞定一切</string>
+				<string>这通常不会太久</string>
+				<string>不幸的是，它花费的时间比通常要长</string>
+				<string>滚回到以前的版本</string>
+				<string>你正在成功</string>
+			</array>
+		</dict>
+		<dict>
+			<key>header</key>
+			<string>网络流行语</string>
+			<key>items</key>
+			<array>
+				<string>笑容正在加载...</string>
+				<string>笑容逐渐消失...</string>
+			</array>
+		</dict>
+	</array>
+	<key>body</key>
+	<array>
+		<dict>
+			<key>header</key>
+			<string>微软</string>
+			<key>items</key>
+			<array>
+				<string>不要说我们没有警告过你</string>
+				<string>我们都有不顺利的时候</string>
+				<string>这真是让人尴尬</string>
+				<string>正在处理一些事情</string>
+				<string>不幸的是，它花费的时间比通常要长</string>
+				<string>滚回到以前的版本</string>
+				<string>不要怪我们没有警告过你
+我们都有不顺利的时候
+Something happened
+这真是让人尴尬
+请坐和放宽
+滚回以前的版本
+这就是你的人生
+是的，你的人生
+作者：微软Windows团队</string>
+			</array>
+		</dict>
+		<dict>
+			<key>header</key>
+			<string>权力的游戏台词</string>
+			<key>items</key>
+			<array>
+				<string>The more people you love, the weaker you are.
+你在乎的人越多，你就越脆弱。</string>
+				<string>The man who fears losing has already lost.
+怕输的人已经输了。</string>
+				<string>What do we have left once we abandon the lie?
+戳破谎言，我们还剩下什么？</string>
+				<string>Never forget what you are, for surely the world will not. Make it your strength. Then it can never be your weakness. Armor yourself in it, and it will never be used to hurt you.
+永远不要忘了你是谁，因为这个世界就不会。把你的特点变成你的力量，它就永远不会成为你的弱点。用它武装自己，它就永远不能伤害你。&quot;,&quot;世间本无公平可言，除非公平掌握在自己手中。</string>
+				<string>I choose my allies carefully and my enemies more carefully still.
+我小心选择同盟，但更谨慎选择敌人。</string>
+				<string>大部分人在尝试后才知道自己真正想要什么。可悲的是，许多人在垂垂老矣之前并没有机会尝试。</string>
+				<string>The night is dark and full of terrirs.
+暗夜无边，危机四伏</string>
+				<string>真正的敌人，不会坐等风暴结束，他就是风暴</string>
+				<string>混乱不是深渊。
+混乱是阶梯。
+很多人想往上爬 却失败了
+且永无机会再试。
+他们坠落而亡。
+有人本有机会攀爬，
+但他们拒绝了。
+他们守着王国不放
+守着诸神
+守着爱情
+尽皆幻想。
+唯有阶梯是真实存在。
+攀爬才是生活的全部。</string>
+			</array>
+		</dict>
+		<dict>
+			<key>header</key>
+			<string>网络流行语</string>
+			<key>items</key>
+			<array>
+				<string>笑容正在加载...</string>
+				<string>笑容逐渐消失...</string>
+				<string>图片自行脑补.jpg</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
