@@ -8,6 +8,8 @@
 
 import UIKit
 import NoticeBoard
+import AXKit
+
 
 let isIPhoneX: Bool = {
     if UIScreen.main.bounds.size.equalTo(CGSize.init(width: 375, height: 812)) || UIScreen.main.bounds.size.equalTo(CGSize.init(width: 812, height: 375)) {
@@ -30,7 +32,6 @@ func bottomSafeMargin() -> CGFloat {
         return margin;
     }
 }
-
 
 let margin = CGFloat(8)
 let padding = CGFloat(4)
@@ -156,8 +157,6 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         windowLevel = 9000
         makeKeyAndVisible()
         tintColor = axBlueColor(alpha: 1)
-        
-        
         
         layer.shadowRadius = 12
         layer.shadowOffset = .init(width: 0, height: 8)
@@ -351,17 +350,32 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
             
         }
     }
-    
-    
+    func updateTableHeight(){
+        var y = CGFloat(0)
+        if self.tf_title.isFirstResponder {
+            y = tf_title.frame.height + 2*margin
+        } else if self.tv_body.isFirstResponder {
+            y = tv_body.frame.height + 2*margin
+        }
+        var f = self.table.frame
+        
+        f.size.height = UIScreen.main.bounds.height - y - keyboardHeight - bottomSafeMargin()
+        if f.maxY > self.frame.height - margin {
+            f.size.height -= f.maxY - self.frame.height + margin
+        }
+        self.table.frame = f
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.endEditing(true)
+    }
 }
 
 
 
+// MARK: - load
 extension DebuggerWindow{
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.endEditing(true)
-    }
+    
     func loadLabel(text: String?) -> UILabel {
         let lb = UILabel.init(frame: .init(x: 0, y: 0, width: defSize.width, height: titleH))
         lb.textColor = .darkText
@@ -401,7 +415,7 @@ extension DebuggerWindow{
         tf.placeholder = placeholder
         tf.font = UIFont.systemFont(ofSize: 15)
         tf.text = text
-        tf.layer.borderColor = axBlueColor(alpha: 1).cgColor
+        tf.layer.borderColor = UIColor.ax_red.cgColor
         tf.addTarget(self, action: #selector(self.tfInputBegin(_:)), for: .editingDidBegin)
         tf.addTarget(self, action: #selector(self.tfInputEnd(_:)), for: [.editingDidEnd, .editingDidEndOnExit])
         return tf
@@ -424,7 +438,7 @@ extension DebuggerWindow{
         let tv = UITextView.init(frame: f)
         tv.backgroundColor = UIColor(white: 0, alpha: 0.1)
         tv.layer.cornerRadius = 4
-        tv.layer.borderColor = axBlueColor(alpha: 1).cgColor
+        tv.layer.borderColor = UIColor.ax_red.cgColor
         tv.textColor = .darkText
         tv.font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
         tv.delegate = self
@@ -467,14 +481,16 @@ extension DebuggerWindow{
         return btn
     }
     
+    // MARK: - actions
     func loadTableView() -> TableView {
         let table = TableView.init(frame: .init(x: margin+leftViewW+margin, y: 0, width: defSize.width - 3*margin-leftViewW, height: 180), style: .grouped)
-        table.layer.borderColor = tintColor.cgColor
         table.layer.borderWidth = 2
+        table.layer.borderColor = UIColor.ax_red.cgColor
         table.layer.cornerRadius = 4
         table.myDelegate = self
         return table
     }
+    
     @objc func sliderChanged(_ sender: UISlider) {
         let value = Int(sender.value)
         UserDefaults.standard.set(value, forKey: Tag.duration.cacheKey)
@@ -484,6 +500,7 @@ extension DebuggerWindow{
             lb_duration.text = "∞"
         }
     }
+    
     @objc func segmentChanged(_ sender: UISegmentedControl) {
         if sender.tag == Tag.bg.rawValue {
             UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.bg.cacheKey)
@@ -504,6 +521,7 @@ extension DebuggerWindow{
             UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.layout.cacheKey)
         }
     }
+    
     @objc func tfInputBegin(_ sender: UITextField) {
         windowExpand(y: sender.frame.origin.y)
         sender.layer.borderWidth = 2
@@ -518,6 +536,7 @@ extension DebuggerWindow{
         table.loadData(.title)
         updateTableHeight()
     }
+    
     @objc func tfInputEnd(_ sender: UITextField) {
         sender.resignFirstResponder()
         windowResume()
@@ -538,7 +557,29 @@ extension DebuggerWindow{
                 }
                 
                 let duration = TimeInterval(s_duration.value)
-                
+                func setTheme(notice: Notice, seg: UISegmentedControl){
+                    let selectedSegmentIndex = seg.selectedSegmentIndex
+                    if seg == seg_color {
+                        if selectedSegmentIndex == 1 {
+                            notice.setTheme(.normal)
+                        } else if selectedSegmentIndex == 2 {
+                            notice.setTheme(.warning)
+                        } else if selectedSegmentIndex == 3 {
+                            notice.setTheme(.error)
+                        }
+                    } else if seg == seg_blur {
+                        if selectedSegmentIndex == 1 {
+                            if notice.contentView.backgroundColor == nil {
+                                notice.setTheme(UIColor.init(white: 1, alpha: 0.4))
+                            }
+                            notice.setTheme(.light)
+                        } else if selectedSegmentIndex == 2 {
+                            notice.setTheme(.extraLight)
+                        } else if selectedSegmentIndex == 3 {
+                            notice.setTheme(.dark)
+                        }
+                    }
+                }
                 setTheme(notice: n, seg: seg_color)
                 setTheme(notice: n, seg: seg_blur)
                 
@@ -667,39 +708,6 @@ extension DebuggerWindow{
             }
         }
     }
-    func updateTableHeight(){
-        var f = self.table.frame
-        f.size.height = UIScreen.main.bounds.height - topSafeMargin() - bottomSafeMargin() - margin - margin - keyboardHeight
-        if f.maxY > self.frame.height {
-            f.size.height -= f.maxY - self.frame.height + margin
-        }
-        self.table.frame = f
-    }
-}
-
-extension DebuggerWindow {
-    func setTheme(notice: Notice, seg: UISegmentedControl){
-        let selectedSegmentIndex = seg.selectedSegmentIndex
-        if seg == seg_color {
-            if selectedSegmentIndex == 1 {
-                notice.setTheme(.normal)
-            } else if selectedSegmentIndex == 2 {
-                notice.setTheme(.warning)
-            } else if selectedSegmentIndex == 3 {
-                notice.setTheme(.error)
-            }
-        } else if seg == seg_blur {
-            if selectedSegmentIndex == 1 {
-                if notice.contentView.backgroundColor == nil {
-                    notice.setTheme(UIColor.init(white: 1, alpha: 0.4))
-                }
-                notice.setTheme(.light)
-            } else if selectedSegmentIndex == 2 {
-                notice.setTheme(.extraLight)
-            } else if selectedSegmentIndex == 3 {
-                notice.setTheme(.dark)
-            }
-        }
-    }
     
 }
+
