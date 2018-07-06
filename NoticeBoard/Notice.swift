@@ -336,6 +336,27 @@ open class Notice: UIWindow {
     
     // MARK: - public func
     
+    /// 设置标题
+    ///
+    /// - Parameter title: 标题
+    open func setTitle(_ title: String?){
+        if let t = title {
+            self.title = t
+        } else {
+            self.title = ""
+        }
+    }
+    
+    /// 设置正文
+    ///
+    /// - Parameter body: 正文
+    open func setBody(_ body: String?){
+        if let b = body {
+            self.body = b
+        } else {
+            self.body = ""
+        }
+    }
     
     /// 设置主题
     ///
@@ -386,6 +407,8 @@ open class Notice: UIWindow {
     ///
     /// - Parameter action: "→"按钮的事件
     open func actionButtonDidTapped(action: @escaping(Notice, UIButton) -> Void){
+        self.contentView.addSubview(loadActionButton())
+        updateContentFrame()
         block_action = action
     }
     
@@ -419,6 +442,19 @@ open class Notice: UIWindow {
         }
         
     }
+    public convenience init(theme: Theme) {
+        self.init()
+        self.setTheme(theme)
+    }
+    public convenience init(theme: UIColor) {
+        self.init()
+        self.setTheme(theme)
+    }
+    public convenience init(theme: UIBlurEffectStyle) {
+        self.init()
+        self.setTheme(theme)
+    }
+    
     public override init(frame: CGRect) {
         
         super.init(frame: frame)
@@ -614,7 +650,6 @@ internal extension Notice {
             titleLabel?.tag = Tag.titleView.rawValue
             titleLabel?.textAlignment = .justified
             titleLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.labelFontSize-1)
-            self.contentView.addSubview(loadActionButton())
             if debugMode {
                 titleLabel?.backgroundColor = UIColor.init(white: 0, alpha: 0.2)
                 actionButton?.backgroundColor = UIColor.init(white: 1, alpha: 0.2)
