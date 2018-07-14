@@ -31,17 +31,8 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         let _ = debugger
         
-        let n = Notice()
-        n.themeColor = .red
-        n.title = "haha"
-        n.body = "sdfasdmf\nsdflnsdf\nsdfsdf]\nsdflsndf"
-        n.allowRemoveByGesture = false
-        NoticeBoard.post(n, duration: 222)
-//        n.actionButtonDidTapped { (n, s) in
-//            n.removeFromNoticeBoard()
-//        }
-        
     }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

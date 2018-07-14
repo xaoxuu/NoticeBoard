@@ -10,6 +10,7 @@ import UIKit
 
 internal let debugMode = false
 
+@objcMembers
 open class NoticeBoard: NSObject {
     
     /// 布局样式
@@ -198,37 +199,50 @@ public extension NoticeBoard {
 extension NoticeBoard {
     
     internal func post(_ notice: Notice, duration: TimeInterval, layout: LayoutStyle, animate: AnimationStyle) {
-        let t = notice.title
-        let b = notice.body
-        if t.count == 0 && b.count == 0 {
-            return
-        }
-        
-        layoutStyle = layout
-        if layout == .remove {
-            clean(animate: animate, delay: 0)
-        }
-        notice.updateContentFrame()
-        notice.translate(animate, .buildOut)
-        notice.makeKeyAndVisible()
-        
-        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
-            notice.translate(animate, .buildIn)
-            if layout == .replace {
-                self.clean(animate: .fade, delay: 0.5)
-            }
-            if self.notices.contains(notice) == false {
-                self.notices.append(notice)
-            }
-            self.updateLayout(from: 0)
-        }) { (completed) in
+        // 如果已经显示在页面上，就重新设置消失的时间
+        if notices.contains(notice) {
+            DispatchWorkItem.cancel(item: notice.workItem)
             if duration > 0 {
-                weak var weak = notice
-                DispatchWorkItem.postpone(duration, block: {
-                    self.remove(weak, animate: animate)
+                weak var n = notice
+                notice.workItem = DispatchWorkItem.postpone(duration, block: {
+                    self.remove(n, animate: animate)
                 })
             }
+        } else {
+            let t = notice.title
+            let b = notice.body
+            if t.count == 0 && b.count == 0 {
+                return
+            }
+            
+            layoutStyle = layout
+            if layout == .remove {
+                clean(animate: animate, delay: 0)
+            }
+            notice.updateContentFrame()
+            notice.translate(animate, .buildOut)
+            notice.makeKeyAndVisible()
+            
+            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
+                notice.translate(animate, .buildIn)
+                if layout == .replace {
+                    self.clean(animate: .fade, delay: 0.5)
+                }
+                if self.notices.contains(notice) == false {
+                    self.notices.append(notice)
+                }
+                self.updateLayout(from: 0)
+            }) { (completed) in
+                DispatchWorkItem.cancel(item: notice.workItem)
+                if duration > 0 {
+                    weak var n = notice
+                    notice.workItem = DispatchWorkItem.postpone(duration, block: {
+                        self.remove(n, animate: animate)
+                    })
+                }
+            }
         }
+        
     }
     
     internal func clean(animate: AnimationStyle, delay: TimeInterval) {

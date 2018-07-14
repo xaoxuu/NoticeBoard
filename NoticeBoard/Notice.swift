@@ -136,6 +136,7 @@ internal extension Notice {
     
 }
 
+@objcMembers
 open class Notice: UIWindow {
 
     public enum Theme {
@@ -172,6 +173,8 @@ open class Notice: UIWindow {
     
     /// 可通过手势移除通知
     public var allowRemoveByGesture = true
+    
+    var workItem : DispatchWorkItem?
     
     /// 背景颜色
     public var themeColor = UIColor.ax_blue {
