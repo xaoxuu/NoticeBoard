@@ -140,8 +140,8 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(message: String?, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.setTheme(.normal)
-        post(notice, duration: duration)
+        notice.themeColor = UIColor.ax_blue
+        shared.post(notice, duration: duration)
         return notice
     }
     
@@ -154,36 +154,43 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(_ theme: Notice.Theme, message: String?, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.setTheme(theme)
-        post(notice, duration: duration)
+        notice.themeColor = theme.rawValue
+        shared.post(notice, duration: duration)
         return notice
     }
+    
     /// post一条消息
     ///
     /// - Parameters:
-    ///   - color: 主题
+    ///   - theme: 主题
+    ///   - title: 标题
     ///   - message: 消息内容
     ///   - duration: 持续时间
     @discardableResult
-    public class func post(_ color: UIColor, message: String?, duration: TimeInterval) -> Notice {
-        let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.setTheme(color)
-        post(notice, duration: duration)
+    public class func post(_ theme: Notice.Theme, title: String?, message: String?, duration: TimeInterval) -> Notice {
+        let notice = Notice.init(title: title, icon: nil, body: message)
+        notice.themeColor = theme.rawValue
+        shared.post(notice, duration: duration)
         return notice
     }
+    
     /// post一条消息
     ///
     /// - Parameters:
-    ///   - blurEffect: 主题
+    ///   - theme: 主题
+    ///   - title: 标题
     ///   - message: 消息内容
     ///   - duration: 持续时间
+    ///   - action: 按钮事件
     @discardableResult
-    public class func post(_ blurEffectTheme: UIBlurEffectStyle, message: String?, duration: TimeInterval) -> Notice {
-        let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.setTheme(blurEffectTheme)
-        post(notice, duration: duration)
+    public class func post(_ theme: Notice.Theme, title: String?, message: String?, duration: TimeInterval, action: @escaping(Notice, UIButton) -> Void) -> Notice {
+        let notice = Notice.init(title: title, icon: nil, body: message)
+        notice.themeColor = theme.rawValue
+        notice.actionButtonDidTapped(action: action)
+        shared.post(notice, duration: duration)
         return notice
     }
+    
     
 }
 

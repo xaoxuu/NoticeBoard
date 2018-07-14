@@ -137,10 +137,10 @@ internal extension Notice {
 }
 
 open class Notice: UIWindow {
+
     public enum Theme {
         public typealias RawValue = UIColor
         case success, note, warning, error, normal
-        
         var rawValue : RawValue {
             var color = UIColor.white
             switch self {
@@ -157,25 +157,10 @@ open class Notice: UIWindow {
             }
             return color
         }
-        
-        var stringValue : String {
-            switch self {
-            case .success:
-                return "success"
-            case .note:
-                return "note"
-            case .warning:
-                return "warning"
-            case .error:
-                return "error"
-            default:
-                return "default"
-            }
-        }
         init () {
             self = .normal
         }
-        
+
     }
     
     // MARK: - public property
@@ -184,6 +169,41 @@ open class Notice: UIWindow {
             updateContentFrame()
         }
     }
+    
+    /// 可通过手势移除通知
+    public var allowRemoveByGesture = true
+    
+    /// 背景颜色
+    public var themeColor = UIColor.ax_blue {
+        didSet {
+            contentView.backgroundColor = themeColor
+            tintColor = themeColor.textColor()
+        }
+    }
+    
+    /// 模糊效果
+    public var blurEffectStyle: UIBlurEffectStyle? {
+        didSet {
+            if let blur = blurEffectStyle {
+                if self.visualEffectView == nil {
+                    let vev = UIVisualEffectView.init(frame: self.bounds)
+                    vev.effect = UIBlurEffect.init(style: blur)
+                    if blur == UIBlurEffectStyle.dark {
+                        tintColor = .white
+                    } else {
+                        tintColor = .black
+                    }
+                    vev.layer.masksToBounds = true
+                    self.contentView.insertSubview(vev, at: 0)
+                    if let pro = progressLayer {
+                        vev.layer.addSublayer(pro)
+                    }
+                    self.visualEffectView = vev
+                }
+            }
+        }
+    }
+    
     // MARK: subviews
     public var contentView = UIView()
     public var iconView : UIImageView?
@@ -194,6 +214,7 @@ open class Notice: UIWindow {
     public var dragButton: UIButton?
     public var actionButton: UIButton?
     public var progressLayer: CALayer?
+    
     
     // MARK: model
     public var title: String {
@@ -336,73 +357,6 @@ open class Notice: UIWindow {
     
     // MARK: - public func
     
-    /// 设置标题
-    ///
-    /// - Parameter title: 标题
-    open func setTitle(_ title: String?){
-        if let t = title {
-            self.title = t
-        } else {
-            self.title = ""
-        }
-    }
-    
-    /// 设置正文
-    ///
-    /// - Parameter body: 正文
-    open func setBody(_ body: String?){
-        if let b = body {
-            self.body = b
-        } else {
-            self.body = ""
-        }
-    }
-    
-    /// 设置主题
-    ///
-    /// - Parameters:
-    ///   - backgroundColor: 背景色
-    ///   - textColor: 文本色
-    open func setTheme(backgroundColor: UIColor, textColor: UIColor){
-        contentView.backgroundColor = backgroundColor
-        tintColor = textColor
-    }
-    
-    /// 设置主题
-    ///
-    /// - Parameter theme: 主题
-    open func setTheme(_ theme: Theme) {
-        setTheme(backgroundColor: theme.rawValue, textColor: theme.rawValue.textColor())
-        tags.append(theme.stringValue)
-    }
-    
-    /// 设置主题
-    ///
-    /// - Parameter backgroundColor: 背景色
-    open func setTheme(_ color: UIColor) {
-        setTheme(backgroundColor: color, textColor: color.textColor())
-    }
-    
-    
-    /// 设置主题
-    ///
-    /// - Parameter effect: 模糊效果
-    open func setTheme(_ blurEffect: UIBlurEffectStyle){
-        let vev = UIVisualEffectView.init(frame: self.bounds)
-        vev.effect = UIBlurEffect.init(style: blurEffect)
-        if blurEffect == UIBlurEffectStyle.dark {
-            tintColor = .white
-        } else {
-            tintColor = .black
-        }
-        vev.layer.masksToBounds = true
-        self.contentView.insertSubview(vev, at: 0)
-        if let pro = progressLayer {
-            vev.layer.addSublayer(pro)
-        }
-        self.visualEffectView = vev
-    }
-    
     /// "→"按钮的事件
     ///
     /// - Parameter action: "→"按钮的事件
@@ -411,7 +365,11 @@ open class Notice: UIWindow {
         updateContentFrame()
         block_action = action
     }
-    
+    open func removeFromNoticeBoard(){
+        if let b = board {
+            b.remove(self, animate: .slide)
+        }
+    }
     // MARK: - private func
     
     
@@ -442,18 +400,7 @@ open class Notice: UIWindow {
         }
         
     }
-    public convenience init(theme: Theme) {
-        self.init()
-        self.setTheme(theme)
-    }
-    public convenience init(theme: UIColor) {
-        self.init()
-        self.setTheme(theme)
-    }
-    public convenience init(theme: UIBlurEffectStyle) {
-        self.init()
-        self.setTheme(theme)
-    }
+
     
     public override init(frame: CGRect) {
         
@@ -530,7 +477,7 @@ open class Notice: UIWindow {
         sender.setTranslation(.zero, in: sender.view)
         if sender.state == .recognized {
             let v = sender.velocity(in: sender.view)
-            if frame.origin.y + point.y < 0 || v.y < -1200 {
+            if allowRemoveByGesture == true && (frame.origin.y + point.y < 0 || v.y < -1200) {
                 if let b = self.board {
                     b.remove(self, animate: .slide)
                 }
