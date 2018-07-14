@@ -13,6 +13,8 @@ internal let debugMode = false
 @objcMembers
 open class NoticeBoard: NSObject {
     
+    
+    
     /// 布局样式
     ///
     /// - tile:  平铺，默认（所有通知都可见，但是通知过多会超出屏幕）
@@ -266,6 +268,7 @@ extension NoticeBoard {
             if let index = notices.index(of: bar) {
                 notices.remove(at: index)
                 updateLayout(from: index)
+                NotificationCenter.default.post(name: Notice.didRemoved, object: notice)
             }
         }
     }

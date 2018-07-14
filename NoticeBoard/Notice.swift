@@ -139,6 +139,9 @@ internal extension Notice {
 @objcMembers
 open class Notice: UIWindow {
 
+    /// 当notice被移除时的通知
+    public static let didRemoved = NSNotification.Name.init("noticeDidRemoved")
+    
     public enum Theme {
         public typealias RawValue = UIColor
         case success, note, warning, error, normal
