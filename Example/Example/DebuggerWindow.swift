@@ -8,8 +8,12 @@
 
 import UIKit
 import NoticeBoard
-import AXKit
 
+
+let ax_yellow = UIColor.init(red: 255/255, green: 235/255, blue: 59/255, alpha: 1)
+let ax_red = UIColor.init(red: 244/255, green: 67/255, blue: 54/255, alpha: 1)
+let ax_green = UIColor.init(red: 76/255, green: 175/255, blue: 80/255, alpha: 1)
+let ax_blue = UIColor.init(red: 82/255, green: 161/255, blue: 248/255, alpha: 1)
 
 let isIPhoneX: Bool = {
     if UIScreen.main.bounds.size.equalTo(CGSize.init(width: 375, height: 812)) || UIScreen.main.bounds.size.equalTo(CGSize.init(width: 812, height: 375)) {
@@ -415,7 +419,7 @@ extension DebuggerWindow{
         tf.placeholder = placeholder
         tf.font = UIFont.systemFont(ofSize: 15)
         tf.text = text
-        tf.layer.borderColor = UIColor.ax_red.cgColor
+        tf.layer.borderColor = ax_red.cgColor
         tf.addTarget(self, action: #selector(self.tfInputBegin(_:)), for: .editingDidBegin)
         tf.addTarget(self, action: #selector(self.tfInputEnd(_:)), for: [.editingDidEnd, .editingDidEndOnExit])
         return tf
@@ -438,7 +442,7 @@ extension DebuggerWindow{
         let tv = UITextView.init(frame: f)
         tv.backgroundColor = UIColor(white: 0, alpha: 0.1)
         tv.layer.cornerRadius = 4
-        tv.layer.borderColor = UIColor.ax_red.cgColor
+        tv.layer.borderColor = ax_red.cgColor
         tv.textColor = .darkText
         tv.font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
         tv.delegate = self
@@ -485,7 +489,7 @@ extension DebuggerWindow{
     func loadTableView() -> TableView {
         let table = TableView.init(frame: .init(x: margin+leftViewW+margin, y: 0, width: defSize.width - 3*margin-leftViewW, height: 180), style: .grouped)
         table.layer.borderWidth = 2
-        table.layer.borderColor = UIColor.ax_red.cgColor
+        table.layer.borderColor = ax_red.cgColor
         table.layer.cornerRadius = 4
         table.myDelegate = self
         return table
@@ -561,22 +565,22 @@ extension DebuggerWindow{
                     let selectedSegmentIndex = seg.selectedSegmentIndex
                     if seg == seg_color {
                         if selectedSegmentIndex == 1 {
-                            notice.setTheme(.normal)
+                            notice.themeColor = ax_blue
                         } else if selectedSegmentIndex == 2 {
-                            notice.setTheme(.warning)
+                            notice.themeColor = ax_yellow
                         } else if selectedSegmentIndex == 3 {
-                            notice.setTheme(.error)
+                            notice.themeColor = ax_red
                         }
                     } else if seg == seg_blur {
                         if selectedSegmentIndex == 1 {
-                            if notice.contentView.backgroundColor == nil {
-                                notice.setTheme(UIColor.init(white: 1, alpha: 0.4))
+                            if notice.themeColor == .clear {
+                                notice.themeColor = .init(white: 1, alpha: 0.4)
                             }
-                            notice.setTheme(.light)
+                            notice.blurEffectStyle = .light
                         } else if selectedSegmentIndex == 2 {
-                            notice.setTheme(.extraLight)
+                            notice.blurEffectStyle = .extraLight
                         } else if selectedSegmentIndex == 3 {
-                            notice.setTheme(.dark)
+                            notice.blurEffectStyle = .dark
                         }
                     }
                 }
