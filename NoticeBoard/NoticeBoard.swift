@@ -13,8 +13,6 @@ internal let debugMode = false
 @objcMembers
 open class NoticeBoard: NSObject {
     
-    
-    
     /// 布局样式
     ///
     /// - tile:  平铺，默认（所有通知都可见，但是通知过多会超出屏幕）
@@ -224,7 +222,7 @@ extension NoticeBoard {
             notice.updateContentFrame()
             notice.translate(animate, .buildOut)
             notice.makeKeyAndVisible()
-            
+            notice.duration = duration
             UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
                 notice.translate(animate, .buildIn)
                 if layout == .replace {

@@ -177,8 +177,6 @@ open class Notice: UIWindow {
     /// 可通过手势移除通知
     public var allowRemoveByGesture = true
     
-    var workItem : DispatchWorkItem?
-    
     /// 背景颜色
     public var themeColor = UIColor.ax_blue {
         didSet {
@@ -318,19 +316,26 @@ open class Notice: UIWindow {
             }
         }
     }
-    let time: Date = {
-        return Date()
-    }()
+    
     public var level = NoticeBoard.Level.normal {
         didSet {
             windowLevel = level.rawValue
         }
     }
+    
     public var tags = [String]()
     
     // MARK: - internal property
+    // life cycle
+    
+    /// 持续的时间，0表示无穷大
+    internal var duration = TimeInterval(0)
+    
+    /// 过期自动消失的函数
+    internal var workItem : DispatchWorkItem?
+    
     // action
-    var block_action: ((Notice, UIButton)->Void)?
+    internal var block_action: ((Notice, UIButton)->Void)?
     
     internal weak var board = NoticeBoard.shared
     
@@ -343,6 +348,7 @@ open class Notice: UIWindow {
             self.frame = f
         }
     }
+    
     // MARK: - override property
     open override var frame: CGRect {
         didSet {
@@ -448,7 +454,7 @@ open class Notice: UIWindow {
     }
     
     // MARK: - action
-    @objc func touchDown(_ sender: UIButton) {
+    @objc private func touchDown(_ sender: UIButton) {
         debugPrint("touchDown: " + (sender.titleLabel?.text)!)
         if sender.tag == Tag.dragButton.rawValue {
             sender.backgroundColor = UIColor.init(white: 0, alpha: 0.3)
@@ -456,7 +462,7 @@ open class Notice: UIWindow {
             
         }
     }
-    @objc func touchUp(_ sender: UIButton) {
+    @objc private func touchUp(_ sender: UIButton) {
         debugPrint("touchUp: " + (sender.titleLabel?.text)!)
         if sender.tag == Tag.dragButton.rawValue {
             sender.backgroundColor = UIColor.init(white: 0, alpha: 0.1)
@@ -464,7 +470,7 @@ open class Notice: UIWindow {
             
         }
     }
-    @objc func touchUpInside(_ sender: UIButton) {
+    @objc private func touchUpInside(_ sender: UIButton) {
         touchUp(sender)
         debugPrint("touchUpInside: " + (sender.titleLabel?.text)!)
         if sender == actionButton {
@@ -474,8 +480,8 @@ open class Notice: UIWindow {
         }
         
     }
-    @objc func pan(_ sender: UIPanGestureRecognizer) {
-        
+    @objc private func pan(_ sender: UIPanGestureRecognizer) {
+        DispatchWorkItem.cancel(item: self.workItem)
         let point = sender.translation(in: sender.view)
         var f = self.frame
         f.origin.y += point.y
@@ -496,6 +502,11 @@ open class Notice: UIWindow {
                     f.origin.y = self.originY
                     self.frame = f
                 }) { (completed) in
+                    if self.duration > 0 {
+                        if let b = self.board {
+                            b.post(self, duration: self.duration)
+                        }
+                    }
                     
                 }
             }
@@ -536,7 +547,7 @@ open class Notice: UIWindow {
 
 
 // MARK: - setup
-internal extension Notice {
+private extension Notice {
     
     @discardableResult
     func loadTextView() -> UITextView {
