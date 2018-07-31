@@ -420,7 +420,7 @@ open class Notice: UIWindow {
     
     // MARK: - public func
     
-    /// 警示（如果一个notice已经post出来了，想要再次引起用户注意，可以使用次函数）
+    /// 警示（如果一个notice已经post出来了，想要再次引起用户注意，可以使用此函数）
     ///
     /// - Parameter options: 操作
     public func alert(options: NoticeAlertOptions = []){

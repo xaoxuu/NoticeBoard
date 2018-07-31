@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'NoticeBoard'
-  s.version = "1.0.3"
+  s.version = "1.1"
   s.license = 'MIT'
   s.summary = '一个简单易用的应用内消息通知框架。'
   s.homepage = "http://xaoxuu.com"
