@@ -615,8 +615,8 @@ extension DebuggerWindow{
                     updateProgress(notice: n, pro: 0, showTitle: n.title.count == 0)
                 }
                 
-                
-                NoticeBoard.post(n, duration: duration, layout: layout(index: seg_layout.selectedSegmentIndex))
+                NoticeBoard.shared.layoutStyle = layout(index: seg_layout.selectedSegmentIndex)
+                NoticeBoard.shared.post(n, duration: duration)
                 
                 n.actionButtonDidTapped { (notice, sender) in
                     notice.body = notice.body + "\n\(Date.init().description(with: Locale.current)) 点击了\"→\""

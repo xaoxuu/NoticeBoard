@@ -69,7 +69,7 @@ open class NoticeBoard: NSObject {
     
     
     
-    /// 默认布局的post通知
+    /// post一条通知
     ///
     /// - Parameters:
     ///   - notice: 通知
@@ -77,31 +77,14 @@ open class NoticeBoard: NSObject {
     public class func post(_ notice: Notice, duration: TimeInterval){
         shared.post(notice, duration: duration)
     }
-    /// 默认布局的post通知
+    
+    /// post一条通知
     ///
     /// - Parameters:
     ///   - notice: 通知
     ///   - duration: 持续时间
     public func post(_ notice: Notice, duration: TimeInterval){
-        post(notice, duration: duration, layout: layoutStyle)
-    }
-    /// 自定义布局post通知
-    ///
-    /// - Parameters:
-    ///   - notice: 通知
-    ///   - duration: 持续时间
-    ///   - option: 操作
-    public class func post(_ notice: Notice, duration: TimeInterval, layout: LayoutStyle) {
-        shared.post(notice, duration: duration, layout: layout)
-    }
-    /// 自定义布局post通知
-    ///
-    /// - Parameters:
-    ///   - notice: 通知
-    ///   - duration: 持续时间
-    ///   - option: 操作
-    public func post(_ notice: Notice, duration: TimeInterval, layout: LayoutStyle) {
-        post(notice, duration: duration, layout: layout, animate: .slide)
+        post(notice, duration: duration, animate:.slide)
     }
     
     /// 移除所有通知
@@ -198,7 +181,7 @@ public extension NoticeBoard {
 // MARK: - post / remove / update layout
 extension NoticeBoard {
     
-    internal func post(_ notice: Notice, duration: TimeInterval, layout: LayoutStyle, animate: AnimationStyle) {
+    internal func post(_ notice: Notice, duration: TimeInterval, animate: AnimationStyle) {
         // 如果已经显示在页面上，就重新设置消失的时间
         if notices.contains(notice) {
             DispatchWorkItem.cancel(item: notice.workItem)
@@ -215,8 +198,7 @@ extension NoticeBoard {
                 return
             }
             
-            layoutStyle = layout
-            if layout == .remove {
+            if layoutStyle == .remove {
                 clean(animate: animate, delay: 0)
             }
             notice.updateContentFrame()
@@ -225,7 +207,7 @@ extension NoticeBoard {
             notice.duration = duration
             UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
                 notice.translate(animate, .buildIn)
-                if layout == .replace {
+                if self.layoutStyle == .replace {
                     self.clean(animate: .fade, delay: 0.5)
                 }
                 if self.notices.contains(notice) == false {
