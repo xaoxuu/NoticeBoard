@@ -166,7 +166,58 @@ open class Notice: UIWindow {
         }
 
     }
-    
+    public struct NoticeAlertOptions : OptionSet {
+        public var rawValue: UInt
+        
+        public init(rawValue: UInt) {
+            self.rawValue = rawValue
+        }
+        
+        /// 一次
+        public static var once: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 0)
+        }
+        
+        /// 两次
+        public static var twice: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 1)
+        }
+        
+        /// 呼吸灯效果
+        public static var breathing: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 2)
+        }
+        
+        /// 正常速度
+        public static var normally: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 3)
+        }
+        
+        /// 缓慢地
+        public static var slowly: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 3)
+        }
+        
+        /// 快速地
+        public static var fast: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 4)
+        }
+        
+        /// 颜色变浅
+        public static var lighten: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 5)
+        }
+        
+        /// 颜色变深
+        public static var darken: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 6)
+        }
+        
+        /// 消失
+        public static var disappear: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 7)
+        }
+    }
     // MARK: - public property
     public var bodyMaxHeight = CGFloat(360) {
         didSet {
@@ -368,6 +419,42 @@ open class Notice: UIWindow {
     }
     
     // MARK: - public func
+    
+    /// 警示（如果一个notice已经post出来了，想要再次引起用户注意，可以使用次函数）
+    ///
+    /// - Parameter options: 操作
+    public func alert(options: NoticeAlertOptions = []){
+        let ani = CABasicAnimation.init(keyPath: "backgroundColor")
+        ani.autoreverses = true
+        ani.isRemovedOnCompletion = true
+        ani.timingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionEaseInEaseOut)
+        if options.contains(.fast) {
+            ani.duration = 0.38
+        } else if options.contains(.slowly) {
+            ani.duration = 2.4
+        } else {
+            // normally
+            ani.duration = 0.8
+        }
+        if options.contains(.breathing) {
+            ani.repeatCount = MAXFLOAT
+        } else if options.contains(.twice) {
+            ani.repeatCount = 2
+        } else {
+            // once
+            ani.repeatCount = 1
+        }
+        if options.contains(.disappear) {
+            ani.toValue = UIColor.init(white: 1, alpha: 0).cgColor
+        } else if options.contains(.lighten) {
+            ani.toValue = self.contentView.backgroundColor?.lighten(ratio: 0.4).cgColor
+        } else {
+            // darken
+            ani.toValue = self.contentView.backgroundColor?.darken(ratio: 0.4).cgColor
+        }
+        self.contentView.layer.add(ani, forKey: "backgroundColor")
+        
+    }
     
     /// "→"按钮的事件
     ///
