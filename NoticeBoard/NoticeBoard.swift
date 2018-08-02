@@ -10,7 +10,7 @@ import UIKit
 
 internal let debugMode = false
 
-@objcMembers
+
 open class NoticeBoard: NSObject {
     
     /// 布局样式
@@ -74,7 +74,7 @@ open class NoticeBoard: NSObject {
     /// - Parameters:
     ///   - notice: 通知
     ///   - duration: 持续时间
-    public class func post(_ notice: Notice, duration: TimeInterval){
+    @objc public class func post(_ notice: Notice, duration: TimeInterval = 0){
         shared.post(notice, duration: duration)
     }
     
@@ -83,30 +83,30 @@ open class NoticeBoard: NSObject {
     /// - Parameters:
     ///   - notice: 通知
     ///   - duration: 持续时间
-    public func post(_ notice: Notice, duration: TimeInterval){
+    @objc public func post(_ notice: Notice, duration: TimeInterval = 0){
         post(notice, duration: duration, animate:.slide)
     }
     
     /// 移除所有通知
-    public class func clean() {
+    @objc public class func clean() {
         shared.clean(animate: .slide, delay: 0)
     }
     /// 移除所有通知
-    public func clean() {
+    @objc public func clean() {
         clean(animate: .slide, delay: 0)
     }
     /// 移除某个通知
     ///
     /// - Parameters:
     ///   - notice: 通知
-    public class func remove(_ notice: Notice?) {
+    @objc public class func remove(_ notice: Notice?) {
         shared.remove(notice, animate: .slide, delay: 0)
     }
     /// 移除某个通知
     ///
     /// - Parameters:
     ///   - notice: 通知
-    public func remove(_ notice: Notice?) {
+    @objc public func remove(_ notice: Notice?) {
         remove(notice, animate: .slide, delay: 0)
     }
     
@@ -116,20 +116,29 @@ open class NoticeBoard: NSObject {
 // MARK: - 快速post
 public extension NoticeBoard {
     
-    /// post一条消息，默认主题
+    /// post一条纯文本消息，默认主题
     ///
     /// - Parameters:
     ///   - message: 消息内容
     ///   - duration: 持续时间
     @discardableResult
-    public class func post(message: String?, duration: TimeInterval) -> Notice {
+    public class func post(_ message: String?, duration: TimeInterval = 0) -> Notice {
+        return shared.post(message, duration: duration)
+    }
+    /// post一条纯文本消息，默认主题
+    ///
+    /// - Parameters:
+    ///   - message: 消息内容
+    ///   - duration: 持续时间
+    @discardableResult
+    public func post(_ message: String?, duration: TimeInterval = 0) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.theme = .plain
-        shared.post(notice, duration: duration)
+        notice.blurEffectStyle = .light
+        post(notice, duration: duration)
         return notice
     }
     
-    /// post一条消息
+    /// post一条消息（主题+消息内容）
     ///
     /// - Parameters:
     ///   - theme: 主题
@@ -143,7 +152,7 @@ public extension NoticeBoard {
         return notice
     }
     
-    /// post一条消息
+    /// post一条消息（主题+消息标题+消息内容）
     ///
     /// - Parameters:
     ///   - theme: 主题
@@ -158,7 +167,7 @@ public extension NoticeBoard {
         return notice
     }
     
-    /// post一条消息
+    /// post一条消息（主题+icon+消息标题+消息内容+按钮）
     ///
     /// - Parameters:
     ///   - theme: 主题
@@ -167,8 +176,8 @@ public extension NoticeBoard {
     ///   - duration: 持续时间
     ///   - action: 按钮事件
     @discardableResult
-    public class func post(_ theme: Notice.Theme, title: String?, message: String?, duration: TimeInterval, action: @escaping(Notice, UIButton) -> Void) -> Notice {
-        let notice = Notice.init(title: title, icon: nil, body: message)
+    public class func post(_ theme: Notice.Theme, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: @escaping(Notice, UIButton) -> Void) -> Notice {
+        let notice = Notice.init(title: title, icon: icon, body: message)
         notice.theme = theme
         notice.actionButtonDidTapped(action: action)
         shared.post(notice, duration: duration)

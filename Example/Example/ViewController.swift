@@ -46,8 +46,5 @@ class ViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        NoticeBoard.post(message: "haha", duration: 1)
-    }
 }
 
