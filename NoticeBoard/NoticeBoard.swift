@@ -229,11 +229,11 @@ extension NoticeBoard {
                 })
             }
         } else {
-            let t = notice.title
-            let b = notice.body
-            if t.count == 0 && b.count == 0 {
-                return
-            }
+//            let t = notice.title
+//            let b = notice.body
+//            if t.count == 0 && b.count == 0 {
+//                return
+//            }
             
             if layoutStyle == .remove {
                 clean(animate: animate, delay: 0)

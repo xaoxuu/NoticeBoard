@@ -8,7 +8,7 @@
 
 import UIKit
 import NoticeBoard
-
+import AXKit
 class ExampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
 
@@ -20,7 +20,8 @@ class ExampleViewController: UIViewController, UITableViewDataSource, UITableVie
                  "NoticeBoard.post(.dark, message: \"Good evening\", duration: 2)"],
                 ["NoticeBoard.post(.light, title: \"Hello World\", message: \"I'm NoticeBoard.\", duration: 2)"],
                 ["let img = UIImage.init(named: \"alert-circle\")\nNoticeBoard.post(.light, icon:img, title: \"Hello World\", message: \"I'm NoticeBoard.\", duration: 2)"],
-                ["let img = UIImage.init(named: \"alert-circle\")\nNoticeBoard.post(.warning, icon: img, title: \"Warning\", message: \"Please see more info\", duration: 0) { (notice, sender) in\nNoticeBoard.post(\"button tapped\", duration: 1)\n}"]]
+                ["let img = UIImage.init(named: \"alert-circle\")\nNoticeBoard.post(.warning, icon: img, title: \"Warning\", message: \"Please see more info\", duration: 0) { (notice, sender) in\nNoticeBoard.post(\"button tapped\", duration: 1)\n}"],
+                ["自定义view"]]
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -103,6 +104,32 @@ class ExampleViewController: UIViewController, UITableViewDataSource, UITableVie
                 NoticeBoard.post(.warning, icon: img, title: "Warning", message: "Please see more info", duration: 0) { (notice, sender) in
                     NoticeBoard.post("button tapped", duration: 1)
                 }
+            }
+        } else if section == 5 {
+            if row == 0 {
+                
+                let notice = Notice()
+                let h = CGFloat(200)
+                let w = notice.frame.width
+                notice.blurEffectStyle = .light
+                let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
+                // subviews
+                let imgv = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
+                let img = UIImage.init(named: Bundle.appIconName())
+                imgv.image = img
+                imgv.contentMode = .scaleAspectFit
+                imgv.layer.masksToBounds = true
+                imgv.layer.cornerRadius = 15
+                view.addSubview(imgv)
+                
+                let lb = UILabel.init(frame: .init(x: 0, y: imgv.frame.maxY + 8, width: w, height: 20))
+                lb.textAlignment = .center
+                lb.font = UIFont.systemFont(ofSize: 13)
+                lb.text = "\(Bundle.init(for: NoticeBoard.self).bundleName()!) \(Bundle.init(for: NoticeBoard.self).bundleShortVersionString()!)"
+                
+                view.addSubview(lb)
+                notice.contentView.addSubview(view)
+                NoticeBoard.post(notice)
             }
         }
         
