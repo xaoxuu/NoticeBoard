@@ -123,22 +123,10 @@ public extension NoticeBoard {
     ///   - duration: 持续时间
     @discardableResult
     public class func post(_ message: String?, duration: TimeInterval = 0) -> Notice {
-        return shared.post(message, duration: duration)
-    }
-    /// post一条纯文本消息，默认主题
-    ///
-    /// - Parameters:
-    ///   - message: 消息内容
-    ///   - duration: 持续时间
-    @discardableResult
-    public func post(_ message: String?, duration: TimeInterval = 0) -> Notice {
-        let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.blurEffectStyle = .light
-        post(notice, duration: duration)
-        return notice
+        return post(.light, icon: nil, title: nil, message: message, duration: duration)
     }
     
-    /// post一条消息（主题+消息内容）
+    /// post一条消息（纯色主题+消息内容）
     ///
     /// - Parameters:
     ///   - theme: 主题
@@ -146,13 +134,21 @@ public extension NoticeBoard {
     ///   - duration: 持续时间
     @discardableResult
     public class func post(_ theme: Notice.Theme, message: String?, duration: TimeInterval) -> Notice {
-        let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.theme = theme
-        shared.post(notice, duration: duration)
-        return notice
+        return post(theme, icon: nil, title: nil, message: message, duration: duration)
+    }
+    /// post一条消息（UIBlurEffect主题+消息内容）
+    ///
+    /// - Parameters:
+    ///   - blurEffectStyle: 主题
+    ///   - message: 消息内容
+    ///   - duration: 持续时间
+    @discardableResult
+    public class func post(_ theme: UIBlurEffectStyle, message: String?, duration: TimeInterval) -> Notice {
+        return post(theme, icon: nil, title: nil, message: message, duration: duration)
     }
     
-    /// post一条消息（主题+消息标题+消息内容）
+    
+    /// post一条消息（纯色主题+消息标题+消息内容）
     ///
     /// - Parameters:
     ///   - theme: 主题
@@ -161,25 +157,57 @@ public extension NoticeBoard {
     ///   - duration: 持续时间
     @discardableResult
     public class func post(_ theme: Notice.Theme, title: String?, message: String?, duration: TimeInterval) -> Notice {
-        let notice = Notice.init(title: title, icon: nil, body: message)
-        notice.theme = theme
-        shared.post(notice, duration: duration)
-        return notice
+        return post(theme, icon: nil, title: title, message: message, duration: duration)
+    }
+    /// post一条消息（UIBlurEffect主题+消息标题+消息内容）
+    ///
+    /// - Parameters:
+    ///   - blurEffectStyle: 主题
+    ///   - title: 标题
+    ///   - message: 消息内容
+    ///   - duration: 持续时间
+    @discardableResult
+    public class func post(_ theme: UIBlurEffectStyle, title: String?, message: String?, duration: TimeInterval) -> Notice {
+        return post(theme, icon: nil, title: title, message: message, duration: duration)
     }
     
-    /// post一条消息（主题+icon+消息标题+消息内容+按钮）
+    
+    /// post一条消息（纯色主题+icon+消息标题+消息内容+按钮）
     ///
     /// - Parameters:
     ///   - theme: 主题
+    ///   - icon: 图标
     ///   - title: 标题
     ///   - message: 消息内容
     ///   - duration: 持续时间
     ///   - action: 按钮事件
     @discardableResult
-    public class func post(_ theme: Notice.Theme, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: @escaping(Notice, UIButton) -> Void) -> Notice {
+    public class func post(_ theme: Notice.Theme, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
         let notice = Notice.init(title: title, icon: icon, body: message)
         notice.theme = theme
-        notice.actionButtonDidTapped(action: action)
+        if let ac = action {
+            notice.actionButtonDidTapped(action: ac)
+        }
+        shared.post(notice, duration: duration)
+        return notice
+    }
+    
+    /// post一条消息（UIBlurEffectStyle主题+icon+消息标题+消息内容+按钮）
+    ///
+    /// - Parameters:
+    ///   - blurEffectStyle: 主题
+    ///   - icon: 图标
+    ///   - title: 标题
+    ///   - message: 消息内容
+    ///   - duration: 持续时间
+    ///   - action: 按钮事件
+    @discardableResult
+    public class func post(_ theme: UIBlurEffectStyle, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
+        let notice = Notice.init(title: title, icon: icon, body: message)
+        notice.blurEffectStyle = theme
+        if let ac = action {
+            notice.actionButtonDidTapped(action: ac)
+        }
         shared.post(notice, duration: duration)
         return notice
     }

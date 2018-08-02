@@ -54,10 +54,26 @@ notice.blurEffectStyle = .light
 ### 快速post
 
 ```swift
-let notice = NoticeBoard.post(.warning, message: "消息正文", duration: 2)
+// post一条消息，内容为"Hello World!"
+NoticeBoard.post("Hello World!")
+NoticeBoard.post("Hello World!", duration: 2)
+
+// post一条指定主题样式的消息
+NoticeBoard.post(.error, message: "Something Happend", duration: 5)
+NoticeBoard.post(.dark, message: "Good evening", duration: 2)
+
+// post一条指定主题样式并且带标题的消息
+NoticeBoard.post(.light, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
+// post一条指定主题样式并且带标题和icon的消息
+let img = UIImage.init(named: "alert-circle")
+NoticeBoard.post(.light, icon:img, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
+// 对于带有标题的消息，可以设置右边的按钮“→”
+NoticeBoard.post(.warning, icon: img, title: "Warning", message: "Please see more info", duration: 0) { (notice, sender) in
+    print("button tapped")
+}
 ```
 
-> 第一个参数同setTheme()，可以传入枚举、模糊效果、任意UIColor。
+> duration参数为0代表无穷大，即不自动消失。
 >
 > 返回值为notice实例，可以随时更改notice。
 
@@ -65,7 +81,7 @@ let notice = NoticeBoard.post(.warning, message: "消息正文", duration: 2)
 
 ### post进度
 
-设置 `notice` 实例的 `progress` 属性，即时生效。
+设置任意一条 `notice` 实例的 `progress` 属性，即时生效。
 
 ```swift
 // 进度为0
