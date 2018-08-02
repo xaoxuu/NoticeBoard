@@ -107,6 +107,9 @@ internal extension UIColor {
     
     
     internal func isLightColor() -> Bool {
+        if self == UIColor.clear {
+            return true
+        }
         var red = 0.0 as CGFloat
         var green = 0.0 as CGFloat
         var blue = 0.0 as CGFloat

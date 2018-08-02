@@ -565,11 +565,11 @@ extension DebuggerWindow{
                     let selectedSegmentIndex = seg.selectedSegmentIndex
                     if seg == seg_color {
                         if selectedSegmentIndex == 1 {
-                            notice.themeColor = ax_blue
+                            notice.theme = .normal
                         } else if selectedSegmentIndex == 2 {
-                            notice.themeColor = ax_yellow
+                            notice.theme = .warning
                         } else if selectedSegmentIndex == 3 {
-                            notice.themeColor = ax_red
+                            notice.theme = .error
                         }
                     } else if seg == seg_blur {
                         if selectedSegmentIndex == 1 {

@@ -124,7 +124,7 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(message: String?, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.themeColor = UIColor.ax_blue
+        notice.theme = .plain
         shared.post(notice, duration: duration)
         return notice
     }
@@ -138,7 +138,7 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(_ theme: Notice.Theme, message: String?, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: nil, icon: nil, body: message)
-        notice.themeColor = theme.rawValue
+        notice.theme = theme
         shared.post(notice, duration: duration)
         return notice
     }
@@ -153,7 +153,7 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(_ theme: Notice.Theme, title: String?, message: String?, duration: TimeInterval) -> Notice {
         let notice = Notice.init(title: title, icon: nil, body: message)
-        notice.themeColor = theme.rawValue
+        notice.theme = theme
         shared.post(notice, duration: duration)
         return notice
     }
@@ -169,7 +169,7 @@ public extension NoticeBoard {
     @discardableResult
     public class func post(_ theme: Notice.Theme, title: String?, message: String?, duration: TimeInterval, action: @escaping(Notice, UIButton) -> Void) -> Notice {
         let notice = Notice.init(title: title, icon: nil, body: message)
-        notice.themeColor = theme.rawValue
+        notice.theme = theme
         notice.actionButtonDidTapped(action: action)
         shared.post(notice, duration: duration)
         return notice

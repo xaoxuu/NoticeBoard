@@ -142,10 +142,11 @@ open class Notice: UIWindow {
     /// 当notice被移除时的通知
     public static let didRemoved = NSNotification.Name.init("noticeDidRemoved")
     
+    /// 主题
     public enum Theme {
         public typealias RawValue = UIColor
-        case success, note, warning, error, normal
-        var rawValue : RawValue {
+        case success, note, warning, error, normal, plain
+        public var rawValue : RawValue {
             var color = UIColor.white
             switch self {
             case .success:
@@ -156,6 +157,8 @@ open class Notice: UIWindow {
                 color = UIColor.ax_yellow
             case .error:
                 color = UIColor.ax_red
+            case .plain:
+                color = UIColor.clear
             default:
                 color = UIColor.ax_blue
             }
@@ -233,6 +236,13 @@ open class Notice: UIWindow {
         didSet {
             contentView.backgroundColor = themeColor
             tintColor = themeColor.textColor()
+        }
+    }
+    
+    /// 主题（改变背景颜色）
+    public var theme = Theme.normal {
+        didSet {
+            themeColor = theme.rawValue
         }
     }
     
