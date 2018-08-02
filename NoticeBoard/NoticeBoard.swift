@@ -240,28 +240,29 @@ extension NoticeBoard {
             }
             notice.updateContentFrame()
             notice.translate(animate, .buildOut)
-            notice.makeKeyAndVisible()
             notice.duration = duration
-            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
-                notice.translate(animate, .buildIn)
-                if self.layoutStyle == .replace {
-                    self.clean(animate: .fade, delay: 0.5)
-                }
-                if self.notices.contains(notice) == false {
-                    self.notices.append(notice)
-                }
-                self.updateLayout(from: 0)
-            }) { (completed) in
-                DispatchWorkItem.cancel(item: notice.workItem)
-                if duration > 0 {
-                    weak var n = notice
-                    notice.workItem = DispatchWorkItem.postpone(duration, block: {
-                        self.remove(n, animate: animate)
-                    })
+            DispatchQueue.main.async {
+                UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
+                    notice.makeKeyAndVisible()
+                    notice.translate(animate, .buildIn)
+                    if self.layoutStyle == .replace {
+                        self.clean(animate: .fade, delay: 0.5)
+                    }
+                    if self.notices.contains(notice) == false {
+                        self.notices.append(notice)
+                    }
+                    self.updateLayout(from: 0)
+                }) { (completed) in
+                    DispatchWorkItem.cancel(item: notice.workItem)
+                    if duration > 0 {
+                        weak var n = notice
+                        notice.workItem = DispatchWorkItem.postpone(duration, block: {
+                            self.remove(n, animate: animate)
+                        })
+                    }
                 }
             }
         }
-        
     }
     
     internal func clean(animate: AnimationStyle, delay: TimeInterval) {
