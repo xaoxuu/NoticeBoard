@@ -6,7 +6,7 @@
 
 一个适用于iOS平台的简单易用的应用内消息通知框架。
 
-|                                                              |                                                              |
+| screenshot                                                   | video                                                        |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | ![](https://user-images.githubusercontent.com/16400144/43441330-10b44176-94cd-11e8-8a1e-d0870273e537.PNG) | <video id="video" controls="" preload="none"  poster="https://user-images.githubusercontent.com/16400144/43441330-10b44176-94cd-11e8-8a1e-d0870273e537.PNG" width=100%>  <source id="mp4" src="http://pcpw4brqf.bkt.clouddn.com/noticeboard0731.MP4" type="video/mp4"></video> |
 
