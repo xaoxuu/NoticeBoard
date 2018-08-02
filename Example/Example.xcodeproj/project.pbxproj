@@ -15,6 +15,7 @@
 		CD6353C020EB123100B49FE9 /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CD6353BE20EB123100B49FE9 /* TableViewCell.xib */; };
 		CD75C8B320ED104700FB9743 /* TableView.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD75C8B220ED104700FB9743 /* TableView.plist */; };
 		CD75C8B520ED147B00FB9743 /* TableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD75C8B420ED147B00FB9743 /* TableViewModel.swift */; };
+		CD9DE10321135FA90074D742 /* Examples.md in Resources */ = {isa = PBXBuildFile; fileRef = CD9DE10221135FA90074D742 /* Examples.md */; };
 		CDA4E03C20D3935B00CD2A0C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA4E03B20D3935B00CD2A0C /* AppDelegate.swift */; };
 		CDA4E03E20D3935B00CD2A0C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA4E03D20D3935B00CD2A0C /* ViewController.swift */; };
 		CDA4E04120D3935B00CD2A0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDA4E03F20D3935B00CD2A0C /* Main.storyboard */; };
@@ -34,6 +35,7 @@
 		CD6353BE20EB123100B49FE9 /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		CD75C8B220ED104700FB9743 /* TableView.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = TableView.plist; sourceTree = "<group>"; };
 		CD75C8B420ED147B00FB9743 /* TableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewModel.swift; sourceTree = "<group>"; };
+		CD9DE10221135FA90074D742 /* Examples.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Examples.md; path = ../../resources/Examples.md; sourceTree = "<group>"; };
 		CDA4E03820D3935B00CD2A0C /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA4E03B20D3935B00CD2A0C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CDA4E03D20D3935B00CD2A0C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 				CD75C8B220ED104700FB9743 /* TableView.plist */,
 				CD6353BD20EB123100B49FE9 /* TableViewCell.swift */,
 				CD6353BE20EB123100B49FE9 /* TableViewCell.xib */,
+				CD9DE10221135FA90074D742 /* Examples.md */,
 				CDA4E03F20D3935B00CD2A0C /* Main.storyboard */,
 				CDA4E04220D3935C00CD2A0C /* Assets.xcassets */,
 				CDA4E04420D3935C00CD2A0C /* LaunchScreen.storyboard */,
@@ -123,7 +126,6 @@
 				CDA4E03520D3935B00CD2A0C /* Frameworks */,
 				CDA4E03620D3935B00CD2A0C /* Resources */,
 				FE957B34A041E54F84E4F88C /* [CP] Embed Pods Frameworks */,
-				DD9D832F6D4D8603F51CDA29 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -176,6 +178,7 @@
 				CDA4E04620D3935C00CD2A0C /* LaunchScreen.storyboard in Resources */,
 				CD6353C020EB123100B49FE9 /* TableViewCell.xib in Resources */,
 				CDA4E04320D3935C00CD2A0C /* Assets.xcassets in Resources */,
+				CD9DE10321135FA90074D742 /* Examples.md in Resources */,
 				CD75C8B320ED104700FB9743 /* TableView.plist in Resources */,
 				CDA4E04120D3935B00CD2A0C /* Main.storyboard in Resources */,
 			);
@@ -202,21 +205,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DD9D832F6D4D8603F51CDA29 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Example/Pods-Example-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		FE957B34A041E54F84E4F88C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -226,12 +214,14 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Example/Pods-Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AXKit/AXKit.framework",
 				"${BUILT_PRODUCTS_DIR}/AXTableKit/AXTableKit.framework",
+				"${BUILT_PRODUCTS_DIR}/MarkdownView/MarkdownView.framework",
 				"${BUILT_PRODUCTS_DIR}/NoticeBoard/NoticeBoard.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AXKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AXTableKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MarkdownView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NoticeBoard.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

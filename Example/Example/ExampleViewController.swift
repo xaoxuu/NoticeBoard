@@ -9,6 +9,9 @@
 import UIKit
 import NoticeBoard
 import AXKit
+import MarkdownView
+import SafariServices
+
 class ExampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
 
@@ -22,19 +25,111 @@ class ExampleViewController: UIViewController, UITableViewDataSource, UITableVie
                 ["let img = UIImage.init(named: \"alert-circle\")\nNoticeBoard.post(.light, icon:img, title: \"Hello World\", message: \"I'm NoticeBoard.\", duration: 2)"],
                 ["let img = UIImage.init(named: \"alert-circle\")\nNoticeBoard.post(.warning, icon: img, title: \"Warning\", message: \"Please see more info\", duration: 0) { (notice, sender) in\nNoticeBoard.post(\"button tapped\", duration: 1)\n}"],
                 ["自定义view"]]
+    
+    
+    let progressNotice = Notice.init(title: "正在加载...", icon: nil, body: nil)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        title = "快速post"
+        title = "NoticeBoard"
         
         table = UITableView.init(frame: view.bounds, style: .grouped)
         
-        view.addSubview(table)
+//        view.addSubview(table)
         table.register(UINib.init(nibName: "TableViewCell", bundle: .main), forCellReuseIdentifier: "ExampleViewControllerCell")
         table.dataSource = self
         table.delegate = self
         
         table.tableFooterView = UIView.init(frame: .init(x: 0, y: 0, width: 1, height: 100))
+        
+        progressNotice.theme = .normal
+        if let path = Bundle.main.path(forResource: "Examples.md", ofType: nil) {
+            do {
+                let md = try NSString.init(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue) as String
+                let mdView = MarkdownView()
+                view.addSubview(mdView)
+                mdView.frame = view.bounds
+                mdView.load(markdown: md)
+                // 外部链接
+                let externalURLs = ["https://github.com/xaoxuu/NoticeBoard/issues",
+                                    "https://xaoxuu.com/docs/noticeboard"]
+                mdView.onTouchLink = { [weak self] request in
+                    guard let url = request.url else { return false }
+                    
+                    if url.scheme == "file" {
+                        return false
+                    } else if url.scheme == "https" {
+                        if externalURLs.contains(url.absoluteString) {
+                            UIApplication.shared.openURL(url)
+                        } else {
+                            let safari = SFSafariViewController(url: url)
+                            self?.present(safari, animated: true, completion: nil)
+                        }
+                        
+                        return false
+                    } else if url.scheme == "cmd" {
+                        if let cmd = url.host, let idx = url.port {
+                            if cmd == "fastpost" {
+                                let img = UIImage.init(named: "alert-circle")
+                                switch idx {
+                                case 1:
+                                    NoticeBoard.post("Hello World!")
+                                case 2:
+                                    NoticeBoard.post("Hello World!", duration: 2)
+                                case 11:
+                                    NoticeBoard.post(.error, message: "Something Happend", duration: 5)
+                                case 12:
+                                    NoticeBoard.post(.dark, message: "Good evening", duration: 2)
+                                case 21:
+                                    NoticeBoard.post(.light, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
+                                case 31:
+                                    NoticeBoard.post(.light, icon:img, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
+                                case 41:
+                                    NoticeBoard.post(.warning, icon: img, title: "Warning", message: "Please see more info", duration: 0) { (notice, sender) in
+                                        NoticeBoard.post("button tapped", duration: 1)
+                                    }
+                                default:
+                                    print("xxx")
+                                }
+                            } else if cmd == "postpro" {
+                                if idx == 1000 {
+                                    func loop(_ i: Int){
+                                        if i <= 100 {
+                                            self!.progressNotice.progress = CGFloat(i)/100.0
+                                            self!.progressNotice.title = "已完成：\(i)%"
+                                            if i < 100 {
+                                                DispatchQueue.main.asyncAfter(deadline: .now()+0.05, execute: {
+                                                    loop(i+1)
+                                                })
+                                            } else {
+                                                DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
+                                                    NoticeBoard.remove(self!.progressNotice)
+                                                })
+                                            }
+                                        }
+                                    }
+                                    loop(0)
+                                    NoticeBoard.post(self!.progressNotice)
+                                } else if idx <= 100 {
+                                    self?.progressNotice.progress = CGFloat(idx)/100.0
+                                    NoticeBoard.post((self?.progressNotice)!)
+                                }
+                            }
+                        }
+                        
+                        
+                        return false
+                    } else {
+                        return false
+                    }
+                }
+            } catch {
+                
+            }
+        }
+        
+        
         
     }
 

@@ -1,0 +1,6 @@
+framework module AXKit {
+  umbrella header "AXKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

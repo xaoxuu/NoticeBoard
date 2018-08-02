@@ -20,6 +20,7 @@
 		CD6353C620EB23FC00B49FE9 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6353C520EB23FB00B49FE9 /* TableView.swift */; };
 		CD75C8B820ED293700FB9743 /* TableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD75C8B620ED293600FB9743 /* TableViewModel.swift */; };
 		CD75C8B920ED293700FB9743 /* TableView.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD75C8B720ED293700FB9743 /* TableView.plist */; };
+		CD9DE105211379820074D742 /* Examples.md in Resources */ = {isa = PBXBuildFile; fileRef = CD9DE104211379820074D742 /* Examples.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +42,7 @@
 		CD6353C520EB23FB00B49FE9 /* TableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableView.swift; path = ../../Example/Example/TableView.swift; sourceTree = "<group>"; };
 		CD75C8B620ED293600FB9743 /* TableViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TableViewModel.swift; path = ../../Example/Example/TableViewModel.swift; sourceTree = "<group>"; };
 		CD75C8B720ED293700FB9743 /* TableView.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = TableView.plist; path = ../../Example/Example/TableView.plist; sourceTree = "<group>"; };
+		CD9DE104211379820074D742 /* Examples.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Examples.md; path = ../../resources/Examples.md; sourceTree = "<group>"; };
 		DCDCCEDA52E93F184229E229 /* Pods-Example-OC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-OC.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example-OC/Pods-Example-OC.release.xcconfig"; sourceTree = "<group>"; };
 		E17AFD8D65290112029ACD95 /* Pods_Example_OC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example_OC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -96,6 +98,7 @@
 				CD75C8B620ED293600FB9743 /* TableViewModel.swift */,
 				CD6353C220EB23D800B49FE9 /* TableViewCell.swift */,
 				CD6353C120EB23D800B49FE9 /* TableViewCell.xib */,
+				CD9DE104211379820074D742 /* Examples.md */,
 				CD02DA0520E76BE7002C8D84 /* Main.storyboard */,
 				CD02DA0820E76BE8002C8D84 /* Assets.xcassets */,
 				CD02DA0A20E76BE8002C8D84 /* LaunchScreen.storyboard */,
@@ -127,7 +130,6 @@
 				CD02D9F920E76BE7002C8D84 /* Frameworks */,
 				CD02D9FA20E76BE7002C8D84 /* Resources */,
 				DA2159DA99BD78526E84972E /* [CP] Embed Pods Frameworks */,
-				2A3C5608DC911B5ED9FAD530 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -179,6 +181,7 @@
 				CD02DA0C20E76BE8002C8D84 /* LaunchScreen.storyboard in Resources */,
 				CD75C8B920ED293700FB9743 /* TableView.plist in Resources */,
 				CD6353C320EB23D900B49FE9 /* TableViewCell.xib in Resources */,
+				CD9DE105211379820074D742 /* Examples.md in Resources */,
 				CD02DA0920E76BE8002C8D84 /* Assets.xcassets in Resources */,
 				CD02DA0720E76BE7002C8D84 /* Main.storyboard in Resources */,
 			);
@@ -187,21 +190,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		2A3C5608DC911B5ED9FAD530 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Example-OC/Pods-Example-OC-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		B3D9A0B9A5085419863AC2A0 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -227,10 +215,16 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Example-OC/Pods-Example-OC-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AXKit/AXKit.framework",
+				"${BUILT_PRODUCTS_DIR}/AXTableKit/AXTableKit.framework",
+				"${BUILT_PRODUCTS_DIR}/MarkdownView/MarkdownView.framework",
 				"${BUILT_PRODUCTS_DIR}/NoticeBoard/NoticeBoard.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AXKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AXTableKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MarkdownView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NoticeBoard.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

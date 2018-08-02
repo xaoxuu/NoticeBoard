@@ -160,6 +160,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         super.init(frame: frame)
         windowLevel = 9000
         makeKeyAndVisible()
+        UIWindow.main()?.makeKeyAndVisible()
         tintColor = axBlueColor(alpha: 1)
         
         layer.shadowRadius = 12
@@ -284,7 +285,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         
         // bg
         f.origin.y += f.size.height + margin
-        seg_bg = loadSegment(y: newLine(), title: "bg", items: ["example", "white", "web"], tag: Tag.bg.rawValue)
+        seg_bg = loadSegment(y: newLine(), title: "bg", items: ["guide", "white", "web"], tag: Tag.bg.rawValue)
         seg_bg.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.bg.cacheKey)
         segmentChanged(seg_bg)
         self.contentView.addSubview(seg_bg)

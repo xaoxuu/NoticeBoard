@@ -27,7 +27,7 @@ public extension NoticeBoard {
     }()
     
     
-    internal static var keyWindow: UIWindow = {
+    internal static var mainWindow: UIWindow = {
         let responder = UIApplication.shared.delegate! as! UIResponder
         let window = responder.value(forKey: "window") as! UIWindow
         return window

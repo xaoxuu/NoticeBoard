@@ -1,9 +1,9 @@
-EMBEDDED_CONTENT_CONTAINS_SWIFT = YES
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/NoticeBoard"
+ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AXKit" "${PODS_CONFIGURATION_BUILD_DIR}/AXTableKit" "${PODS_CONFIGURATION_BUILD_DIR}/MarkdownView" "${PODS_CONFIGURATION_BUILD_DIR}/NoticeBoard"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
-OTHER_CFLAGS = $(inherited) -iquote "${PODS_CONFIGURATION_BUILD_DIR}/NoticeBoard/NoticeBoard.framework/Headers"
-OTHER_LDFLAGS = $(inherited) -framework "NoticeBoard"
+OTHER_CFLAGS = $(inherited) -iquote "${PODS_CONFIGURATION_BUILD_DIR}/AXKit/AXKit.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/AXTableKit/AXTableKit.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/MarkdownView/MarkdownView.framework/Headers" -iquote "${PODS_CONFIGURATION_BUILD_DIR}/NoticeBoard/NoticeBoard.framework/Headers"
+OTHER_LDFLAGS = $(inherited) -framework "AXKit" -framework "AXTableKit" -framework "MarkdownView" -framework "NoticeBoard"
 OTHER_SWIFT_FLAGS = $(inherited) "-D" "COCOAPODS"
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)

@@ -1,16 +1,31 @@
 PODS:
-  - NoticeBoard (1.0)
+  - AXKit (0.3.4)
+  - AXTableKit (0.0.3)
+  - MarkdownView (1.3.0)
+  - NoticeBoard (1.1.1)
 
 DEPENDENCIES:
+  - AXKit (= 0.3.4)
+  - AXTableKit (= 0.0.3)
+  - MarkdownView (= 1.3.0)
   - NoticeBoard (from `..`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AXKit
+    - AXTableKit
+    - MarkdownView
 
 EXTERNAL SOURCES:
   NoticeBoard:
-    :path: ..
+    :path: ".."
 
 SPEC CHECKSUMS:
-  NoticeBoard: 11211bd70aac6fac57f8101d18073019bbc510d6
+  AXKit: b7c4246ca59c81a64b30d28d046a5c01a98e245a
+  AXTableKit: db37c30dbe9edee260d274a9f93411b675665371
+  MarkdownView: 6cee6c558eed4a012005405066071ef16a042d17
+  NoticeBoard: 37ed96b89fb590f587ba03768bf84a46f45af63f
 
-PODFILE CHECKSUM: 30b0107e8d1a297352a59b1d9e12d36e910c28d0
+PODFILE CHECKSUM: 9f2f139218e5f05e6039e8eefb7dd9313f8dd322
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3

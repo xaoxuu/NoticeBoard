@@ -217,7 +217,7 @@ public extension NoticeBoard {
 
 // MARK: - post / remove / update layout
 extension NoticeBoard {
-    
+//    private weak var keyWindow : UIWindow?
     internal func post(_ notice: Notice, duration: TimeInterval, animate: AnimationStyle) {
         // 如果已经显示在页面上，就重新设置消失的时间
         if notices.contains(notice) {
@@ -244,6 +244,7 @@ extension NoticeBoard {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
                     notice.makeKeyAndVisible()
+                    NoticeBoard.mainWindow.makeKeyAndVisible()
                     notice.translate(animate, .buildIn)
                     if self.layoutStyle == .replace {
                         self.clean(animate: .fade, delay: 0.5)
