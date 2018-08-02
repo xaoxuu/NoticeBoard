@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		33E2B6CF0D9BD11D8C027DE6 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB925B38880FB296AF5D219F /* Pods_Example.framework */; };
+		CD199E622112DDD300BF4471 /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD199E612112DDD300BF4471 /* ExampleViewController.swift */; };
 		CD2B7F1220E48A18009D8055 /* DebuggerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2B7F1120E48A18009D8055 /* DebuggerWindow.swift */; };
 		CD6353BA20EB05BE00B49FE9 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6353B920EB05BE00B49FE9 /* TableView.swift */; };
 		CD6353BF20EB123100B49FE9 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6353BD20EB123100B49FE9 /* TableViewCell.swift */; };
@@ -25,6 +26,7 @@
 		AB925B38880FB296AF5D219F /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1A6035F1B9A658B3BB225C /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		CA1298266BE89D7950DE99F2 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		CD199E612112DDD300BF4471 /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		CD2B7F1120E48A18009D8055 /* DebuggerWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebuggerWindow.swift; sourceTree = "<group>"; };
 		CD59584620E36DA8000F6427 /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		CD6353B920EB05BE00B49FE9 /* TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableView.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 			children = (
 				CDA4E03B20D3935B00CD2A0C /* AppDelegate.swift */,
 				CDA4E03D20D3935B00CD2A0C /* ViewController.swift */,
+				CD199E612112DDD300BF4471 /* ExampleViewController.swift */,
 				CD2B7F1120E48A18009D8055 /* DebuggerWindow.swift */,
 				CD6353B920EB05BE00B49FE9 /* TableView.swift */,
 				CD75C8B420ED147B00FB9743 /* TableViewModel.swift */,
@@ -247,6 +250,7 @@
 				CDA4E03E20D3935B00CD2A0C /* ViewController.swift in Sources */,
 				CD6353BA20EB05BE00B49FE9 /* TableView.swift in Sources */,
 				CD75C8B520ED147B00FB9743 /* TableViewModel.swift in Sources */,
+				CD199E622112DDD300BF4471 /* ExampleViewController.swift in Sources */,
 				CDA4E03C20D3935B00CD2A0C /* AppDelegate.swift in Sources */,
 				CD2B7F1220E48A18009D8055 /* DebuggerWindow.swift in Sources */,
 			);

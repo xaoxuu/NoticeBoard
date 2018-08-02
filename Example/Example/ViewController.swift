@@ -15,6 +15,7 @@ class ViewController: UIViewController {
         return DebuggerWindow.init()
     }()
     var web = WKWebView.init()
+    let exampleVC = ExampleViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +27,7 @@ class ViewController: UIViewController {
             web.load(.init(url: url))
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.receiveNoti(_:)), name: NSNotification.Name(rawValue: "web"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.receiveNoti(_:)), name: NSNotification.Name(rawValue: "bg"), object: nil)
     }
     override func viewDidAppear(_ animated: Bool) {
         let _ = debugger
@@ -38,9 +39,18 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     @objc func receiveNoti(_ noti: Notification) {
-        let hi = noti.object as! Bool
-        print(hi)
-        web.isHidden = hi
+        let bg = noti.object as! Int
+        if bg == 0 {
+            present(exampleVC, animated: false, completion: nil)
+        } else {
+            exampleVC.dismiss(animated: false, completion: nil)
+        }
+        if bg == 2 {
+            web.isHidden = false
+        } else {
+            web.isHidden = true
+        }
+        
     }
     deinit {
         NotificationCenter.default.removeObserver(self)

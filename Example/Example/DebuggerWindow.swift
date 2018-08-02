@@ -284,7 +284,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         
         // bg
         f.origin.y += f.size.height + margin
-        seg_bg = loadSegment(y: newLine(), title: "bg", items: ["white", "web"], tag: Tag.bg.rawValue)
+        seg_bg = loadSegment(y: newLine(), title: "bg", items: ["example", "white", "web"], tag: Tag.bg.rawValue)
         seg_bg.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.bg.cacheKey)
         segmentChanged(seg_bg)
         self.contentView.addSubview(seg_bg)
@@ -508,11 +508,7 @@ extension DebuggerWindow{
     @objc func segmentChanged(_ sender: UISegmentedControl) {
         if sender.tag == Tag.bg.rawValue {
             UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.bg.cacheKey)
-            if sender.selectedSegmentIndex == 0 {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "web"), object: true)
-            } else {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "web"), object: false)
-            }
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "bg"), object: sender.selectedSegmentIndex)
         } else if sender.tag == Tag.icon.rawValue {
             UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.icon.cacheKey)
         } else if sender.tag == Tag.color.rawValue {

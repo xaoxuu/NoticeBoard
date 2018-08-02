@@ -64,12 +64,14 @@ NoticeBoard.post(.dark, message: "Good evening", duration: 2)
 
 // post一条指定主题样式并且带标题的消息
 NoticeBoard.post(.light, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
+
 // post一条指定主题样式并且带标题和icon的消息
 let img = UIImage.init(named: "alert-circle")
 NoticeBoard.post(.light, icon:img, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
+
 // 对于带有标题的消息，可以设置右边的按钮“→”
 NoticeBoard.post(.warning, icon: img, title: "Warning", message: "Please see more info", duration: 0) { (notice, sender) in
-    print("button tapped")
+    NoticeBoard.post("button tapped", duration: 1)
 }
 ```
 
