@@ -32,6 +32,9 @@ class ViewController: UIViewController {
             let debugger = DebuggerWindow()
             debugger.makeKeyAndVisible()
             UIWindow.main()?.makeKeyAndVisible()
+            NotificationCenter.default.addObserver(forName: NSNotification.Name.UIDeviceOrientationDidChange, object: nil, queue: .main) { (note) in
+                debugger.setNeedsLayout()
+            }
         }
         
     }

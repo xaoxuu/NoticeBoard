@@ -48,19 +48,15 @@ let screenSize = UIScreen.main.bounds.size
 let leftViewW = CGFloat(50)
 let maxWidth = min(UIScreen.main.bounds.size.width - 2 * margin, 500)
 
-let defSize = CGSize.init(width: maxWidth, height: screenSize.height - topSafeMargin() - bottomSafeMargin())
-let collapsePoint = CGPoint.init(x: (UIScreen.main.bounds.size.width - maxWidth) / 2, y: screenSize.height - minH)
-let expandPoint = CGPoint.init(x: (UIScreen.main.bounds.size.width - maxWidth) / 2, y: topSafeMargin())
-
-//let collapseFrame = CGRect.init(origin: collapsePoint, size: defSize)
-
-//func collapseFrame() -> CGRect {
-//    let width = min(UIScreen.main.bounds.size.width - 2 * margin, maxWidth)
-//    let marginX = (UIScreen.main.bounds.size.width - width) / 2
-//    let preferredFrame = CGRect.init(x: marginX, y: margin, width: width, height: titleHeight)
-//    return preferredFrame
-//}
-//let expandFrame = CGRect.init(origin: expandPoint, size: defSize)
+func defSize() -> CGSize {
+    return CGSize.init(width: maxWidth, height: screenSize.height - topSafeMargin() - bottomSafeMargin())
+}
+func collapsePoint() -> CGPoint {
+    return CGPoint.init(x: (UIScreen.main.bounds.size.width - maxWidth) / 2, y: screenSize.height - minH)
+}
+func expandPoint() -> CGPoint {
+    return CGPoint.init(x: (UIScreen.main.bounds.size.width - maxWidth) / 2, y: topSafeMargin())
+}
 
 var keyboardHeight = CGFloat(0)
 
@@ -113,7 +109,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         }
     }
     
-    var lastFrame = CGRect.init(origin: collapsePoint, size: defSize)
+    var lastFrame = CGRect.init(origin: collapsePoint(), size: defSize())
     lazy var tf_title = UITextField()
     lazy var tv_body = UITextView()
     lazy var lb_duration = UILabel()
@@ -176,7 +172,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         layer.shadowOffset = .init(width: 0, height: 8)
         layer.shadowOpacity = 0.45
         
-        let vev = UIVisualEffectView.init(frame: .init(origin: .zero, size: defSize))
+        let vev = UIVisualEffectView.init(frame: .init(origin: .zero, size: defSize()))
         vev.effect = UIBlurEffect.init(style: .extraLight)
         let vc = UIViewController()
         rootViewController = vc
@@ -210,7 +206,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         vc.view.addSubview(lb_title)
         var f = lb_title.frame
         
-        let width = defSize.width - 2*margin
+        let width = defSize().width - 2*margin
         let h = cellH
         var x = margin
         var y = lb_title.frame.maxY
@@ -254,7 +250,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         
         // duration
         f.origin.x += f.size.width + margin
-        f.size.width = defSize.width - 3 * margin - f.size.width
+        f.size.width = defSize().width - 3 * margin - f.size.width
         s_duration = loadSlider(y: newLine(), title: "duration", min: 0, max: 60)
         vc.view.addSubview(s_duration)
         f = s_duration.frame
@@ -298,7 +294,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         
         // footer
         f.origin.y += f.size.height
-        f.size = .init(width: defSize.width - 2*margin, height: 24)
+        f.size = .init(width: defSize().width - 2*margin, height: 24)
         let lb_footer = loadLabel(text: "@xaoxuu")
         lb_footer.font = UIFont.systemFont(ofSize: 12)
         lb_footer.textAlignment = .right
@@ -327,17 +323,18 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         
     }
     convenience init() {
-        self.init(frame: CGRect.init(origin: collapsePoint, size: defSize))
+        self.init(frame: CGRect.init(origin: collapsePoint(), size: defSize()))
     }
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    
     func windowExpand(y: CGFloat) {
         lastFrame = frame
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.allowUserInteraction, .curveEaseOut], animations: {
             var f = self.frame
-            f.origin.y = expandPoint.y - y
+            f.origin.y = expandPoint().y - y
             self.frame = f
         }) { (completed) in
             
@@ -347,7 +344,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         lastFrame = frame
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.allowUserInteraction, .curveEaseOut], animations: {
             var f = self.frame
-            f.origin = collapsePoint
+            f.origin = collapsePoint()
             self.frame = f
         }) { (completed) in
             
@@ -387,7 +384,7 @@ extension DebuggerWindow{
     
     
     func loadLabel(text: String?) -> UILabel {
-        let lb = UILabel.init(frame: .init(x: 0, y: 0, width: defSize.width, height: titleH))
+        let lb = UILabel.init(frame: .init(x: 0, y: 0, width: defSize().width, height: titleH))
         lb.textColor = .darkText
         lb.textAlignment = .justified
         lb.text = text
@@ -399,7 +396,7 @@ extension DebuggerWindow{
         lb_duration.frame = .init(x: margin, y: y, width: leftViewW, height: cellH)
         self.rootViewController?.view.addSubview(lb_duration)
         
-        let s = UISlider.init(frame: .init(x: margin+leftViewW+margin, y: y, width: defSize.width - margin - lb_duration.frame.maxX - margin, height: cellH))
+        let s = UISlider.init(frame: .init(x: margin+leftViewW+margin, y: y, width: defSize().width - margin - lb_duration.frame.maxX - margin, height: cellH))
         s.minimumValue = min
         s.maximumValue = max
         let value = UserDefaults.standard.integer(forKey: Tag.duration.cacheKey)
@@ -438,7 +435,7 @@ extension DebuggerWindow{
         self.rootViewController?.view.addSubview(lb)
         f = lb.frame
         f.origin.x += f.size.width + margin
-        f.size.width = defSize.width - 3 * margin - f.size.width
+        f.size.width = defSize().width - 3 * margin - f.size.width
         return f
     }
     func loadTextView(y: CGFloat, title: String) -> UITextView {
@@ -457,7 +454,7 @@ extension DebuggerWindow{
     func loadSegment(items: [String], tag: Int) -> UISegmentedControl{
         let seg = UISegmentedControl.init(items: items)
         seg.tag = tag
-        seg.frame = CGRect.init(x: margin, y: margin, width: 0.5*defSize.width, height: cellH)
+        seg.frame = CGRect.init(x: margin, y: margin, width: 0.5*defSize().width, height: cellH)
         seg.addTarget(self, action: #selector(self.segmentChanged(_:)), for: .valueChanged)
         return seg
     }
@@ -470,7 +467,7 @@ extension DebuggerWindow{
         f = lb.frame
         
         f.origin.x += f.size.width + margin
-        f.size.width = defSize.width - 3 * margin - f.size.width
+        f.size.width = defSize().width - 3 * margin - f.size.width
         
         let seg = loadSegment(items: items, tag: tag)
         seg.frame = f
@@ -479,7 +476,7 @@ extension DebuggerWindow{
     }
     
     func loadButton(title: String?) -> UIButton {
-        let btn = UIButton.init(frame: .init(x: 0, y: 0, width: defSize.width, height: cellH))
+        let btn = UIButton.init(frame: .init(x: 0, y: 0, width: defSize().width, height: cellH))
         btn.setTitleColor(UIColor.white, for: .normal)
         btn.layer.cornerRadius = 4
         btn.setTitle(title, for: .normal)
@@ -493,7 +490,7 @@ extension DebuggerWindow{
     
     // MARK: - actions
     func loadTableView() -> TableView {
-        let table = TableView.init(frame: .init(x: margin+leftViewW+margin, y: 0, width: defSize.width - 3*margin-leftViewW, height: 180), style: .grouped)
+        let table = TableView.init(frame: .init(x: margin+leftViewW+margin, y: 0, width: defSize().width - 3*margin-leftViewW, height: 180), style: .grouped)
         table.layer.borderWidth = 2
         table.layer.borderColor = ax_red.cgColor
         table.layer.cornerRadius = 4
@@ -660,8 +657,8 @@ extension DebuggerWindow{
                 if endY + f.size.height + bottomSafeMargin() < UIScreen.main.bounds.height {
                     endY = UIScreen.main.bounds.height - f.size.height - bottomSafeMargin()
                 }
-                if endY > collapsePoint.y {
-                    endY = collapsePoint.y
+                if endY > collapsePoint().y {
+                    endY = collapsePoint().y
                 } else {
 
                 }

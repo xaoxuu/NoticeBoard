@@ -21,7 +21,7 @@ internal let maxWidth = CGFloat(500)
 internal let defaultInset = UIEdgeInsets.init(top: padding10, left: padding4, bottom: padding10, right: padding4)
 
 internal func topSafeMargin() -> CGFloat {
-    if isIPhoneX {
+    if UIScreen.main.bounds.size.equalTo(CGSize.init(width: 375, height: 812)) {
         return 30 + 10;
     } else {
         return margin;
@@ -53,6 +53,8 @@ internal func visible(_ view: UITextView?) -> UITextView?{
     }
 }
 
+
+
 private enum Tag: Int {
     typealias RawValue = Int
     
@@ -69,32 +71,44 @@ internal extension Notice {
     
     func updateSelfFrame(){
         var totalHeight = CGFloat(0)
-        for view in self.contentView.subviews {
-            if view.isEqual(contentView) == false && view.isEqual(visualEffectView) == false {
-                totalHeight = max(totalHeight, view.frame.maxY)
+        if let rootView = self.rootViewController?.view {
+            for view in rootView.subviews {
+                if view.isEqual(self.rootViewController?.view) == false && view.isEqual(visualEffectView) == false {
+                    totalHeight = max(totalHeight, view.frame.maxY)
+                }
             }
-        }
-        
-        self.contentView.frame = CGRect.init(x: 0, y: 0, width: frame.size.width, height: totalHeight)
-        self.visualEffectView?.frame = self.contentView.bounds
-        if let p = progressLayer {
-            var f = p.frame
-            f.size.height = totalHeight
-            p.frame = f
-        }
-        if self.frame.height != totalHeight {
-            var f = self.frame
-            f.size.height = totalHeight
-            self.frame = f
+            rootView.frame = CGRect.init(x: 0, y: 0, width: frame.size.width, height: totalHeight)
+            self.visualEffectView?.frame = rootView.bounds
+            if let p = progressLayer {
+                var f = p.frame
+                f.size.height = totalHeight
+                p.frame = f
+            }
+            if self.frame.height != totalHeight {
+                var f = self.frame
+                f.size.height = totalHeight
+                self.frame = f
+            }
         }
     }
     
+    private func frame(for tag: Tag) -> CGRect {
+        if tag == .actionButton {
+            return CGRect.init(x: self.frame.size.width-38, y: 0, width: 38, height: titleHeight)
+        } else if tag == .bodyView {
+            return CGRect.init(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height)
+        } else if tag == .dragButton {
+            return CGRect.init(x: 0, y: 0, width: self.frame.width, height: dragButtonHeight)
+        } else {
+            return .zero
+        }
+    }
     func updateContentFrame(){
         if let t1 = visible(titleLabel){
             var f = t1.frame
             if let t0 = visible(iconView) {
                 if self.subviews.contains(t0) == false {
-                    self.contentView.addSubview(t0)
+                    self.rootViewController?.view.addSubview(t0)
                 }
                 f.origin.x = t0.frame.maxX + padding4
             }
@@ -120,7 +134,7 @@ internal extension Notice {
             }
             
             if t1.contentSize.height > f.size.height {
-                self.contentView.addSubview(loadDragButton())
+                self.rootViewController?.view.addSubview(loadDragButton())
                 if let btn = visible(dragButton) {
                     var ff = btn.frame
                     ff.origin.y = t1.frame.maxY
@@ -229,7 +243,7 @@ open class Notice: UIWindow {
         
     }
     // MARK: - public property
-    public var bodyMaxHeight = CGFloat(360) {
+    public var bodyMaxHeight = CGFloat(180) {
         didSet {
             updateContentFrame()
         }
@@ -241,7 +255,7 @@ open class Notice: UIWindow {
     /// 背景颜色
     public var themeColor = UIColor.ax_blue {
         didSet {
-            contentView.backgroundColor = themeColor
+            rootViewController?.view.backgroundColor = themeColor
             tintColor = themeColor.textColor()
         }
     }
@@ -266,7 +280,7 @@ open class Notice: UIWindow {
                         tintColor = .black
                     }
                     vev.layer.masksToBounds = true
-                    self.contentView.insertSubview(vev, at: 0)
+                    self.rootViewController?.view.insertSubview(vev, at: 0)
                     if let pro = progressLayer {
                         vev.layer.addSublayer(pro)
                     }
@@ -277,7 +291,7 @@ open class Notice: UIWindow {
     }
     
     // MARK: subviews
-    public var contentView = UIView()
+    
     public var iconView : UIImageView?
     public var titleLabel: UILabel?
     
@@ -298,7 +312,7 @@ open class Notice: UIWindow {
             }
         }
         set {
-            self.contentView.addSubview(loadTitleLabel())
+            self.rootViewController?.view.addSubview(loadTitleLabel())
             
             var animated = false
             if let t = titleLabel?.text {
@@ -330,7 +344,7 @@ open class Notice: UIWindow {
             }
         }
         set {
-            self.contentView.addSubview(loadTextView())
+            self.rootViewController?.view.addSubview(loadTextView())
             var animated = false
             if let t = bodyView?.text {
                 if t.count > 0 {
@@ -366,7 +380,7 @@ open class Notice: UIWindow {
                 v.image = i
                 v.tintColor = tintColor
                 if let _ = titleLabel {
-                    self.contentView.addSubview(v)
+                    self.rootViewController?.view.addSubview(v)
                 } else {
                     v.removeFromSuperview()
                 }
@@ -378,9 +392,10 @@ open class Notice: UIWindow {
         didSet {
             loadProgressLayer()
             if let _ = progressLayer {
-                var f = self.contentView.bounds
-                f.size.width = progress * f.size.width
-                self.progressLayer?.frame = f
+                if var f = self.rootViewController?.view.bounds {
+                    f.size.width = progress * f.size.width
+                    self.progressLayer?.frame = f
+                }
             }
         }
     }
@@ -434,7 +449,24 @@ open class Notice: UIWindow {
             }
         }
     }
-    
+    open override func setNeedsLayout() {
+        var f = self.frame
+        f.size.width = min(UIScreen.main.bounds.size.width - 2 * margin, maxWidth)
+        f.origin.x = (UIScreen.main.bounds.size.width - f.size.width) / 2
+        self.frame = f
+        
+        if let t = actionButton {
+            t.frame = frame(for: .actionButton)
+        }
+        if let t = bodyView {
+            t.frame = frame(for: .bodyView)
+        }
+        if let t = dragButton {
+            t.frame = frame(for: .dragButton)
+        }
+        updateContentFrame()
+        
+    }
     // MARK: - public func
     
     /// 警示（如果一个notice已经post出来了，想要再次引起用户注意，可以使用此函数）
@@ -464,12 +496,12 @@ open class Notice: UIWindow {
         if options.contains(.flash) {
             ani.toValue = UIColor.init(white: 1, alpha: 0).cgColor
         } else if options.contains(.lighten) {
-            ani.toValue = self.contentView.backgroundColor?.lighten(0.4).cgColor
+            ani.toValue = self.rootViewController?.view.backgroundColor?.lighten(0.4).cgColor
         } else {
             // darken
-            ani.toValue = self.contentView.backgroundColor?.darken(0.4).cgColor
+            ani.toValue = self.rootViewController?.view.backgroundColor?.darken(0.4).cgColor
         }
-        self.contentView.layer.add(ani, forKey: "backgroundColor")
+        self.rootViewController?.view.layer.add(ani, forKey: "backgroundColor")
         
     }
     
@@ -477,7 +509,7 @@ open class Notice: UIWindow {
     ///
     /// - Parameter action: "→"按钮的事件
     open func actionButtonDidTapped(action: @escaping(Notice, UIButton) -> Void){
-        self.contentView.addSubview(loadActionButton())
+        self.rootViewController?.view.addSubview(loadActionButton())
         updateContentFrame()
         block_action = action
     }
@@ -527,11 +559,11 @@ open class Notice: UIWindow {
         layer.shadowOffset = .init(width: 0, height: 8)
         layer.shadowOpacity = 0.35
         
-        self.contentView = UIView.init(frame: self.bounds)
-        self.contentView.layer.cornerRadius = cornerRadius
-        self.contentView.clipsToBounds = true
-        
-        addSubview(self.contentView)
+        let vc = UIViewController()
+        self.rootViewController = vc
+        vc.view.frame = self.bounds
+        vc.view.layer.cornerRadius = cornerRadius
+        vc.view.clipsToBounds = true
         
         loadActionButton()
         let pan = UIPanGestureRecognizer.init(target: self, action: #selector(self.pan(_:)))
@@ -661,16 +693,12 @@ private extension Notice {
         if let view = bodyView {
             return view
         } else {
-            var y = CGFloat(0)
-            if let titleLabel = self.titleLabel {
-                y = titleLabel.frame.maxY
-            }
-            bodyView = UITextView.init(frame: .init(x: 0, y: y, width: self.frame.size.width, height: self.frame.size.height-y))
+            bodyView = UITextView.init(frame: frame(for: .bodyView))
             bodyView?.tag = Tag.bodyView.rawValue
             bodyView?.font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
             bodyView?.showsHorizontalScrollIndicator = false
             bodyView?.textAlignment = .justified
-            bodyView?.isEditable = true
+            bodyView?.isEditable = false
             bodyView?.isSelectable = false
             bodyView?.backgroundColor = .clear
             bodyView?.textContainerInset = defaultInset
@@ -699,7 +727,7 @@ private extension Notice {
         if let btn = actionButton {
             return btn
         } else {
-            actionButton = UIButton.init(frame: .init(x: self.frame.size.width-38, y: 0, width: 38, height: titleHeight))
+            actionButton = UIButton.init(frame: frame(for: .actionButton))
             actionButton?.tag = Tag.actionButton.rawValue
             actionButton?.setTitleColor(.black, for: .normal)
             actionButton?.setTitle("→", for: .normal)
@@ -735,15 +763,16 @@ private extension Notice {
             return l
         } else {
             progressLayer = CALayer.init()
-            var f = self.contentView.bounds
-            f.size.width = 0
-            f.size.height = titleHeight + max(bodyMaxHeight, 0)
-            progressLayer?.frame = f
+            if var f = self.rootViewController?.view.bounds {
+                f.size.width = 0
+                f.size.height = titleHeight + max(bodyMaxHeight, 0)
+                progressLayer?.frame = f
+            }
             progressLayer?.backgroundColor = UIColor.init(white: 0, alpha: 0.2).cgColor
             if let blur = visualEffectView {
                 blur.layer.insertSublayer(progressLayer!, above: blur.layer)
             } else {
-                self.contentView.layer.insertSublayer(progressLayer!, at: 0)
+                self.rootViewController?.view.layer.insertSublayer(progressLayer!, at: 0)
             }
             return progressLayer!
         }
@@ -754,7 +783,7 @@ private extension Notice {
         if let btn = dragButton {
             return btn
         } else {
-            dragButton = UIButton.init(frame: .init(x: 0, y: 0, width: self.frame.width, height: dragButtonHeight))
+            dragButton = UIButton.init(frame: frame(for: .dragButton))
             dragButton?.tag = Tag.dragButton.rawValue
             dragButton?.backgroundColor = UIColor.init(white: 0, alpha: 0.1)
             dragButton?.setTitle("——", for: .normal)

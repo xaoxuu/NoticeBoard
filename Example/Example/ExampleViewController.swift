@@ -164,24 +164,6 @@ class ExampleViewController: UIViewController {
     
     func postProgress(_ idx: Int){
         if idx == 1000 {
-//            func loop(_ i: Int){
-//                if i <= 100 {
-//                    progressNotice.progress = CGFloat(i)/100.0
-//                    progressNotice.title = "已完成：\(i)%"
-//                    if i < 100 {
-//                        DispatchQueue.main.asyncAfter(deadline: .now()+0.05, execute: {
-//                            loop(i+1)
-//                        })
-//                    } else {
-//                        DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
-//                            NoticeBoard.remove(self.progressNotice)
-//                        })
-//                    }
-//                }
-//            }
-//            loop(0)
-//            NoticeBoard.post(progressNotice)
-
             let n = Notice()
             n.theme = .normal
             func updateProgress(nn: Notice, pro: CGFloat, showTitle: Bool){
@@ -199,11 +181,13 @@ class ExampleViewController: UIViewController {
                     }
                 }
             }
+            NoticeBoard.post(n)
             updateProgress(nn: n, pro: 0, showTitle: n.title.count == 0)
             
         } else if idx <= 100 {
+            progressNotice.title = "已完成：\(idx)%\n"
             progressNotice.progress = CGFloat(idx)/100.0
-            NoticeBoard.post(progressNotice)
+            NoticeBoard.post(progressNotice, duration: 2)
         }
     }
     
@@ -222,7 +206,7 @@ class ExampleViewController: UIViewController {
             imgv.image = UIImage.init(named: "header_center")
             imgv.contentMode = .scaleAspectFit
             view.addSubview(imgv)
-            notice.contentView.addSubview(view)
+            notice.rootViewController?.view.addSubview(view)
             notice.actionButtonDidTapped(action: { (notice, sender) in
                 if let url = URL.init(string: "https://xaoxuu.com/docs/noticeboard") {
                     UIApplication.shared.openURL(url)
@@ -236,7 +220,7 @@ class ExampleViewController: UIViewController {
             bg.contentMode = .scaleAspectFill
             bg.layer.masksToBounds = true
             bg.layer.cornerRadius = 15
-            notice.contentView.addSubview(bg)
+            notice.rootViewController?.view.addSubview(bg)
             
             let icon = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
             icon.image = UIImage.init(named: Bundle.appIconName())
@@ -268,7 +252,7 @@ class ExampleViewController: UIViewController {
             let web = WKWebView.init(frame: .init(x: 0, y: -4, width: w, height: h))
             if let url = URL.init(string: "https://xaoxuu.com") {
                 web.load(URLRequest.init(url: url))
-                notice.contentView.addSubview(web)
+                notice.rootViewController?.view.addSubview(web)
                 notice.actionButtonDidTapped(action: { (notice, sender) in
                     notice.removeFromNoticeBoard()
                 })

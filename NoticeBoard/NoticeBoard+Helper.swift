@@ -8,8 +8,16 @@
 
 import UIKit
 
-internal var isIPhoneX: Bool = {
-    if UIScreen.main.bounds.size.equalTo(CGSize.init(width: 375, height: 812)) || UIScreen.main.bounds.size.equalTo(CGSize.init(width: 812, height: 375)) {
+//internal var isIPhoneX: Bool = {
+//    if UIScreen.main.bounds.size.equalTo(CGSize.init(width: 375, height: 812)) || UIScreen.main.bounds.size.equalTo(CGSize.init(width: 812, height: 375)) {
+//        return true
+//    } else {
+//        return false
+//    }
+//}()
+
+internal var isIPhoneXPortrait: Bool = {
+    if UIScreen.main.bounds.size.equalTo(CGSize.init(width: 375, height: 812)) {
         return true
     } else {
         return false

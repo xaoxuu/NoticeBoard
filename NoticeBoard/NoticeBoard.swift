@@ -110,6 +110,25 @@ open class NoticeBoard: NSObject {
         remove(notice, animate: .slide, delay: 0)
     }
     
+    override init() {
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange(_:)), name: .UIDeviceOrientationDidChange, object: nil)
+    }
+    
+    @objc func deviceOrientationDidChange(_ notification: Notification){
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.5, options: [.allowUserInteraction, .curveEaseOut], animations: {
+                for notice in self.notices {
+                    notice.setNeedsLayout()
+                }
+            }, completion: nil)
+            self.updateLayout(from: 0)
+        }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 
