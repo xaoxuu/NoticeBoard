@@ -160,23 +160,43 @@ class ExampleViewController: UIViewController {
     
     func postProgress(_ idx: Int){
         if idx == 1000 {
-            func loop(_ i: Int){
-                if i <= 100 {
-                    progressNotice.progress = CGFloat(i)/100.0
-                    progressNotice.title = "已完成：\(i)%"
-                    if i < 100 {
-                        DispatchQueue.main.asyncAfter(deadline: .now()+0.05, execute: {
-                            loop(i+1)
-                        })
+//            func loop(_ i: Int){
+//                if i <= 100 {
+//                    progressNotice.progress = CGFloat(i)/100.0
+//                    progressNotice.title = "已完成：\(i)%"
+//                    if i < 100 {
+//                        DispatchQueue.main.asyncAfter(deadline: .now()+0.05, execute: {
+//                            loop(i+1)
+//                        })
+//                    } else {
+//                        DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
+//                            NoticeBoard.remove(self.progressNotice)
+//                        })
+//                    }
+//                }
+//            }
+//            loop(0)
+//            NoticeBoard.post(progressNotice)
+
+            let n = Notice()
+            n.theme = .normal
+            func updateProgress(nn: Notice, pro: CGFloat, showTitle: Bool){
+                nn.progress = pro
+                if showTitle {
+                    nn.title = "已完成：\(Int(pro*100))%\n"
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    if pro <= 1 {
+                        updateProgress(nn: nn, pro: pro + 0.02, showTitle: showTitle)
                     } else {
-                        DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
-                            NoticeBoard.remove(self.progressNotice)
-                        })
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            NoticeBoard.remove(nn)
+                        }
                     }
                 }
             }
-            loop(0)
-            NoticeBoard.post(progressNotice)
+            updateProgress(nn: n, pro: 0, showTitle: n.title.count == 0)
+            
         } else if idx <= 100 {
             progressNotice.progress = CGFloat(idx)/100.0
             NoticeBoard.post(progressNotice)
@@ -189,40 +209,56 @@ class ExampleViewController: UIViewController {
         let w = notice.frame.width
         
         if idx == 1 {
-            let h = w/8*3
+            let h = w/8*2
             notice.blurEffectStyle = .light
             let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
-            // subviews
-            let imgv = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
-            let img = UIImage.init(named: Bundle.appIconName())
-            imgv.image = img
+            let ww = view.width * 0.7
+            let hh = CGFloat(h)
+            let imgv = UIImageView.init(frame: .init(x: (w-ww)/2, y: (h-hh)/2, width: ww, height: hh))
+            imgv.image = UIImage.init(named: "header_center")
             imgv.contentMode = .scaleAspectFit
-            imgv.layer.masksToBounds = true
-            imgv.layer.cornerRadius = 15
             view.addSubview(imgv)
-            
-            let lb = UILabel.init(frame: .init(x: 0, y: imgv.frame.maxY + 8, width: w, height: 20))
-            lb.textAlignment = .center
-            lb.font = UIFont.systemFont(ofSize: 13)
-            lb.text = "\(Bundle.init(for: NoticeBoard.self).bundleName()!) \(Bundle.init(for: NoticeBoard.self).bundleShortVersionString()!)"
-            view.addSubview(lb)
-            
             notice.contentView.addSubview(view)
             notice.actionButtonDidTapped(action: { (notice, sender) in
-                notice.removeFromNoticeBoard()
+                if let url = URL.init(string: "https://xaoxuu.com/docs/noticeboard") {
+                    UIApplication.shared.openURL(url)
+                }
             })
-            notice.actionButton?.setTitle("✕", for: .normal)
+            notice.actionButton?.setTitle("→", for: .normal)
         } else if idx == 2 {
             let h = w/8*5
-            let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
-            let imgv = UIImageView.init(frame: view.bounds)
-            let img = UIImage.init(named: "firewatch")
-            imgv.image = img
-            imgv.contentMode = .scaleAspectFill
-            imgv.layer.masksToBounds = true
-            imgv.layer.cornerRadius = 15
-            view.addSubview(imgv)
-            notice.contentView.addSubview(view)
+            let bg = UIImageView.init(frame: .init(x: 0, y: 0, width: w, height: h))
+            bg.image = UIImage.init(named: "firewatch")
+            bg.contentMode = .scaleAspectFill
+            bg.layer.masksToBounds = true
+            bg.layer.cornerRadius = 15
+            notice.contentView.addSubview(bg)
+            
+            let icon = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
+            icon.image = UIImage.init(named: Bundle.appIconName())
+            icon.contentMode = .scaleAspectFit
+            icon.layer.masksToBounds = true
+            icon.layer.cornerRadius = 15
+            bg.addSubview(icon)
+            
+            let lb = UILabel.init(frame: .init(x: 0, y: icon.frame.maxY + 8, width: w, height: 20))
+            lb.textAlignment = .center
+            lb.font = UIFont.boldSystemFont(ofSize: 14)
+            lb.textColor = .white
+            lb.text = "\(Bundle.init(for: NoticeBoard.self).bundleName()!) \(Bundle.init(for: NoticeBoard.self).bundleShortVersionString()!)"
+            bg.addSubview(lb)
+            
+            notice.actionButtonDidTapped(action: { (notice, sender) in
+                UIView.animate(withDuration: 0.68, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
+                    if sender.transform == .identity {
+                        sender.transform = CGAffineTransform.init(rotationAngle: CGFloat.pi / 4 * 3)
+                    } else {
+                        sender.transform = .identity
+                    }
+                }, completion: nil)
+            })
+            notice.actionButton?.setTitle("＋", for: .normal)
+            notice.actionButton?.setTitleColor(.white, for: .normal)
         } else if idx == 3 {
             let h = w*1.5
             let web = WKWebView.init(frame: .init(x: 0, y: -4, width: w, height: h))
@@ -233,8 +269,16 @@ class ExampleViewController: UIViewController {
                     notice.removeFromNoticeBoard()
                 })
                 notice.actionButton?.setTitle("✕", for: .normal)
+                notice.actionButton?.setTitleColor(.white, for: .normal)
+                notice.actionButton?.backgroundColor = UIColor.init(white: 0, alpha: 0.5)
+                var f = (notice.actionButton?.frame)!
+                f.size.width -= 10
+                f.size.height -= 10
+                f.origin.y += 5
+                f.origin.x += 5
+                notice.actionButton?.frame = f
+                notice.actionButton?.layer.cornerRadius = 0.5 * (notice.actionButton?.frame.height)!
             }
-            
         }
         
         NoticeBoard.post(notice)

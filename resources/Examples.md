@@ -4,7 +4,7 @@
 
 ## 文档
 
-在线文档在这里：[https://xaoxuu.com/docs/noticeboard](https://xaoxuu.com/docs/noticeboard)
+[👉 在线文档](https://xaoxuu.com/docs/noticeboard)
 
 <br>
 
@@ -100,30 +100,22 @@ notice.progress = 1
 **[👉 示例1](cmd://postcustom:1)**
 
 ```swift
+let h = w/8*2
 notice.blurEffectStyle = .light
 let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
-// subviews
-let imgv = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
-let img = UIImage.init(named: Bundle.appIconName())
-imgv.image = img
+let ww = view.width * 0.7
+let hh = CGFloat(h)
+let imgv = UIImageView.init(frame: .init(x: (w-ww)/2, y: (h-hh)/2, width: ww, height: hh))
+imgv.image = UIImage.init(named: "header_center")
 imgv.contentMode = .scaleAspectFit
-imgv.layer.masksToBounds = true
-imgv.layer.cornerRadius = 15
 view.addSubview(imgv)
-
-let lb = UILabel.init(frame: .init(x: 0, y: imgv.frame.maxY + 8, width: w, height: 20))
-lb.textAlignment = .center
-lb.font = UIFont.systemFont(ofSize: 13)
-lb.text = "\(Bundle.init(for: NoticeBoard.self).bundleName()!) \(Bundle.init(for: NoticeBoard.self).bundleShortVersionString()!)"
-view.addSubview(lb)
-
-notice.contentView.addSubview(view)
-                                    
 notice.contentView.addSubview(view)
 notice.actionButtonDidTapped(action: { (notice, sender) in
-    notice.removeFromNoticeBoard()
+    if let url = URL.init(string: "https://xaoxuu.com/docs/noticeboard") {
+        UIApplication.shared.openURL(url)
+    }
 })
-notice.actionButton?.setTitle("✕", for: .normal)
+notice.actionButton?.setTitle("→", for: .normal)
 ```
 
 <br>
@@ -131,15 +123,39 @@ notice.actionButton?.setTitle("✕", for: .normal)
 **[👉 示例2](cmd://postcustom:2)**
 
 ```swift
-let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
-let imgv = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
-let img = UIImage.init(named: "firewatch")
-imgv.image = img
-imgv.contentMode = .scaleAspectFit
-imgv.layer.masksToBounds = true
-imgv.layer.cornerRadius = 15
-view.addSubview(imgv)
-notice.contentView.addSubview(view)
+let h = w/8*5
+let bg = UIImageView.init(frame: .init(x: 0, y: 0, width: w, height: h))
+bg.image = UIImage.init(named: "firewatch")
+bg.contentMode = .scaleAspectFill
+bg.layer.masksToBounds = true
+bg.layer.cornerRadius = 15
+notice.contentView.addSubview(bg)
+
+let icon = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
+icon.image = UIImage.init(named: Bundle.appIconName())
+icon.contentMode = .scaleAspectFit
+icon.layer.masksToBounds = true
+icon.layer.cornerRadius = 15
+bg.addSubview(icon)
+
+let lb = UILabel.init(frame: .init(x: 0, y: icon.frame.maxY + 8, width: w, height: 20))
+lb.textAlignment = .center
+lb.font = UIFont.boldSystemFont(ofSize: 14)
+lb.textColor = .white
+lb.text = "\(Bundle.init(for: NoticeBoard.self).bundleName()!) \(Bundle.init(for: NoticeBoard.self).bundleShortVersionString()!)"
+bg.addSubview(lb)
+
+notice.actionButtonDidTapped(action: { (notice, sender) in
+    UIView.animate(withDuration: 0.68, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
+        if sender.transform == .identity {
+            sender.transform = CGAffineTransform.init(rotationAngle: CGFloat.pi / 4 * 3)
+        } else {
+            sender.transform = .identity
+        }
+    }, completion: nil)
+})
+notice.actionButton?.setTitle("＋", for: .normal)
+notice.actionButton?.setTitleColor(.white, for: .normal)
 ```
 
 <br>
@@ -147,6 +163,7 @@ notice.contentView.addSubview(view)
 **[👉 示例3](cmd://postcustom:3)**
 
 ```swift
+let h = w*1.5
 let web = WKWebView.init(frame: .init(x: 0, y: -4, width: w, height: h))
 if let url = URL.init(string: "https://xaoxuu.com") {
     web.load(URLRequest.init(url: url))
@@ -155,6 +172,15 @@ if let url = URL.init(string: "https://xaoxuu.com") {
         notice.removeFromNoticeBoard()
     })
     notice.actionButton?.setTitle("✕", for: .normal)
+    notice.actionButton?.setTitleColor(.white, for: .normal)
+    notice.actionButton?.backgroundColor = UIColor.init(white: 0, alpha: 0.5)
+    var f = (notice.actionButton?.frame)!
+    f.size.width -= 10
+    f.size.height -= 10
+    f.origin.y += 5
+    f.origin.x += 5
+    notice.actionButton?.frame = f
+    notice.actionButton?.layer.cornerRadius = 0.5 * (notice.actionButton?.frame.height)!
 }
 ```
 
