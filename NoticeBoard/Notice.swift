@@ -16,6 +16,8 @@ internal let cornerRadius = CGFloat(12)
 internal let titleHeight = CGFloat(36)
 internal let dragButtonHeight = CGFloat(24)
 
+internal let maxWidth = CGFloat(500)
+
 internal let defaultInset = UIEdgeInsets.init(top: padding10, left: padding4, bottom: padding10, right: padding4)
 
 internal func topSafeMargin() -> CGFloat {
@@ -25,6 +27,7 @@ internal func topSafeMargin() -> CGFloat {
         return margin;
     }
 }
+
 
 internal func visible(_ view: UIView?) -> UIView?{
     if let v = view {
@@ -140,6 +143,7 @@ open class Notice: UIWindow {
 
     /// 当notice被移除时的通知
     public static let didRemoved = NSNotification.Name.init("noticeDidRemoved")
+    
     
     /// 主题
     public enum Theme {
@@ -535,7 +539,10 @@ open class Notice: UIWindow {
         
     }
     convenience init() {
-        self.init(frame: .init(x: margin, y: margin, width: UIScreen.main.bounds.size.width - 2 * margin, height: titleHeight))
+        let width = min(UIScreen.main.bounds.size.width - 2 * margin, maxWidth)
+        let marginX = (UIScreen.main.bounds.size.width - width) / 2
+        let preferredFrame = CGRect.init(x: marginX, y: margin, width: width, height: titleHeight)
+        self.init(frame: preferredFrame)
     }
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -589,7 +596,7 @@ open class Notice: UIWindow {
         sender.setTranslation(.zero, in: sender.view)
         if sender.state == .recognized {
             let v = sender.velocity(in: sender.view)
-            if allowRemoveByGesture == true && (frame.origin.y + point.y < 0 || v.y < -1200) {
+            if allowRemoveByGesture == true && ((frame.origin.y + point.y < 0 && v.y < 0) || v.y < -1200) {
                 if let b = self.board {
                     b.remove(self, animate: .slide)
                 }
