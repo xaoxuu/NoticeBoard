@@ -91,13 +91,82 @@ notice.progress = 1
 
 测试：[0%](cmd://postpro:0) | [20%](cmd://postpro:20) | [50%](cmd://postpro:50) | [70%](cmd://postpro:70) | [100%](cmd://postpro:100) | [自动](cmd://postpro:1000)
 
+<br>
 
+#### post自定义的view
+
+<br>
+
+**[👉 示例1](cmd://postcustom:1)**
+
+```swift
+notice.blurEffectStyle = .light
+let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
+// subviews
+let imgv = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
+let img = UIImage.init(named: Bundle.appIconName())
+imgv.image = img
+imgv.contentMode = .scaleAspectFit
+imgv.layer.masksToBounds = true
+imgv.layer.cornerRadius = 15
+view.addSubview(imgv)
+
+let lb = UILabel.init(frame: .init(x: 0, y: imgv.frame.maxY + 8, width: w, height: 20))
+lb.textAlignment = .center
+lb.font = UIFont.systemFont(ofSize: 13)
+lb.text = "\(Bundle.init(for: NoticeBoard.self).bundleName()!) \(Bundle.init(for: NoticeBoard.self).bundleShortVersionString()!)"
+view.addSubview(lb)
+
+notice.contentView.addSubview(view)
+                                    
+notice.contentView.addSubview(view)
+notice.actionButtonDidTapped(action: { (notice, sender) in
+    notice.removeFromNoticeBoard()
+})
+notice.actionButton?.setTitle("✕", for: .normal)
+```
+
+<br>
+
+**[👉 示例2](cmd://postcustom:2)**
+
+```swift
+let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
+let imgv = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
+let img = UIImage.init(named: "firewatch")
+imgv.image = img
+imgv.contentMode = .scaleAspectFit
+imgv.layer.masksToBounds = true
+imgv.layer.cornerRadius = 15
+view.addSubview(imgv)
+notice.contentView.addSubview(view)
+```
+
+<br>
+
+**[👉 示例3](cmd://postcustom:3)**
+
+```swift
+let web = WKWebView.init(frame: .init(x: 0, y: -4, width: w, height: h))
+if let url = URL.init(string: "https://xaoxuu.com") {
+    web.load(URLRequest.init(url: url))
+    notice.contentView.addSubview(web)
+    notice.actionButtonDidTapped(action: { (notice, sender) in
+        notice.removeFromNoticeBoard()
+    })
+    notice.actionButton?.setTitle("✕", for: .normal)
+}
+```
+
+
+
+<br>
 
 ## 帮助
 
 如果你还不明白如何使用，或者发现BUG，或者有更好的建议，都欢迎👏来提 [**issue**](https://github.com/xaoxuu/NoticeBoard/issues) 。
 
-
+<br>
 
 <hr>
 
