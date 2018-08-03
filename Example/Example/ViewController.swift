@@ -11,15 +11,15 @@ import WebKit
 import NoticeBoard
 class ViewController: UIViewController {
 
-    lazy var debugger: DebuggerWindow = {
-        return DebuggerWindow.init()
-    }()
-    var web = WKWebView.init()
     let exampleVC = ExampleViewController()
+    var web = WKWebView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(self.receiveNoti(_:)), name: NSNotification.Name(rawValue: DebuggerWindow.Tag.bg.cacheKey), object: nil)
+        
+        // load web bg
         web = WKWebView.init(frame: view.bounds)
         web.isHidden = true
         view.addSubview(web)
@@ -27,10 +27,12 @@ class ViewController: UIViewController {
             web.load(.init(url: url))
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.receiveNoti(_:)), name: NSNotification.Name(rawValue: "bg"), object: nil)
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        let _ = debugger
+        DispatchQueue.main.async {
+            // load debugger
+            let debugger = DebuggerWindow()
+            debugger.makeKeyAndVisible()
+            UIWindow.main()?.makeKeyAndVisible()
+        }
         
     }
     
@@ -38,6 +40,7 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     @objc func receiveNoti(_ noti: Notification) {
         let bg = noti.object as! Int
         if bg == 0 {
@@ -50,8 +53,8 @@ class ViewController: UIViewController {
         } else {
             web.isHidden = true
         }
-        
     }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }

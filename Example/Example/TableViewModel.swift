@@ -37,8 +37,6 @@ class TableViewModel: NSObject {
             }
         }
         
-        
-        
     }
     
 }

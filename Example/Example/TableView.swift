@@ -15,18 +15,15 @@ protocol MyTableViewDelegate {
 
 class TableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     
-    var titleModel = TableViewModel(.title)
-    var bodyModel = TableViewModel(.body)
-    
     var model = TableViewModel(.title)
     
     var myDelegate: MyTableViewDelegate?
     func loadData(_ type: TableViewModel.ModelType) {
         switch type {
         case .title:
-            model = titleModel
+            model = TableViewModel(.title)
         case .body:
-            model = bodyModel
+            model = TableViewModel(.body)
         }
         self.reloadData()
         self.scrollToRow(at: .init(row: 0, section: 0), at: .top, animated: false)
@@ -65,9 +62,7 @@ class TableView: UITableView, UITableViewDataSource, UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! TableViewCell
-        
         cell.lb.text = model.sections[indexPath.section].rows[indexPath.row]
-        
         return cell
     }
     

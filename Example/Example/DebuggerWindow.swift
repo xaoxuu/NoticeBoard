@@ -22,6 +22,7 @@ let isIPhoneX: Bool = {
         return false
     }
 }()
+
 func topSafeMargin() -> CGFloat {
     if isIPhoneX {
         return 44;
@@ -29,6 +30,7 @@ func topSafeMargin() -> CGFloat {
         return margin;
     }
 }
+
 func bottomSafeMargin() -> CGFloat {
     if isIPhoneX {
         return 34 + margin;
@@ -159,8 +161,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         
         super.init(frame: frame)
         windowLevel = 9000
-        makeKeyAndVisible()
-        UIWindow.main()?.makeKeyAndVisible()
+        
         tintColor = axBlueColor(alpha: 1)
         
         layer.shadowRadius = 12
@@ -168,17 +169,14 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         layer.shadowOpacity = 0.45
         
         let vev = UIVisualEffectView.init(frame: .init(origin: .zero, size: defSize))
-        vev.effect = UIBlurEffect.init(style: .light)
+        vev.effect = UIBlurEffect.init(style: .extraLight)
         
         contentView = UIView.init(frame: self.bounds)
         contentView.layer.cornerRadius = 12
         contentView.clipsToBounds = true
         contentView.insertSubview(vev, at: 0)
-        contentView.layer.backgroundColor = UIColor.init(white: 1, alpha: 0.5).cgColor
+        
         self.addSubview(self.contentView)
-        
-        
-        
         
         let pan = UIPanGestureRecognizer.init(target: self, action: #selector(self.pan(_:)))
         self.addGestureRecognizer(pan)
@@ -196,7 +194,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
             UserDefaults.standard.set(1, forKey: Tag.level.cacheKey)
         }
         
-        // subviews
+        // load subviews
         
         let lb_title = loadLabel(text: "NoticeBoard Debugger")
         lb_title.backgroundColor = UIColor(white: 1, alpha: 0.1)
@@ -507,19 +505,9 @@ extension DebuggerWindow{
     }
     
     @objc func segmentChanged(_ sender: UISegmentedControl) {
-        if sender.tag == Tag.bg.rawValue {
-            UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.bg.cacheKey)
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "bg"), object: sender.selectedSegmentIndex)
-        } else if sender.tag == Tag.icon.rawValue {
-            UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.icon.cacheKey)
-        } else if sender.tag == Tag.color.rawValue {
-            UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.color.cacheKey)
-        } else if sender.tag == Tag.blur.rawValue {
-            UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.blur.cacheKey)
-        } else if sender.tag == Tag.level.rawValue {
-            UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.level.cacheKey)
-        } else if sender.tag == Tag.layout.rawValue {
-            UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: Tag.layout.cacheKey)
+        if let tag = Tag.init(rawValue: sender.tag) {
+            UserDefaults.standard.set(sender.selectedSegmentIndex, forKey: tag.cacheKey)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: tag.cacheKey), object: sender.selectedSegmentIndex)
         }
     }
     
