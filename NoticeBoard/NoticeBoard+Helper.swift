@@ -25,7 +25,7 @@ internal extension UIWindow {
 }
 
 internal extension DispatchWorkItem {
-    internal static func cancel(item: DispatchWorkItem?) {
+    internal static func cancel(_ item: DispatchWorkItem?) {
         if let it = item {
             it.cancel()
         }
@@ -45,7 +45,7 @@ internal extension UIColor {
     static let ax_green = UIColor.init(red: 76/255, green: 175/255, blue: 80/255, alpha: 1)
     static let ax_blue = UIColor.init(red: 82/255, green: 161/255, blue: 248/255, alpha: 1)
     
-    internal func darken(ratio: CGFloat) -> UIColor {
+    internal func darken(_ ratio: CGFloat = 0.5) -> UIColor {
         var red = CGFloat(0)
         var green = CGFloat(0)
         var blue = CGFloat(0)
@@ -57,7 +57,7 @@ internal extension UIColor {
         return UIColor.init(red: red, green: green, blue: blue, alpha: alpha)
     }
     
-    internal func lighten(ratio: CGFloat) -> UIColor {
+    internal func lighten(_ ratio: CGFloat = 0.5) -> UIColor {
         var red = CGFloat(0)
         var green = CGFloat(0)
         var blue = CGFloat(0)

@@ -460,10 +460,10 @@ open class Notice: UIWindow {
         if options.contains(.flash) {
             ani.toValue = UIColor.init(white: 1, alpha: 0).cgColor
         } else if options.contains(.lighten) {
-            ani.toValue = self.contentView.backgroundColor?.lighten(ratio: 0.4).cgColor
+            ani.toValue = self.contentView.backgroundColor?.lighten(0.4).cgColor
         } else {
             // darken
-            ani.toValue = self.contentView.backgroundColor?.darken(ratio: 0.4).cgColor
+            ani.toValue = self.contentView.backgroundColor?.darken(0.4).cgColor
         }
         self.contentView.layer.add(ani, forKey: "backgroundColor")
         
@@ -581,7 +581,7 @@ open class Notice: UIWindow {
         
     }
     @objc private func pan(_ sender: UIPanGestureRecognizer) {
-        DispatchWorkItem.cancel(item: self.workItem)
+        DispatchWorkItem.cancel(self.workItem)
         let point = sender.translation(in: sender.view)
         var f = self.frame
         f.origin.y += point.y

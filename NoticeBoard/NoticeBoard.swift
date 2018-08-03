@@ -221,7 +221,7 @@ extension NoticeBoard {
     internal func post(_ notice: Notice, duration: TimeInterval, animate: AnimationStyle) {
         // 如果已经显示在页面上，就重新设置消失的时间
         if notices.contains(notice) {
-            DispatchWorkItem.cancel(item: notice.workItem)
+            DispatchWorkItem.cancel(notice.workItem)
             if duration > 0 {
                 weak var n = notice
                 notice.workItem = DispatchWorkItem.postpone(duration, block: {
@@ -248,7 +248,7 @@ extension NoticeBoard {
                     }
                     self.updateLayout(from: 0)
                 }) { (completed) in
-                    DispatchWorkItem.cancel(item: notice.workItem)
+                    DispatchWorkItem.cancel(notice.workItem)
                     if duration > 0 {
                         weak var n = notice
                         notice.workItem = DispatchWorkItem.postpone(duration, block: {
