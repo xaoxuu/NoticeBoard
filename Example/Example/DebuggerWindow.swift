@@ -46,12 +46,21 @@ let titleH = CGFloat(36)
 let cellH = CGFloat(36)
 let screenSize = UIScreen.main.bounds.size
 let leftViewW = CGFloat(50)
-let defSize = CGSize.init(width: screenSize.width - 2 * margin, height: screenSize.height - topSafeMargin() - bottomSafeMargin())
-let collapsePoint = CGPoint.init(x: margin, y: screenSize.height - minH)
-let expandPoint = CGPoint.init(x: margin, y: topSafeMargin())
+let maxWidth = min(UIScreen.main.bounds.size.width - 2 * margin, 500)
 
-let collapseFrame = CGRect.init(origin: collapsePoint, size: defSize)
-let expandFrame = CGRect.init(origin: expandPoint, size: defSize)
+let defSize = CGSize.init(width: maxWidth, height: screenSize.height - topSafeMargin() - bottomSafeMargin())
+let collapsePoint = CGPoint.init(x: (UIScreen.main.bounds.size.width - maxWidth) / 2, y: screenSize.height - minH)
+let expandPoint = CGPoint.init(x: (UIScreen.main.bounds.size.width - maxWidth) / 2, y: topSafeMargin())
+
+//let collapseFrame = CGRect.init(origin: collapsePoint, size: defSize)
+
+//func collapseFrame() -> CGRect {
+//    let width = min(UIScreen.main.bounds.size.width - 2 * margin, maxWidth)
+//    let marginX = (UIScreen.main.bounds.size.width - width) / 2
+//    let preferredFrame = CGRect.init(x: marginX, y: margin, width: width, height: titleHeight)
+//    return preferredFrame
+//}
+//let expandFrame = CGRect.init(origin: expandPoint, size: defSize)
 
 var keyboardHeight = CGFloat(0)
 
@@ -104,7 +113,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         }
     }
     
-    var lastFrame = collapseFrame
+    var lastFrame = CGRect.init(origin: collapsePoint, size: defSize)
     lazy var tf_title = UITextField()
     lazy var tv_body = UITextView()
     lazy var lb_duration = UILabel()
@@ -119,7 +128,6 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
     
     lazy var table = TableView()
     
-    var contentView = UIView()
     func axBlueColor(alpha: CGFloat) -> UIColor {
         return UIColor.init(red: 82/255, green: 161/255, blue: 248/255, alpha: alpha)
     }
@@ -170,13 +178,12 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         
         let vev = UIVisualEffectView.init(frame: .init(origin: .zero, size: defSize))
         vev.effect = UIBlurEffect.init(style: .extraLight)
+        let vc = UIViewController()
+        rootViewController = vc
+        vc.view.layer.cornerRadius = 12
+        vc.view.clipsToBounds = true
+        vc.view.insertSubview(vev, at: 0)
         
-        contentView = UIView.init(frame: self.bounds)
-        contentView.layer.cornerRadius = 12
-        contentView.clipsToBounds = true
-        contentView.insertSubview(vev, at: 0)
-        
-        self.addSubview(self.contentView)
         
         let pan = UIPanGestureRecognizer.init(target: self, action: #selector(self.pan(_:)))
         self.addGestureRecognizer(pan)
@@ -200,7 +207,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         lb_title.backgroundColor = UIColor(white: 1, alpha: 0.1)
         lb_title.textAlignment = .center
         lb_title.font = UIFont.boldSystemFont(ofSize: 15)
-        self.contentView.addSubview(lb_title)
+        vc.view.addSubview(lb_title)
         var f = lb_title.frame
         
         let width = defSize.width - 2*margin
@@ -215,20 +222,20 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         let btnW = (width - 2 * margin) / 3
         let btn_remove = loadButton(title: "clean")
         btn_remove.frame = .init(x: x, y: y, width: btnW, height: h)
-        self.contentView.addSubview(btn_remove)
+        vc.view.addSubview(btn_remove)
         
         let btn_progress = loadButton(title: "progress")
         btn_progress.frame = .init(x: x+btnW+margin, y: y, width: btnW, height: h)
-        self.contentView.addSubview(btn_progress)
+        vc.view.addSubview(btn_progress)
         
         let btn_post = loadButton(title: "post")
         btn_post.frame = .init(x: x+btnW+margin+btnW+margin, y: y, width: btnW, height: h)
-        self.contentView.addSubview(btn_post)
+        vc.view.addSubview(btn_post)
         
         
         // title
         tf_title = loadTextField(y: newLine(), title: "title", placeholder: "notice title", text: "notice title")
-        self.contentView.addSubview(tf_title)
+        vc.view.addSubview(tf_title)
         tf_title.tag = Tag.title.rawValue
         tf_title.text = UserDefaults.standard.string(forKey: Tag.title.cacheKey)
         
@@ -236,20 +243,20 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         tv_body = loadTextView(y: newLine(), title: "body")
         tv_body.tag = Tag.body.rawValue
         tv_body.text = UserDefaults.standard.string(forKey: Tag.body.cacheKey)
-        self.contentView.addSubview(tv_body)
+        vc.view.addSubview(tv_body)
         
         // icon
         y = tv_body.frame.maxY + margin
         seg_icon = loadSegment(y: y, title: "icon", items: ["none","alert-circle"], tag: Tag.icon.rawValue)
         seg_icon.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.icon.cacheKey)
-        self.contentView.addSubview(seg_icon)
+        vc.view.addSubview(seg_icon)
         
         
         // duration
         f.origin.x += f.size.width + margin
         f.size.width = defSize.width - 3 * margin - f.size.width
         s_duration = loadSlider(y: newLine(), title: "duration", min: 0, max: 60)
-        self.contentView.addSubview(s_duration)
+        vc.view.addSubview(s_duration)
         f = s_duration.frame
         
         // color
@@ -257,14 +264,14 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         f.origin.x = margin
         seg_color = loadSegment(y: newLine(), title: "color", items: ["clear", "normal", "warning", "error"], tag: Tag.color.rawValue)
         seg_color.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.color.cacheKey)
-        self.contentView.addSubview(seg_color)
+        vc.view.addSubview(seg_color)
         
         
         // blur
         f.origin.y += f.size.height + margin
         seg_blur = loadSegment(y: newLine(), title: "blur", items: ["none", "light", "extraLight", "dark"], tag: Tag.blur.rawValue)
         seg_blur.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.blur.cacheKey)
-        self.contentView.addSubview(seg_blur)
+        vc.view.addSubview(seg_blur)
         
         
         
@@ -272,21 +279,21 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         f.origin.y += f.size.height + margin
         seg_level = loadSegment(y: newLine(), title: "level", items: ["low", "normal", "high"], tag: Tag.level.rawValue)
         seg_level.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.level.cacheKey)
-        self.contentView.addSubview(seg_level)
+        vc.view.addSubview(seg_level)
         
         
         // layout
         f.origin.y += f.size.height + margin
         seg_layout = loadSegment(y: newLine(), title: "layout", items: ["tile", "replace", "remove", "stack"], tag: Tag.layout.rawValue)
         seg_layout.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.layout.cacheKey)
-        self.contentView.addSubview(seg_layout)
+        vc.view.addSubview(seg_layout)
         
         // bg
         f.origin.y += f.size.height + margin
         seg_bg = loadSegment(y: newLine(), title: "bg", items: ["guide", "white", "web"], tag: Tag.bg.rawValue)
         seg_bg.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.bg.cacheKey)
         segmentChanged(seg_bg)
-        self.contentView.addSubview(seg_bg)
+        vc.view.addSubview(seg_bg)
         
         
         // footer
@@ -296,15 +303,15 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         lb_footer.font = UIFont.systemFont(ofSize: 12)
         lb_footer.textAlignment = .right
         lb_footer.frame = f
-        self.contentView.addSubview(lb_footer)
+        vc.view.addSubview(lb_footer)
         
         
         var ff = self.frame
         ff.size.height = f.maxY + margin
         self.frame = ff
         ff.origin = .zero
-        self.contentView.frame = ff
-        
+        vc.view.frame = ff
+        vev.frame = ff
         transform = .init(translationX: 0, y: minH-ff.size.height-margin)
         UIView.animate(withDuration: 2, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: [.allowUserInteraction,.curveEaseInOut], animations: {
             self.transform = .identity
@@ -316,11 +323,11 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         // table view
         table = loadTableView()
         table.isHidden = true
-        self.contentView.addSubview(table)
+        vc.view.addSubview(table)
         
     }
     convenience init() {
-        self.init(frame: collapseFrame)
+        self.init(frame: CGRect.init(origin: collapsePoint, size: defSize))
     }
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -390,7 +397,7 @@ extension DebuggerWindow{
     func loadSlider(y: CGFloat, title: String, min: Float, max: Float) -> UISlider{
         lb_duration = loadLabel(text: "duration")
         lb_duration.frame = .init(x: margin, y: y, width: leftViewW, height: cellH)
-        self.contentView.addSubview(lb_duration)
+        self.rootViewController?.view.addSubview(lb_duration)
         
         let s = UISlider.init(frame: .init(x: margin+leftViewW+margin, y: y, width: defSize.width - margin - lb_duration.frame.maxX - margin, height: cellH))
         s.minimumValue = min
@@ -428,7 +435,7 @@ extension DebuggerWindow{
         var f = CGRect.init(x: margin, y: y, width: leftViewW, height: cellH)
         let lb = loadLabel(text: title)
         lb.frame = f
-        self.contentView.addSubview(lb)
+        self.rootViewController?.view.addSubview(lb)
         f = lb.frame
         f.origin.x += f.size.width + margin
         f.size.width = defSize.width - 3 * margin - f.size.width
@@ -459,7 +466,7 @@ extension DebuggerWindow{
         var f = CGRect.init(x: margin, y: y, width: leftViewW, height: cellH)
         let lb = loadLabel(text: title)
         lb.frame = f
-        self.contentView.addSubview(lb)
+        self.rootViewController?.view.addSubview(lb)
         f = lb.frame
         
         f.origin.x += f.size.width + margin
@@ -467,7 +474,7 @@ extension DebuggerWindow{
         
         let seg = loadSegment(items: items, tag: tag)
         seg.frame = f
-        self.contentView.addSubview(seg)
+        self.rootViewController?.view.addSubview(seg)
         return seg
     }
     
@@ -653,9 +660,7 @@ extension DebuggerWindow{
                 if endY + f.size.height + bottomSafeMargin() < UIScreen.main.bounds.height {
                     endY = UIScreen.main.bounds.height - f.size.height - bottomSafeMargin()
                 }
-                if endY < expandPoint.y {
-                    endY = expandPoint.y
-                } else if endY > collapsePoint.y {
+                if endY > collapsePoint.y {
                     endY = collapsePoint.y
                 } else {
 
