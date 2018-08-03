@@ -217,7 +217,7 @@ public extension NoticeBoard {
 
 // MARK: - post / remove / update layout
 extension NoticeBoard {
-//    private weak var keyWindow : UIWindow?
+    
     internal func post(_ notice: Notice, duration: TimeInterval, animate: AnimationStyle) {
         // 如果已经显示在页面上，就重新设置消失的时间
         if notices.contains(notice) {
@@ -229,12 +229,6 @@ extension NoticeBoard {
                 })
             }
         } else {
-//            let t = notice.title
-//            let b = notice.body
-//            if t.count == 0 && b.count == 0 {
-//                return
-//            }
-            
             if layoutStyle == .remove {
                 clean(animate: animate, delay: 0)
             }
@@ -244,7 +238,7 @@ extension NoticeBoard {
             DispatchQueue.main.async {
                 UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
                     notice.makeKeyAndVisible()
-                    NoticeBoard.mainWindow.makeKeyAndVisible()
+                    UIWindow.mainWindow.makeKeyAndVisible()
                     notice.translate(animate, .buildIn)
                     if self.layoutStyle == .replace {
                         self.clean(animate: .fade, delay: 0.5)
@@ -272,10 +266,8 @@ extension NoticeBoard {
             clean(animate: animate, delay: delay)
         }
     }
-    internal func remove(_ notice: Notice?, animate: AnimationStyle) {
-        remove(notice, animate: animate, delay: 0)
-    }
-    internal func remove(_ notice: Notice?, animate: AnimationStyle, delay: TimeInterval) {
+    
+    internal func remove(_ notice: Notice?, animate: AnimationStyle, delay: TimeInterval = 0) {
         if let bar = notice {
             if bar.isHidden == false {
                 UIView.animate(withDuration: 1, delay: delay, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
@@ -291,6 +283,7 @@ extension NoticeBoard {
             }
         }
     }
+    
     internal func updateLayout(from: Int){
         for i in from ..< notices.count {
             var y = margin

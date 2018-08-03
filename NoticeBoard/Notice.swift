@@ -18,15 +18,13 @@ internal let dragButtonHeight = CGFloat(24)
 
 internal let defaultInset = UIEdgeInsets.init(top: padding10, left: padding4, bottom: padding10, right: padding4)
 
-
 internal func topSafeMargin() -> CGFloat {
-    if NoticeBoard.isIPhoneX {
+    if isIPhoneX {
         return 30 + 10;
     } else {
         return margin;
     }
 }
-
 
 internal func visible(_ view: UIView?) -> UIView?{
     if let v = view {
@@ -39,6 +37,7 @@ internal func visible(_ view: UIView?) -> UIView?{
         return nil
     }
 }
+
 internal func visible(_ view: UITextView?) -> UITextView?{
     if let v = view {
         if v.superview != nil && !v.isHidden {
@@ -176,50 +175,54 @@ open class Notice: UIWindow {
             self.rawValue = rawValue
         }
         
-        /// 一次
-        public static var once: NoticeAlertOptions {
-            return self.init(rawValue: 1 << 0)
-        }
-        
-        /// 两次
-        public static var twice: NoticeAlertOptions {
-            return self.init(rawValue: 1 << 1)
-        }
-        
-        /// 呼吸灯效果
-        public static var breathing: NoticeAlertOptions {
-            return self.init(rawValue: 1 << 2)
-        }
-        
-        /// 正常速度
+        // MARK: 以什么样的速度
+        /// 正常速度，默认
         public static var normally: NoticeAlertOptions {
-            return self.init(rawValue: 1 << 3)
+            return self.init(rawValue: 1 << 10)
         }
         
         /// 缓慢地
         public static var slowly: NoticeAlertOptions {
-            return self.init(rawValue: 1 << 3)
+            return self.init(rawValue: 1 << 11)
         }
         
         /// 快速地
         public static var fast: NoticeAlertOptions {
-            return self.init(rawValue: 1 << 4)
+            return self.init(rawValue: 1 << 12)
+        }
+        
+        // MARK: 做什么样的动作
+        /// 颜色变深，默认
+        public static var darken: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 20)
         }
         
         /// 颜色变浅
         public static var lighten: NoticeAlertOptions {
-            return self.init(rawValue: 1 << 5)
+            return self.init(rawValue: 1 << 21)
         }
         
-        /// 颜色变深
-        public static var darken: NoticeAlertOptions {
-            return self.init(rawValue: 1 << 6)
+        /// 闪烁（alpha: 1 -> 0）
+        public static var flash: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 22)
         }
         
-        /// 消失
-        public static var disappear: NoticeAlertOptions {
-            return self.init(rawValue: 1 << 7)
+        // MARK: 重复多少次
+        /// 一次，默认
+        public static var once: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 30)
         }
+        
+        /// 两次
+        public static var twice: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 31)
+        }
+        
+        /// 呼吸灯效果
+        public static var breathing: NoticeAlertOptions {
+            return self.init(rawValue: 1 << 32)
+        }
+        
     }
     // MARK: - public property
     public var bodyMaxHeight = CGFloat(360) {
@@ -454,7 +457,7 @@ open class Notice: UIWindow {
             // once
             ani.repeatCount = 1
         }
-        if options.contains(.disappear) {
+        if options.contains(.flash) {
             ani.toValue = UIColor.init(white: 1, alpha: 0).cgColor
         } else if options.contains(.lighten) {
             ani.toValue = self.contentView.backgroundColor?.lighten(ratio: 0.4).cgColor
