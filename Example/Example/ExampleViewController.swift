@@ -25,6 +25,7 @@ class ExampleViewController: UIViewController {
         view.backgroundColor = .white
         title = "NoticeBoard"
         
+        // 加载成功后保存截图，下次启动先显示截图，加载成功后移除截图。
         setupPlaceholder()
         
         progressNotice.theme = .normal
@@ -34,9 +35,20 @@ class ExampleViewController: UIViewController {
                 let mdView = MarkdownView()
                 view.insertSubview(mdView, at: 0)
                 mdView.frame = view.bounds
+                mdView.alpha = 0
+                mdView.isScrollEnabled = false
                 mdView.load(markdown: md)
                 mdView.onRendered = { [weak self] height in
-                    self!.placeholder.removeFromSuperview()
+                    DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                        // 加载成功后保存截图，下次启动先显示截图，加载成功后移除截图。
+                        UIView.animate(withDuration: 0.38, animations: {
+                            mdView.alpha = 1
+                        }, completion: { (completed) in
+                            self!.placeholder.removeFromSuperview()
+                            self!.saveImage(UIImage.init(view: mdView))
+                            mdView.isScrollEnabled = true
+                        })
+                    })
                 }
                 // 外链
                 let externalURLs = ["https://github.com/xaoxuu/NoticeBoard/issues",
@@ -90,39 +102,38 @@ class ExampleViewController: UIViewController {
     }
     
     func setupPlaceholder() {
-        // launch image
-        observer = NotificationCenter.default.addObserver(forName: NSNotification.Name.init("applicationDidEnterBackground"), object: nil, queue: .main) { (noti) in
-            let img = UIImage.init(view: self.view)
-            
-            if let data = UIImagePNGRepresentation(img) {
-                let path = NSString.init(string: "screenshot.png").docPath() as String
-                let url = URL.init(fileURLWithPath: path)
-                do {
-                    try data.write(to: url, options: .atomic)
-                } catch {
-                    print(error)
-                }
+        // placeholder image
+        func loadImage() -> UIImage?{
+            let path = NSString.init(string: "screenshot.png").docPath() as String
+            do {
+                let data = try Data.init(contentsOf: URL.init(fileURLWithPath: path))
+                return UIImage.init(data: data)
+            } catch {
+                return nil
             }
         }
-        
-        let path = NSString.init(string: "screenshot.png").docPath() as String
-        do {
-            let data = try Data.init(contentsOf: URL.init(fileURLWithPath: path))
-            let img = UIImage.init(data: data)
-            placeholder = UIImageView.init(frame: view.bounds)
-            placeholder.image = img
-            placeholder.contentMode = .scaleAspectFill
-            placeholder.backgroundColor = .red
-            view.addSubview(placeholder)
-            DispatchQueue.main.asyncAfter(deadline: .now()+5) {
-                self.placeholder.removeFromSuperview()
-            }
-        } catch {
-            print(error)
+        placeholder = UIImageView.init(frame: view.bounds)
+        placeholder.image = loadImage()
+        placeholder.contentMode = .scaleAspectFill
+        placeholder.alpha = 0.3
+        view.addSubview(placeholder)
+        DispatchQueue.main.asyncAfter(deadline: .now()+5) {
+            self.placeholder.removeFromSuperview()
         }
         
     }
     
+    func saveImage(_ image: UIImage){
+        if let data = UIImagePNGRepresentation(image) {
+            let path = NSString.init(string: "screenshot.png").docPath() as String
+            let url = URL.init(fileURLWithPath: path)
+            do {
+                try data.write(to: url, options: .atomic)
+            } catch {
+                print(error)
+            }
+        }
+    }
     func postSimpleNotice(_ idx: Int){
         let img = UIImage.init(named: "alert-circle")
         switch idx {
