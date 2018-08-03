@@ -35,14 +35,13 @@ class ExampleViewController: UIViewController {
                 let mdView = MarkdownView()
                 view.insertSubview(mdView, at: 0)
                 mdView.frame = view.bounds
-                mdView.alpha = 0
                 mdView.isScrollEnabled = false
                 mdView.load(markdown: md)
                 mdView.onRendered = { [weak self] height in
                     DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
                         // 加载成功后保存截图，下次启动先显示截图，加载成功后移除截图。
                         UIView.animate(withDuration: 0.38, animations: {
-                            mdView.alpha = 1
+                            self!.placeholder.alpha = 0
                         }, completion: { (completed) in
                             self!.placeholder.removeFromSuperview()
                             self!.saveImage(UIImage.init(view: mdView))
@@ -115,12 +114,17 @@ class ExampleViewController: UIViewController {
         placeholder = UIImageView.init(frame: view.bounds)
         placeholder.image = loadImage()
         placeholder.contentMode = .scaleAspectFill
-        placeholder.alpha = 0.3
         view.addSubview(placeholder)
-        DispatchQueue.main.asyncAfter(deadline: .now()+5) {
-            self.placeholder.removeFromSuperview()
-        }
-        
+        let mask = UIView.init(frame: placeholder.bounds)
+        mask.backgroundColor = UIColor.init(white: 0, alpha: 0.3)
+        placeholder.addSubview(mask)
+        // loading
+        let w = placeholder.frame.width
+        let h = placeholder.frame.height
+        let loadingView = UIActivityIndicatorView.init(activityIndicatorStyle: .white)
+        loadingView.frame = .init(x: w/2, y: h/2, width: 0, height: 0)
+        placeholder.addSubview(loadingView)
+        loadingView.startAnimating()
     }
     
     func saveImage(_ image: UIImage){
