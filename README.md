@@ -43,7 +43,7 @@ notice.actionButtonDidTapped { (notice, btn) in
 
 // 设置颜色主题
 notice.themeColor = .init(red: 0.2, green: 0.3, blue: 0.4, alpha: 1)
-// 模糊背景，和纯色背景可以同时使用
+// 模糊背景（暂时只支持iOS11，在之前的系统会自动改为纯色背景），和纯色背景可以同时使用
 notice.blurEffectStyle = .light
 ```
 
@@ -90,6 +90,15 @@ notice.progress = 0
 notice.progress = 0.5
 // 进度为100%
 notice.progress = 1
+```
+
+
+
+### post自定义view
+
+```swift
+notice.rootViewController?.view.addSubview(myView)
+NoticeBoard.post(notice)
 ```
 
 
