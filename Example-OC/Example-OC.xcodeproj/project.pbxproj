@@ -151,7 +151,7 @@
 				TargetAttributes = {
 					CD02D9FB20E76BE7002C8D84 = {
 						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 0930;
+						LastSwiftMigration = 0940;
 					};
 				};
 			};
@@ -402,7 +402,8 @@
 				PROVISIONING_PROFILE_SPECIFIER = "com.xaoxuu.*";
 				SWIFT_OBJC_BRIDGING_HEADER = "Example-OC/Example-OC-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -426,7 +427,8 @@
 				PROVISIONING_PROFILE = "b32d51a3-c20b-408f-aebf-11d2ea3811cd";
 				PROVISIONING_PROFILE_SPECIFIER = "com.xaoxuu.*";
 				SWIFT_OBJC_BRIDGING_HEADER = "Example-OC/Example-OC-Bridging-Header.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

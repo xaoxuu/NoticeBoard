@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import NoticeBoard
 
 protocol MyTableViewDelegate {
     func tableView(_ tableView: TableView, didSelectTitle: String)

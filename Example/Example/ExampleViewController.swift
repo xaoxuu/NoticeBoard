@@ -15,7 +15,7 @@ import WebKit
 
 class ExampleViewController: UIViewController {
     
-    let progressNotice = Notice()
+    let progressNotice = Notice.init(theme: .error)
     
     var placeholder = UIImageView()
     let web = WKWebView()
@@ -37,7 +37,7 @@ class ExampleViewController: UIViewController {
             web.scrollView.isScrollEnabled = false
         }
         
-        progressNotice.theme = .normal
+//        progressNotice.theme = .normal
         if let path = Bundle.main.path(forResource: "Examples.md", ofType: nil) {
             do {
                 let md = try NSString.init(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue) as String

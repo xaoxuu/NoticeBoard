@@ -8,187 +8,35 @@
 
 import UIKit
 
-internal let margin = CGFloat(8)
-internal let padding10 = CGFloat(8)
-internal let padding4 = CGFloat(4)
 
-internal let cornerRadius = CGFloat(12)
-internal let titleHeight = CGFloat(36)
-internal let dragButtonHeight = CGFloat(24)
-
-internal let maxWidth = CGFloat(500)
-
-internal let defaultInset = UIEdgeInsets.init(top: padding10, left: padding4, bottom: padding10, right: padding4)
-
-internal func topSafeMargin() -> CGFloat {
-    if UIScreen.main.bounds.size.equalTo(CGSize.init(width: 375, height: 812)) {
-        return 30 + 10;
-    } else {
-        return margin;
-    }
-}
-
-
-internal func visible(_ view: UIView?) -> UIView?{
-    if let v = view {
-        if v.superview != nil && !v.isHidden {
-            return v
-        } else {
-            return nil
-        }
-    } else {
-        return nil
-    }
-}
-
-internal func visible(_ view: UITextView?) -> UITextView?{
-    if let v = view {
-        if v.superview != nil && !v.isHidden {
-            return v
-        } else {
-            return nil
-        }
-    } else {
-        return nil
-    }
-}
-
-
-
-private enum Tag: Int {
-    typealias RawValue = Int
-    
-    case iconView = 101
-    case titleView = 102
-    case actionButton = 103
-    case bodyView = 201
-    case dragButton = 301
-    
-}
-
-// MARK: - frame
-internal extension Notice {
-    
-    func updateSelfFrame(){
-        var totalHeight = CGFloat(0)
-        if let rootView = self.rootViewController?.view {
-            for view in rootView.subviews {
-                if view.isEqual(self.rootViewController?.view) == false && view.isEqual(visualEffectView) == false {
-                    totalHeight = max(totalHeight, view.frame.maxY)
-                }
-            }
-            rootView.frame = CGRect.init(x: 0, y: 0, width: frame.size.width, height: totalHeight)
-            self.visualEffectView?.frame = rootView.bounds
-            if let p = progressLayer {
-                var f = p.frame
-                f.size.height = totalHeight
-                p.frame = f
-            }
-            if self.frame.height != totalHeight {
-                var f = self.frame
-                f.size.height = totalHeight
-                self.frame = f
-            }
-        }
-    }
-    
-    private func frame(for tag: Tag) -> CGRect {
-        if tag == .actionButton {
-            return CGRect.init(x: self.frame.size.width-38, y: 0, width: 38, height: titleHeight)
-        } else if tag == .bodyView {
-            return CGRect.init(x: 0, y: 0, width: self.frame.size.width, height: self.frame.size.height)
-        } else if tag == .dragButton {
-            return CGRect.init(x: 0, y: 0, width: self.frame.width, height: dragButtonHeight)
-        } else {
-            return .zero
-        }
-    }
-    func updateContentFrame(){
-        if let t1 = visible(titleLabel){
-            var f = t1.frame
-            if let t0 = visible(iconView) {
-                if self.subviews.contains(t0) == false {
-                    self.rootViewController?.view.addSubview(t0)
-                }
-                f.origin.x = t0.frame.maxX + padding4
-            }
-            f.size.width = self.frame.size.width - f.origin.x - padding10
-            if let v = visible(actionButton) {
-                f.size.width -= v.frame.size.width
-            }
-            t1.frame = f
-        }
-        if let t1 = visible(bodyView) {
-            var f = t1.frame
-            if let t0 = visible(titleLabel) {
-                f.origin.y = t0.frame.maxY
-                bodyView?.textContainerInset.top = 0
-            } else {
-                bodyView?.textContainerInset = defaultInset
-            }
-            f.size.height = max(bodyMaxHeight, 0)
-            t1.frame = f
-            f.size.height = min(t1.contentSize.height, max(bodyMaxHeight, 0))
-            UIView.animate(withDuration: 0.38) {
-                t1.frame = f
-            }
-            
-            if t1.contentSize.height > f.size.height {
-                self.rootViewController?.view.addSubview(loadDragButton())
-                if let btn = visible(dragButton) {
-                    var ff = btn.frame
-                    ff.origin.y = t1.frame.maxY
-                    btn.frame = ff
-                    btn.alpha = 1
-                }
-            } else {
-                if let btn = visible(dragButton) {
-                    btn.alpha = 0
-                    btn.removeFromSuperview()
-                }
-            }
-        }
-    }
-    
-}
-
-@objcMembers
-open class Notice: UIWindow {
-
+// MARK: - 定义
+public extension Notice {
     /// 当notice被移除时的通知
     public static let didRemoved = NSNotification.Name.init("noticeDidRemoved")
     
-    
     /// 主题
-    public enum Theme {
-        public typealias RawValue = UIColor
-        case success, note, warning, error, normal, white, darkGray, plain
-        public var rawValue : RawValue {
-            var color = UIColor.white
-            switch self {
-            case .success:
-                color = UIColor.ax_green
-            case .note:
-                color = UIColor.ax_blue
-            case .warning:
-                color = UIColor.ax_yellow
-            case .error:
-                color = UIColor.ax_red
-            case .white:
-                color = UIColor.white
-            case .darkGray:
-                color = UIColor.darkGray
-            case .plain:
-                color = UIColor.clear
-            default:
-                color = UIColor.ax_blue
+    public enum Theme: String {
+        
+        case success = "#7CC353"
+        case warning = "#FFEB3B"
+        case error   = "#F44336"
+        
+        case note = "FFBD2D"
+        case normal  = "#52A1F8"
+        
+        case lightGray = "#ECECEC"
+        case darkGray = "#555"
+        case white = "#FFF"
+        case plain = "#00000000"
+        
+        public var color: UIColor {
+            if self == .plain {
+                return .clear
+            } else {
+                return UIColor.init(hex: self.rawValue)
             }
-            return color
         }
-        init () {
-            self = .normal
-        }
-
+        
     }
     public struct NoticeAlertOptions : OptionSet {
         public var rawValue: UInt
@@ -246,7 +94,16 @@ open class Notice: UIWindow {
         }
         
     }
+    
+}
+
+
+// MARK: - Notice: 一条通知的视图实体。
+open class Notice: UIWindow {
+    
     // MARK: - public property
+    
+    /// 正文最大高度
     public var bodyMaxHeight = CGFloat(180) {
         didSet {
             updateContentFrame()
@@ -256,8 +113,8 @@ open class Notice: UIWindow {
     /// 可通过手势移除通知
     public var allowRemoveByGesture = true
     
-    /// 背景颜色
-    public var themeColor = UIColor.ax_blue {
+    /// 主题（改变背景颜色）
+    public var themeColor = UIColor.clear {
         didSet {
             rootViewController?.view.backgroundColor = themeColor
             tintColor = themeColor.textColor()
@@ -265,9 +122,9 @@ open class Notice: UIWindow {
     }
     
     /// 主题（改变背景颜色）
-    public var theme = Theme.normal {
+    public var theme = Theme.plain {
         didSet {
-            themeColor = theme.rawValue
+            themeColor = theme.color
         }
     }
     
@@ -383,6 +240,7 @@ open class Notice: UIWindow {
             loadProgressLayer()
         }
     }
+    
     public var icon: UIImage? {
         get {
             return iconView?.image
@@ -419,8 +277,6 @@ open class Notice: UIWindow {
         }
     }
     
-    public var tags = [String]()
-    
     // MARK: - internal property
     // life cycle
     
@@ -432,11 +288,9 @@ open class Notice: UIWindow {
     
     // action
     internal var block_action: ((Notice, UIButton)->Void)?
-    
     internal weak var board = NoticeBoard.shared
-    
+    // layout
     internal var lastFrame = CGRect.zero
-    
     internal var originY = margin {
         didSet {
             var f = self.frame
@@ -462,6 +316,7 @@ open class Notice: UIWindow {
             }
         }
     }
+    
     open override func setNeedsLayout() {
         var f = self.frame
         f.size.width = min(UIScreen.main.bounds.size.width - 2 * margin, maxWidth)
@@ -478,8 +333,8 @@ open class Notice: UIWindow {
             t.frame = frame(for: .dragButton)
         }
         updateContentFrame()
-        
     }
+    
     // MARK: - public func
     
     /// 警示（如果一个notice已经post出来了，想要再次引起用户注意，可以使用此函数）
@@ -526,6 +381,7 @@ open class Notice: UIWindow {
         updateContentFrame()
         block_action = action
     }
+    
     open func removeFromNoticeBoard(){
         if let b = board {
             b.remove(self, animate: .slide)
@@ -561,6 +417,13 @@ open class Notice: UIWindow {
         }
         
     }
+    
+    public convenience init(theme: Theme) {
+        self.init()
+        DispatchQueue.main.async {
+            self.theme = theme
+        }
+    }
 
     
     public override init(frame: CGRect) {
@@ -583,6 +446,7 @@ open class Notice: UIWindow {
         self.addGestureRecognizer(pan)
         
     }
+    
     convenience init() {
         let width = min(UIScreen.main.bounds.size.width - 2 * margin, maxWidth)
         let marginX = (UIScreen.main.bounds.size.width - width) / 2
@@ -605,8 +469,13 @@ open class Notice: UIWindow {
         debugPrint("👌🏼deinit")
     }
     
-    // MARK: - action
-    @objc private func touchDown(_ sender: UIButton) {
+    
+}
+
+// MARK: - action
+internal extension Notice {
+    
+    @objc func touchDown(_ sender: UIButton) {
         debugPrint("touchDown: " + (sender.titleLabel?.text)!)
         if sender.tag == Tag.dragButton.rawValue {
             sender.backgroundColor = UIColor.init(white: 0, alpha: 0.3)
@@ -614,7 +483,7 @@ open class Notice: UIWindow {
             
         }
     }
-    @objc private func touchUp(_ sender: UIButton) {
+    @objc func touchUp(_ sender: UIButton) {
         debugPrint("touchUp: " + (sender.titleLabel?.text)!)
         if sender.tag == Tag.dragButton.rawValue {
             sender.backgroundColor = UIColor.init(white: 0, alpha: 0.1)
@@ -622,7 +491,7 @@ open class Notice: UIWindow {
             
         }
     }
-    @objc private func touchUpInside(_ sender: UIButton) {
+    @objc func touchUpInside(_ sender: UIButton) {
         touchUp(sender)
         debugPrint("touchUpInside: " + (sender.titleLabel?.text)!)
         if sender == actionButton {
@@ -632,7 +501,7 @@ open class Notice: UIWindow {
         }
         
     }
-    @objc private func pan(_ sender: UIPanGestureRecognizer) {
+    @objc func pan(_ sender: UIPanGestureRecognizer) {
         DispatchWorkItem.cancel(self.workItem)
         let point = sender.translation(in: sender.view)
         var f = self.frame
@@ -696,118 +565,4 @@ open class Notice: UIWindow {
         }
     }
 }
-
-
-// MARK: - setup
-private extension Notice {
-    
-    @discardableResult
-    func loadTextView() -> UITextView {
-        if let view = bodyView {
-            return view
-        } else {
-            bodyView = UITextView.init(frame: frame(for: .bodyView))
-            bodyView?.tag = Tag.bodyView.rawValue
-            bodyView?.font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
-            bodyView?.showsHorizontalScrollIndicator = false
-            bodyView?.textAlignment = .justified
-            bodyView?.isEditable = false
-            bodyView?.isSelectable = false
-            bodyView?.backgroundColor = .clear
-            bodyView?.textContainerInset = defaultInset
-            return bodyView!
-        }
-    }
-    
-    @discardableResult
-    func loadIconView() -> UIImageView {
-        if let view = iconView {
-            return view
-        } else {
-            iconView = UIImageView.init(frame: .init(x: padding10, y: 2*padding4, width: titleHeight-4*padding4, height: titleHeight-4*padding4))
-            iconView?.tag = Tag.iconView.rawValue
-            iconView?.contentMode = .scaleAspectFit
-            if debugMode {
-                iconView?.backgroundColor = UIColor.init(white: 0, alpha: 0.3)
-            }
-            return iconView!
-        }
-    }
-    
-    
-    @discardableResult
-    func loadActionButton() -> UIButton {
-        if let btn = actionButton {
-            return btn
-        } else {
-            actionButton = UIButton.init(frame: frame(for: .actionButton))
-            actionButton?.tag = Tag.actionButton.rawValue
-            actionButton?.setTitleColor(.black, for: .normal)
-            actionButton?.setTitle("→", for: .normal)
-            actionButton?.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
-            actionButton?.addTarget(self, action: #selector(self.touchUpInside(_:)), for: .touchUpInside)
-            actionButton?.addTarget(self, action: #selector(self.touchDown(_:)), for: [.touchDown,])
-            actionButton?.addTarget(self, action: #selector(self.touchUp(_:)), for: [.touchUpInside,.touchUpOutside])
-            return actionButton!
-        }
-    }
-    
-    
-    @discardableResult
-    func loadTitleLabel() -> UILabel {
-        if let lb = titleLabel {
-            return lb
-        } else {
-            titleLabel = UILabel.init(frame: .init(x: padding10, y: 0, width: self.frame.size.width-2*padding10, height: titleHeight))
-            titleLabel?.tag = Tag.titleView.rawValue
-            titleLabel?.textAlignment = .justified
-            titleLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.labelFontSize-1)
-            if debugMode {
-                titleLabel?.backgroundColor = UIColor.init(white: 0, alpha: 0.2)
-                actionButton?.backgroundColor = UIColor.init(white: 1, alpha: 0.2)
-            }
-            return titleLabel!
-        }
-    }
-    
-    @discardableResult
-    func loadProgressLayer() -> CALayer {
-        if let l = progressLayer {
-            return l
-        } else {
-            progressLayer = CALayer.init()
-            if var f = self.rootViewController?.view.bounds {
-                f.size.width = 0
-                f.size.height = titleHeight + max(bodyMaxHeight, 0)
-                progressLayer?.frame = f
-            }
-            progressLayer?.backgroundColor = UIColor.init(white: 0, alpha: 0.2).cgColor
-            if let blur = visualEffectView {
-                blur.layer.insertSublayer(progressLayer!, above: blur.layer)
-            } else {
-                self.rootViewController?.view.layer.insertSublayer(progressLayer!, at: 0)
-            }
-            return progressLayer!
-        }
-    }
-    
-    @discardableResult
-    func loadDragButton() -> UIButton {
-        if let btn = dragButton {
-            return btn
-        } else {
-            dragButton = UIButton.init(frame: frame(for: .dragButton))
-            dragButton?.tag = Tag.dragButton.rawValue
-            dragButton?.backgroundColor = UIColor.init(white: 0, alpha: 0.1)
-            dragButton?.setTitle("——", for: .normal)
-            dragButton?.setTitleColor(tintColor, for: .normal)
-            dragButton?.addTarget(self, action: #selector(self.touchDown(_:)), for: [.touchDown,])
-            dragButton?.addTarget(self, action: #selector(self.touchUp(_:)), for: [.touchUpInside,.touchUpOutside])
-            return dragButton!
-        }
-    }
-    
-    
-}
-
 

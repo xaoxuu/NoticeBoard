@@ -562,9 +562,6 @@ extension DebuggerWindow{
                         }
                     } else if seg == seg_blur {
                         if selectedSegmentIndex == 1 {
-                            if notice.themeColor == .clear {
-                                notice.themeColor = .init(white: 1, alpha: 0.4)
-                            }
                             notice.blurEffectStyle = .light
                         } else if selectedSegmentIndex == 2 {
                             notice.blurEffectStyle = .extraLight

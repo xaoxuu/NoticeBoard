@@ -8,11 +8,8 @@
 
 import UIKit
 
-internal let debugMode = false
-
-
-open class NoticeBoard: NSObject {
-    
+// MARK: - 定义
+public extension NoticeBoard {
     /// 布局样式
     ///
     /// - tile:  平铺，默认（所有通知都可见，但是通知过多会超出屏幕）
@@ -22,22 +19,6 @@ open class NoticeBoard: NSObject {
     /// - stack: 堆叠（最新的通知会遮挡旧的通知）
     public enum LayoutStyle {
         case tile,replace,remove,overlay,stack
-    }
-    
-    /// 动画样式
-    ///
-    /// - slide: 滑动，默认
-    /// - fade: 淡入淡出
-    internal enum AnimationStyle {
-        case slide, fade
-    }
-    
-    /// 离开动画还是进入动画
-    ///
-    /// - buildIn: buildIn动画
-    /// - buildOut: buildOut动画
-    internal enum BuildInOut {
-        case buildIn, buildOut
     }
     
     public enum Level: UIWindowLevel {
@@ -59,22 +40,26 @@ open class NoticeBoard: NSObject {
             }
         }
     }
+}
+
+/// NoticeBoard: 用来管理多个Notice视图的管理器，不在视图层级中显示。
+open class NoticeBoard {
     
+    /// shared instance
     public static let shared = NoticeBoard()
     
     /// 当前显示的所有通知
     public var notices = [Notice]()
+    
     /// 布局样式
     public var layoutStyle = LayoutStyle.tile
-    
-    
     
     /// post一条通知
     ///
     /// - Parameters:
     ///   - notice: 通知
     ///   - duration: 持续时间
-    @objc public class func post(_ notice: Notice, duration: TimeInterval = 0){
+    open class func post(_ notice: Notice, duration: TimeInterval = 0){
         shared.post(notice, duration: duration)
     }
     
@@ -83,52 +68,46 @@ open class NoticeBoard: NSObject {
     /// - Parameters:
     ///   - notice: 通知
     ///   - duration: 持续时间
-    @objc public func post(_ notice: Notice, duration: TimeInterval = 0){
+    open func post(_ notice: Notice, duration: TimeInterval = 0){
         post(notice, duration: duration, animate:.slide)
     }
     
     /// 移除所有通知
-    @objc public class func clean() {
+    open class func clean() {
         shared.clean(animate: .slide, delay: 0)
     }
+    
     /// 移除所有通知
-    @objc public func clean() {
+    open func clean() {
         clean(animate: .slide, delay: 0)
     }
+    
     /// 移除某个通知
     ///
     /// - Parameters:
     ///   - notice: 通知
-    @objc public class func remove(_ notice: Notice?) {
+    open class func remove(_ notice: Notice?) {
         shared.remove(notice, animate: .slide, delay: 0)
     }
+    
     /// 移除某个通知
     ///
     /// - Parameters:
     ///   - notice: 通知
-    @objc public func remove(_ notice: Notice?) {
+    open func remove(_ notice: Notice?) {
         remove(notice, animate: .slide, delay: 0)
     }
     
-    override init() {
-        super.init()
+    // init
+    init() {
         NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange(_:)), name: .UIDeviceOrientationDidChange, object: nil)
     }
     
-    @objc func deviceOrientationDidChange(_ notification: Notification){
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.5, options: [.allowUserInteraction, .curveEaseOut], animations: {
-                for notice in self.notices {
-                    notice.setNeedsLayout()
-                }
-            }, completion: nil)
-            self.updateLayout(from: 0)
-        }
-    }
-    
+    // deinit
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
 }
 
 
@@ -155,6 +134,7 @@ public extension NoticeBoard {
     public class func post(_ theme: Notice.Theme, message: String?, duration: TimeInterval) -> Notice {
         return post(theme, icon: nil, title: nil, message: message, duration: duration)
     }
+    
     /// post一条消息（UIBlurEffect主题+消息内容）
     ///
     /// - Parameters:
@@ -165,7 +145,6 @@ public extension NoticeBoard {
     public class func post(_ theme: UIBlurEffectStyle, message: String?, duration: TimeInterval) -> Notice {
         return post(theme, icon: nil, title: nil, message: message, duration: duration)
     }
-    
     
     /// post一条消息（纯色主题+消息标题+消息内容）
     ///
@@ -178,6 +157,7 @@ public extension NoticeBoard {
     public class func post(_ theme: Notice.Theme, title: String?, message: String?, duration: TimeInterval) -> Notice {
         return post(theme, icon: nil, title: title, message: message, duration: duration)
     }
+    
     /// post一条消息（UIBlurEffect主题+消息标题+消息内容）
     ///
     /// - Parameters:
@@ -190,7 +170,6 @@ public extension NoticeBoard {
         return post(theme, icon: nil, title: title, message: message, duration: duration)
     }
     
-    
     /// post一条消息（纯色主题+icon+消息标题+消息内容+按钮）
     ///
     /// - Parameters:
@@ -201,7 +180,7 @@ public extension NoticeBoard {
     ///   - duration: 持续时间
     ///   - action: 按钮事件
     @discardableResult
-    public class func post(_ theme: Notice.Theme, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
+    public static func post(_ theme: Notice.Theme, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
         let notice = Notice.init(title: title, icon: icon, body: message)
         notice.theme = theme
         if let ac = action {
@@ -221,7 +200,7 @@ public extension NoticeBoard {
     ///   - duration: 持续时间
     ///   - action: 按钮事件
     @discardableResult
-    public class func post(_ theme: UIBlurEffectStyle, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
+    public static func post(_ theme: UIBlurEffectStyle, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
         let notice = Notice.init(title: title, icon: icon, body: message)
         notice.blurEffectStyle = theme
         if let ac = action {
@@ -231,11 +210,10 @@ public extension NoticeBoard {
         return notice
     }
     
-    
 }
 
 // MARK: - post / remove / update layout
-extension NoticeBoard {
+internal extension NoticeBoard {
     
     internal func post(_ notice: Notice, duration: TimeInterval, animate: AnimationStyle) {
         // 如果已经显示在页面上，就重新设置消失的时间
@@ -323,6 +301,21 @@ extension NoticeBoard {
             }) { (completed) in
                 
             }
+        }
+    }
+    
+}
+
+fileprivate extension NoticeBoard {
+    
+    @objc fileprivate func deviceOrientationDidChange(_ notification: Notification){
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.5) {
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.5, options: [.allowUserInteraction, .curveEaseOut], animations: {
+                for notice in self.notices {
+                    notice.setNeedsLayout()
+                }
+            }, completion: nil)
+            self.updateLayout(from: 0)
         }
     }
     
