@@ -37,7 +37,6 @@ class ExampleViewController: UIViewController {
             web.scrollView.isScrollEnabled = false
         }
         
-//        progressNotice.theme = .normal
         if let path = Bundle.main.path(forResource: "Examples.md", ofType: nil) {
             do {
                 let md = try NSString.init(contentsOfFile: path, encoding: String.Encoding.utf8.rawValue) as String
@@ -83,6 +82,8 @@ class ExampleViewController: UIViewController {
                                 self!.postProgress(idx)
                             } else if cmd == "postcustom" {
                                 self!.postCustomView(idx)
+                            } else if cmd == "alert" {
+                                self!.alert(idx)
                             }
                         }
                         return false
@@ -260,4 +261,44 @@ class ExampleViewController: UIViewController {
         NoticeBoard.post(notice)
         
     }
+    
+    func alert(_ idx: Int){
+        if NoticeBoard.shared.notices.count == 0 {
+            NoticeBoard.post(.error, title: "这是一条测试消息", message: "这是一条测试消息", duration: 0)
+        }
+        DispatchQueue.main.async {
+            for notice in NoticeBoard.shared.notices {
+                if idx == 10 {
+                    notice.alert(options: [.normally])
+                } else if idx == 11 {
+                    notice.alert(options: [.slowly])
+                } else if idx == 12 {
+                    notice.alert(options: [.fast])
+                } else if idx == 20 {
+                    notice.alert(options: [.darken])
+                } else if idx == 21 {
+                    notice.alert(options: [.lighten])
+                } else if idx == 22 {
+                    notice.alert(options: [.flash])
+                } else if idx == 30 {
+                    notice.alert(options: [.once])
+                } else if idx == 31 {
+                    notice.alert(options: [.twice])
+                } else if idx == 32 {
+                    notice.alert(options: [.breathing])
+                } else if idx == 101 {
+                    notice.alert()
+                } else if idx == 102 {
+                    notice.alert(options: [.fast, .darken])
+                } else if idx == 103 {
+                    notice.alert(options: [.slowly, .breathing])
+                } else if idx == 104 {
+                    notice.alert(options: [.fast, .lighten])
+                } else if idx == 105 {
+                    notice.alert(options: [.fast, .lighten, .twice])
+                }
+            }
+        }
+    }
+    
 }

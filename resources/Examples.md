@@ -158,6 +158,70 @@ notice.actionButton?.setTitleColor(.white, for: .normal)
 
 <br>
 
+### alert
+
+对于已经 post 出的消息，可以再次强调一下~ （只适用于纯色主题的 notice）
+
+你可以拉出 NoticeBoard Debugger 来 post 出几条不同样式的 Notice，然后点击下面的示例查看效果。
+
+<br>
+
+| 速度                                   | 效果                                 | 次数                               |
+| -------------------------------------- | ------------------------------------ | ---------------------------------- |
+| **[normally（默认）](cmd://alert:10)** | **[darken（默认）](cmd://alert:20)** | **[once（默认）](cmd://alert:30)** |
+| **[slowly](cmd://alert:11)**           | **[lighten](cmd://alert:21)**        | **[twice](cmd://alert:31)**        |
+| **[fast](cmd://alert:12)**             | **[flash](cmd://alert:22)**          | **[breathing](cmd://alert:32)**    |
+
+<br>
+
+**[👉 示例1 alert()](cmd://alert:101)**
+
+```swift
+notice.alert()
+// 等同于： notice.alert(options: [.normally, .darken, .once])
+```
+
+<br>
+
+
+**[👉 示例2 快速的变暗一次](cmd://alert:102)**
+
+```swift
+notice.alert(options: [.fast, .darken])
+```
+
+<br>
+
+
+**[👉 示例3 缓慢的呼吸灯效果](cmd://alert:103)**
+
+```swift
+notice.alert(options: [.slowly, .breathing])
+```
+
+<br>
+
+
+**[👉 示例4 快速的变亮一次](cmd://alert:104)**
+
+```swift
+notice.alert(options: [.fast, .lighten])
+```
+
+<br>
+
+
+**[👉 示例5 快速的变亮两次](cmd://alert:105)**
+
+```swift
+notice.alert(options: [.fast, .lighten, .twice])
+```
+
+
+
+
+<br>
+
 <br>
 
 ## 帮助

@@ -341,34 +341,37 @@ open class Notice: UIWindow {
     ///
     /// - Parameter options: 操作
     public func alert(options: NoticeAlertOptions = []){
-        let ani = CABasicAnimation.init(keyPath: "backgroundColor")
-        ani.autoreverses = true
-        ani.isRemovedOnCompletion = true
-        ani.timingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionEaseInEaseOut)
-        if options.contains(.fast) {
-            ani.duration = 0.38
-        } else if options.contains(.slowly) {
-            ani.duration = 2.4
-        } else {
+        func animation(_ animation: CABasicAnimation) {
+            animation.autoreverses = true
+            animation.isRemovedOnCompletion = true
+            animation.timingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionEaseInEaseOut)
+            // default
             // normally
-            ani.duration = 0.8
-        }
-        if options.contains(.breathing) {
-            ani.repeatCount = MAXFLOAT
-        } else if options.contains(.twice) {
-            ani.repeatCount = 2
-        } else {
-            // once
-            ani.repeatCount = 1
-        }
-        if options.contains(.flash) {
-            ani.toValue = UIColor.init(white: 1, alpha: 0).cgColor
-        } else if options.contains(.lighten) {
-            ani.toValue = self.rootViewController?.view.backgroundColor?.lighten(0.4).cgColor
-        } else {
+            animation.duration = 0.8
             // darken
-            ani.toValue = self.rootViewController?.view.backgroundColor?.darken(0.4).cgColor
+            animation.toValue = self.rootViewController?.view.backgroundColor?.darken(0.3).cgColor
+            // once
+            animation.repeatCount = 1
+            
+            if options.contains(.fast) {
+                animation.duration = 0.38
+            } else if options.contains(.slowly) {
+                animation.duration = 2.4
+            }
+            if options.contains(.flash) {
+                animation.toValue = UIColor.init(white: 1, alpha: 0).cgColor
+            } else if options.contains(.lighten) {
+                animation.toValue = self.rootViewController?.view.backgroundColor?.lighten(0.7).cgColor
+            }
+            if options.contains(.breathing) {
+                animation.repeatCount = MAXFLOAT
+            } else if options.contains(.twice) {
+                animation.repeatCount = 2
+            }
+            
         }
+        let ani = CABasicAnimation.init(keyPath: "backgroundColor")
+        animation(ani)
         self.rootViewController?.view.layer.add(ani, forKey: "backgroundColor")
         
     }
