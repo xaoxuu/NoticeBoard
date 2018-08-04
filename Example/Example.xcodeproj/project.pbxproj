@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		33E2B6CF0D9BD11D8C027DE6 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB925B38880FB296AF5D219F /* Pods_Example.framework */; };
+		CD10F0DA211582580077CAFF /* header.gif in Resources */ = {isa = PBXBuildFile; fileRef = CD10F0D9211582580077CAFF /* header.gif */; };
 		CD199E622112DDD300BF4471 /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD199E612112DDD300BF4471 /* ExampleViewController.swift */; };
 		CD2B7F1220E48A18009D8055 /* DebuggerWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD2B7F1120E48A18009D8055 /* DebuggerWindow.swift */; };
 		CD6353BA20EB05BE00B49FE9 /* TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD6353B920EB05BE00B49FE9 /* TableView.swift */; };
@@ -27,6 +28,7 @@
 		AB925B38880FB296AF5D219F /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA1A6035F1B9A658B3BB225C /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		CA1298266BE89D7950DE99F2 /* Pods-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example/Pods-Example.debug.xcconfig"; sourceTree = "<group>"; };
+		CD10F0D9211582580077CAFF /* header.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = header.gif; sourceTree = "<group>"; };
 		CD199E612112DDD300BF4471 /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		CD2B7F1120E48A18009D8055 /* DebuggerWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebuggerWindow.swift; sourceTree = "<group>"; };
 		CD59584620E36DA8000F6427 /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				CD9DE10221135FA90074D742 /* Examples.md */,
 				CDA4E03F20D3935B00CD2A0C /* Main.storyboard */,
 				CDA4E04220D3935C00CD2A0C /* Assets.xcassets */,
+				CD10F0D9211582580077CAFF /* header.gif */,
 				CDA4E04420D3935C00CD2A0C /* LaunchScreen.storyboard */,
 				CDA4E04720D3935C00CD2A0C /* Info.plist */,
 				CD59584620E36DA8000F6427 /* Example-Bridging-Header.h */,
@@ -182,6 +185,7 @@
 				CD9DE10321135FA90074D742 /* Examples.md in Resources */,
 				CD75C8B320ED104700FB9743 /* TableView.plist in Resources */,
 				CDA4E04120D3935B00CD2A0C /* Main.storyboard in Resources */,
+				CD10F0DA211582580077CAFF /* header.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

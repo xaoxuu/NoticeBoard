@@ -162,7 +162,7 @@ open class Notice: UIWindow {
     /// 主题
     public enum Theme {
         public typealias RawValue = UIColor
-        case success, note, warning, error, normal, plain
+        case success, note, warning, error, normal, white, darkGray, plain
         public var rawValue : RawValue {
             var color = UIColor.white
             switch self {
@@ -174,6 +174,10 @@ open class Notice: UIWindow {
                 color = UIColor.ax_yellow
             case .error:
                 color = UIColor.ax_red
+            case .white:
+                color = UIColor.white
+            case .darkGray:
+                color = UIColor.darkGray
             case .plain:
                 color = UIColor.clear
             default:
@@ -271,20 +275,29 @@ open class Notice: UIWindow {
     public var blurEffectStyle: UIBlurEffectStyle? {
         didSet {
             if let blur = blurEffectStyle {
-                if self.visualEffectView == nil {
-                    let vev = UIVisualEffectView.init(frame: self.bounds)
-                    vev.effect = UIBlurEffect.init(style: blur)
-                    if blur == UIBlurEffectStyle.dark {
-                        tintColor = .white
+                // FIXME: 在iOS11之前的系统上模糊效果变成半透明，暂时不知道为什么
+                if #available(iOS 11.0, *) {
+                    if self.visualEffectView == nil {
+                        let vev = UIVisualEffectView.init(frame: self.bounds)
+                        vev.effect = UIBlurEffect.init(style: blur)
+                        if blur == UIBlurEffectStyle.dark {
+                            tintColor = .white
+                        } else {
+                            tintColor = .black
+                        }
+                        vev.layer.masksToBounds = true
+                        self.rootViewController?.view.insertSubview(vev, at: 0)
+                        if let pro = progressLayer {
+                            vev.layer.addSublayer(pro)
+                        }
+                        self.visualEffectView = vev
+                    }
+                } else {
+                    if blur == .dark {
+                        theme = .darkGray
                     } else {
-                        tintColor = .black
+                        theme = .white
                     }
-                    vev.layer.masksToBounds = true
-                    self.rootViewController?.view.insertSubview(vev, at: 0)
-                    if let pro = progressLayer {
-                        vev.layer.addSublayer(pro)
-                    }
-                    self.visualEffectView = vev
                 }
             }
         }

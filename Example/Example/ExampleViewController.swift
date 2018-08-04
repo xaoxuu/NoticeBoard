@@ -18,8 +18,11 @@ class ExampleViewController: UIViewController {
     let progressNotice = Notice()
     
     var placeholder = UIImageView()
+    let web = WKWebView()
     
     var observer : Any?
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -27,6 +30,12 @@ class ExampleViewController: UIViewController {
         
         // 加载成功后保存截图，下次启动先显示截图，加载成功后移除截图。
         setupPlaceholder()
+        
+        
+        if let path = Bundle.main.path(forResource: "header.gif", ofType: nil) {
+            web.load(URLRequest.init(url: URL.init(fileURLWithPath: path)))
+            web.scrollView.isScrollEnabled = false
+        }
         
         progressNotice.theme = .normal
         if let path = Bundle.main.path(forResource: "Examples.md", ofType: nil) {
@@ -197,8 +206,8 @@ class ExampleViewController: UIViewController {
         let w = notice.frame.width
         
         if idx == 1 {
-            let h = w/8*2
-            notice.blurEffectStyle = .light
+            let h = w * 0.25
+            notice.blurEffectStyle = .extraLight
             let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
             let ww = view.width * 0.7
             let hh = CGFloat(h)
@@ -214,28 +223,28 @@ class ExampleViewController: UIViewController {
             })
             notice.actionButton?.setTitle("→", for: .normal)
         } else if idx == 2 {
-            let h = w/8*5
-            let bg = UIImageView.init(frame: .init(x: 0, y: 0, width: w, height: h))
-            bg.image = UIImage.init(named: "firewatch")
-            bg.contentMode = .scaleAspectFill
-            bg.layer.masksToBounds = true
-            bg.layer.cornerRadius = 15
-            notice.rootViewController?.view.addSubview(bg)
-            
+            let h = w * 0.6
+            let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
+            notice.rootViewController?.view.addSubview(view)
+            web.frame = view.bounds
+            web.scrollView.contentInset.top = -44
+            web.scrollView.contentInset.bottom = -44
+            view.addSubview(web)
+            // icon
             let icon = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
             icon.image = UIImage.init(named: Bundle.appIconName())
             icon.contentMode = .scaleAspectFit
             icon.layer.masksToBounds = true
             icon.layer.cornerRadius = 15
-            bg.addSubview(icon)
-            
+            view.addSubview(icon)
+            // label
             let lb = UILabel.init(frame: .init(x: 0, y: icon.frame.maxY + 8, width: w, height: 20))
             lb.textAlignment = .center
             lb.font = UIFont.boldSystemFont(ofSize: 14)
             lb.textColor = .white
             lb.text = "\(Bundle.init(for: NoticeBoard.self).bundleName()!) \(Bundle.init(for: NoticeBoard.self).bundleShortVersionString()!)"
-            bg.addSubview(lb)
-            
+            view.addSubview(lb)
+            // button
             notice.actionButtonDidTapped(action: { (notice, sender) in
                 UIView.animate(withDuration: 0.68, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
                     if sender.transform == .identity {
@@ -247,28 +256,7 @@ class ExampleViewController: UIViewController {
             })
             notice.actionButton?.setTitle("＋", for: .normal)
             notice.actionButton?.setTitleColor(.white, for: .normal)
-        } else if idx == 3 {
-            let h = w*1.5
-            let web = WKWebView.init(frame: .init(x: 0, y: -4, width: w, height: h))
-            if let url = URL.init(string: "https://xaoxuu.com") {
-                web.load(URLRequest.init(url: url))
-                notice.rootViewController?.view.addSubview(web)
-                notice.actionButtonDidTapped(action: { (notice, sender) in
-                    notice.removeFromNoticeBoard()
-                })
-                notice.actionButton?.setTitle("✕", for: .normal)
-                notice.actionButton?.setTitleColor(.white, for: .normal)
-                notice.actionButton?.backgroundColor = UIColor.init(white: 0, alpha: 0.5)
-                var f = (notice.actionButton?.frame)!
-                f.size.width -= 10
-                f.size.height -= 10
-                f.origin.y += 5
-                f.origin.x += 5
-                notice.actionButton?.frame = f
-                notice.actionButton?.layer.cornerRadius = 0.5 * (notice.actionButton?.frame.height)!
-            }
         }
-        
         NoticeBoard.post(notice)
         
     }

@@ -100,8 +100,8 @@ notice.progress = 1
 **[👉 示例1](cmd://postcustom:1)**
 
 ```swift
-let h = w/8*2
-notice.blurEffectStyle = .light
+let h = w * 0.25
+notice.blurEffectStyle = .extraLight
 let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
 let ww = view.width * 0.7
 let hh = CGFloat(h)
@@ -109,7 +109,7 @@ let imgv = UIImageView.init(frame: .init(x: (w-ww)/2, y: (h-hh)/2, width: ww, he
 imgv.image = UIImage.init(named: "header_center")
 imgv.contentMode = .scaleAspectFit
 view.addSubview(imgv)
-notice.contentView.addSubview(view)
+notice.rootViewController?.view.addSubview(view)
 notice.actionButtonDidTapped(action: { (notice, sender) in
     if let url = URL.init(string: "https://xaoxuu.com/docs/noticeboard") {
         UIApplication.shared.openURL(url)
@@ -123,28 +123,26 @@ notice.actionButton?.setTitle("→", for: .normal)
 **[👉 示例2](cmd://postcustom:2)**
 
 ```swift
-let h = w/8*5
-let bg = UIImageView.init(frame: .init(x: 0, y: 0, width: w, height: h))
-bg.image = UIImage.init(named: "firewatch")
-bg.contentMode = .scaleAspectFill
-bg.layer.masksToBounds = true
-bg.layer.cornerRadius = 15
-notice.contentView.addSubview(bg)
-
+let h = w * 0.6
+let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
+notice.rootViewController?.view.addSubview(view)
+web.frame = .init(x: 0, y: -44, width: w, height: h+44)
+view.addSubview(web)
+// icon
 let icon = UIImageView.init(frame: .init(x: w/2 - 30, y: h/2 - 16 - 30, width: 60, height: 60))
 icon.image = UIImage.init(named: Bundle.appIconName())
 icon.contentMode = .scaleAspectFit
 icon.layer.masksToBounds = true
 icon.layer.cornerRadius = 15
-bg.addSubview(icon)
-
+view.addSubview(icon)
+// label
 let lb = UILabel.init(frame: .init(x: 0, y: icon.frame.maxY + 8, width: w, height: 20))
 lb.textAlignment = .center
 lb.font = UIFont.boldSystemFont(ofSize: 14)
 lb.textColor = .white
 lb.text = "\(Bundle.init(for: NoticeBoard.self).bundleName()!) \(Bundle.init(for: NoticeBoard.self).bundleShortVersionString()!)"
-bg.addSubview(lb)
-
+view.addSubview(lb)
+// button
 notice.actionButtonDidTapped(action: { (notice, sender) in
     UIView.animate(withDuration: 0.68, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
         if sender.transform == .identity {
@@ -160,32 +158,6 @@ notice.actionButton?.setTitleColor(.white, for: .normal)
 
 <br>
 
-**[👉 示例3](cmd://postcustom:3)**
-
-```swift
-let h = w*1.5
-let web = WKWebView.init(frame: .init(x: 0, y: -4, width: w, height: h))
-if let url = URL.init(string: "https://xaoxuu.com") {
-    web.load(URLRequest.init(url: url))
-    notice.contentView.addSubview(web)
-    notice.actionButtonDidTapped(action: { (notice, sender) in
-        notice.removeFromNoticeBoard()
-    })
-    notice.actionButton?.setTitle("✕", for: .normal)
-    notice.actionButton?.setTitleColor(.white, for: .normal)
-    notice.actionButton?.backgroundColor = UIColor.init(white: 0, alpha: 0.5)
-    var f = (notice.actionButton?.frame)!
-    f.size.width -= 10
-    f.size.height -= 10
-    f.origin.y += 5
-    f.origin.x += 5
-    notice.actionButton?.frame = f
-    notice.actionButton?.layer.cornerRadius = 0.5 * (notice.actionButton?.frame.height)!
-}
-```
-
-
-
 <br>
 
 ## 帮助
@@ -198,4 +170,4 @@ if let url = URL.init(string: "https://xaoxuu.com") {
 
 Powered by [xaoxuu](https://xaoxuu.com)
 
-<br><br><br><br>
+<br><br><br><br><br>
