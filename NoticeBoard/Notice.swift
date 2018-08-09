@@ -303,14 +303,12 @@ open class Notice: UIWindow {
     open override var frame: CGRect {
         didSet {
             updateSelfFrame()
-            if let b = board {
-                if b.layoutStyle == .tile {
-                    if frame.size.height != lastFrame.size.height {
-                        debugPrint("update frame")
-                        lastFrame = frame
-                        if let index = b.notices.index(of: self) {
-                            b.updateLayout(from: index)
-                        }
+            if board?.layoutStyle == .tile {
+                if frame.size.height != lastFrame.size.height {
+                    debugPrint("update frame")
+                    lastFrame = frame
+                    if let index = board?.notices.index(of: self) {
+                        board?.updateLayout(from: index)
                     }
                 }
             }
@@ -386,9 +384,7 @@ open class Notice: UIWindow {
     }
     
     open func removeFromNoticeBoard(){
-        if let b = board {
-            b.remove(self, animate: .slide)
-        }
+        board?.remove(self, animate: .slide)
     }
     // MARK: - private func
     
@@ -498,9 +494,7 @@ internal extension Notice {
         touchUp(sender)
         debugPrint("touchUpInside: " + (sender.titleLabel?.text)!)
         if sender == actionButton {
-            if let action = block_action {
-                action(self, sender)
-            }
+            block_action?(self, sender)
         }
         
     }
@@ -514,9 +508,7 @@ internal extension Notice {
         if sender.state == .recognized {
             let v = sender.velocity(in: sender.view)
             if allowRemoveByGesture == true && ((frame.origin.y + point.y < 0 && v.y < 0) || v.y < -1200) {
-                if let b = self.board {
-                    b.remove(self, animate: .slide)
-                }
+                board?.remove(self, animate: .slide)
             } else {
                 if let btn = self.dragButton {
                     self.touchUp(btn)
@@ -527,9 +519,7 @@ internal extension Notice {
                     self.frame = f
                 }) { (completed) in
                     if self.duration > 0 {
-                        if let b = self.board {
-                            b.post(self, duration: self.duration)
-                        }
+                        self.board?.post(self, duration: self.duration)
                     }
                     
                 }
