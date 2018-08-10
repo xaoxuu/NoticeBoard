@@ -14,7 +14,7 @@
 
 <br>
 
-#### 快速post
+### 快速post
 
 <br>
 
@@ -76,7 +76,7 @@ NoticeBoard.post(.warning, icon: img, title: "Warning", message: "Please see mor
 
 
 
-#### post进度
+### post进度
 
 设置任意一条 `notice` 实例的 `progress` 属性，即时生效。
 
@@ -93,7 +93,9 @@ notice.progress = 1
 
 <br>
 
-#### post自定义的view
+
+
+### post自定义的view
 
 <br>
 
@@ -216,6 +218,50 @@ notice.alert(options: [.fast, .lighten])
 ```swift
 notice.alert(options: [.fast, .lighten, .twice])
 ```
+
+<br>
+
+
+
+### 修改已经post出的消息
+
+<br>
+
+**[👉 示例1 连接成功](cmd://modify:101)**
+
+```swift
+modifyNotice?.title = "连接成功"
+modifyNotice?.body = "你现在可以愉快的使用了"
+modifyNotice?.theme = .success
+modifyNotice?.icon = UIImage.init(named: "alert-circle")
+NoticeBoard.post(modifyNotice!, duration: 2)
+```
+
+<br>
+
+**[👉 示例2 设备已断开](cmd://modify:102)**
+
+```swift
+modifyNotice?.title = "设备已断开"
+modifyNotice?.body = "请重新连接设备"
+modifyNotice?.theme = .error
+modifyNotice?.icon = UIImage.init(named: "alert-circle")
+modifyNotice?.allowRemoveByGesture = false
+NoticeBoard.post(modifyNotice!)
+```
+
+<br>
+
+**[👉 示例3 电量过低](cmd://modify:103)**
+
+```swift
+modifyNotice?.title = "电量过低"
+modifyNotice?.body = "电量不足10%，请及时给设备充电。"
+modifyNotice?.theme = .warning
+modifyNotice?.icon = UIImage.init(named: "alert-circle")
+NoticeBoard.post(modifyNotice!, duration: 5)
+```
+
 
 
 

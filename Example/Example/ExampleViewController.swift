@@ -84,6 +84,8 @@ class ExampleViewController: UIViewController {
                                 self!.postCustomView(idx)
                             } else if cmd == "alert" {
                                 self!.alert(idx)
+                            } else if cmd == "modify" {
+                                self!.modify(idx)
                             }
                         }
                         return false
@@ -299,6 +301,42 @@ class ExampleViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    var modifyNotice: Notice?
+    func modify(_ idx: Int){
+        func post(){
+            modifyNotice?.allowRemoveByGesture = true
+            if idx == 101 {
+                modifyNotice?.title = "连接成功"
+                modifyNotice?.body = "你现在可以愉快的使用了"
+                modifyNotice?.theme = .success
+                modifyNotice?.icon = UIImage.init(named: "alert-circle")
+                NoticeBoard.post(modifyNotice!, duration: 2)
+            } else if idx == 102 {
+                modifyNotice?.title = "设备已断开"
+                modifyNotice?.body = "请重新连接设备"
+                modifyNotice?.theme = .error
+                modifyNotice?.icon = UIImage.init(named: "alert-circle")
+                modifyNotice?.allowRemoveByGesture = false
+                NoticeBoard.post(modifyNotice!)
+            } else if idx == 103 {
+                modifyNotice?.title = "电量过低"
+                modifyNotice?.body = "电量不足10%，请及时给设备充电。"
+                modifyNotice?.theme = .warning
+                modifyNotice?.icon = UIImage.init(named: "alert-circle")
+                NoticeBoard.post(modifyNotice!, duration: 5)
+            }
+        }
+        if modifyNotice == nil {
+            modifyNotice = Notice()
+            post()
+        } else {
+            UIView.animate(withDuration: 0.5) {
+                post()
+            }
+        }
+        
     }
     
 }
