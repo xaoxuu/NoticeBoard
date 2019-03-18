@@ -133,14 +133,14 @@ class ExampleViewController: UIViewController {
         // loading
         let w = placeholder.frame.width
         let h = placeholder.frame.height
-        let loadingView = UIActivityIndicatorView.init(activityIndicatorStyle: .white)
+        let loadingView = UIActivityIndicatorView.init(style: .white)
         loadingView.frame = .init(x: w/2, y: h/2, width: 0, height: 0)
         placeholder.addSubview(loadingView)
         loadingView.startAnimating()
     }
     
     func saveImage(_ image: UIImage){
-        if let data = UIImagePNGRepresentation(image) {
+        if let data = image.pngData() {
             let path = NSString.init(string: "screenshot.png").docPath() as String
             let url = URL.init(fileURLWithPath: path)
             do {

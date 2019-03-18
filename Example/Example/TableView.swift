@@ -28,7 +28,7 @@ class TableView: UITableView, UITableViewDataSource, UITableViewDelegate {
         self.reloadData()
         self.scrollToRow(at: .init(row: 0, section: 0), at: .top, animated: false)
     }
-    override init(frame: CGRect, style: UITableViewStyle) {
+    override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         dataSource = self
         delegate = self

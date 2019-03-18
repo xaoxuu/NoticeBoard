@@ -21,7 +21,9 @@ public extension NoticeBoard {
         case tile,replace,remove,overlay,stack
     }
     
-    public enum Level: UIWindowLevel {
+    public enum Level: CGFloat {
+//        public typealias RawValue = CGFloat
+        
         case low = 4000
         case normal = 4100
         case high = 4200
@@ -100,7 +102,7 @@ open class NoticeBoard {
     
     // init
     init() {
-        NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange(_:)), name: .UIDeviceOrientationDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.deviceOrientationDidChange(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     // deinit
@@ -142,7 +144,7 @@ public extension NoticeBoard {
     ///   - message: 消息内容
     ///   - duration: 持续时间
     @discardableResult
-    public class func post(_ theme: UIBlurEffectStyle, message: String?, duration: TimeInterval) -> Notice {
+    public class func post(_ theme: UIBlurEffect.Style, message: String?, duration: TimeInterval) -> Notice {
         return post(theme, icon: nil, title: nil, message: message, duration: duration)
     }
     
@@ -166,7 +168,7 @@ public extension NoticeBoard {
     ///   - message: 消息内容
     ///   - duration: 持续时间
     @discardableResult
-    public class func post(_ theme: UIBlurEffectStyle, title: String?, message: String?, duration: TimeInterval) -> Notice {
+    public class func post(_ theme: UIBlurEffect.Style, title: String?, message: String?, duration: TimeInterval) -> Notice {
         return post(theme, icon: nil, title: title, message: message, duration: duration)
     }
     
@@ -200,7 +202,7 @@ public extension NoticeBoard {
     ///   - duration: 持续时间
     ///   - action: 按钮事件
     @discardableResult
-    public static func post(_ theme: UIBlurEffectStyle, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
+    public static func post(_ theme: UIBlurEffect.Style, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
         let notice = Notice.init(title: title, icon: icon, body: message)
         notice.blurEffectStyle = theme
         if let ac = action {

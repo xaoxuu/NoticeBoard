@@ -129,7 +129,7 @@ open class Notice: UIWindow {
     }
     
     /// 模糊效果
-    public var blurEffectStyle: UIBlurEffectStyle? {
+    public var blurEffectStyle: UIBlurEffect.Style? {
         didSet {
             if let blur = blurEffectStyle {
                 // FIXME: 在iOS11之前的系统上模糊效果变成半透明，暂时不知道为什么
@@ -137,7 +137,7 @@ open class Notice: UIWindow {
                     if self.visualEffectView == nil {
                         let vev = UIVisualEffectView.init(frame: self.bounds)
                         vev.effect = UIBlurEffect.init(style: blur)
-                        if blur == UIBlurEffectStyle.dark {
+                        if blur == UIBlurEffect.Style.dark {
                             tintColor = .white
                         } else {
                             tintColor = .black
@@ -273,7 +273,7 @@ open class Notice: UIWindow {
     
     public var level = NoticeBoard.Level.normal {
         didSet {
-            windowLevel = level.rawValue
+            windowLevel = UIWindow.Level.init(level.rawValue)
         }
     }
     
@@ -342,7 +342,7 @@ open class Notice: UIWindow {
         func animation(_ animation: CABasicAnimation) {
             animation.autoreverses = true
             animation.isRemovedOnCompletion = true
-            animation.timingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionEaseInEaseOut)
+            animation.timingFunction = CAMediaTimingFunction.init(name: CAMediaTimingFunctionName.easeInEaseOut)
             // default
             // normally
             animation.duration = 0.8
@@ -428,7 +428,7 @@ open class Notice: UIWindow {
     public override init(frame: CGRect) {
         
         super.init(frame: frame)
-        windowLevel = level.rawValue
+        windowLevel = UIWindow.Level.init(level.rawValue)
         
         layer.shadowRadius = 12
         layer.shadowOffset = .init(width: 0, height: 8)

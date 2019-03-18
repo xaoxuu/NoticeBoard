@@ -164,7 +164,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
     public override init(frame: CGRect) {
         
         super.init(frame: frame)
-        windowLevel = 9000
+        windowLevel = UIWindow.Level(rawValue: 9000)
         
         tintColor = axBlueColor(alpha: 1)
         
@@ -314,7 +314,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         }) { (completed) in
             
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(note:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(note:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         // table view
         table = loadTableView()
@@ -689,7 +689,7 @@ extension DebuggerWindow{
     @objc func keyboardWillShow(note: Notification){
         //获取键盘的高度
         if let userinfo = note.userInfo {
-            let value = userinfo[UIKeyboardFrameEndUserInfoKey]
+            let value = userinfo[UIResponder.keyboardFrameEndUserInfoKey]
             if let keyboardRect = value as? CGRect {
                 keyboardHeight = keyboardRect.height
                 updateTableHeight()
