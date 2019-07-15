@@ -12,10 +12,10 @@ import UIKit
 // MARK: - 定义
 public extension Notice {
     /// 当notice被移除时的通知
-    public static let didRemoved = NSNotification.Name.init("noticeDidRemoved")
+    static let didRemoved = NSNotification.Name.init("noticeDidRemoved")
     
     /// 主题
-    public enum Theme: String {
+    enum Theme: String {
         
         case success = "#7CC353"
         case warning = "#FFEB3B"
@@ -38,7 +38,7 @@ public extension Notice {
         }
         
     }
-    public struct NoticeAlertOptions : OptionSet {
+    struct NoticeAlertOptions : OptionSet {
         public var rawValue: UInt
         
         public init(rawValue: UInt) {
@@ -307,7 +307,7 @@ open class Notice: UIWindow {
                 if frame.size.height != lastFrame.size.height {
                     debugPrint("update frame")
                     lastFrame = frame
-                    if let index = board?.notices.index(of: self) {
+                    if let index = board?.notices.firstIndex(of: self) {
                         board?.updateLayout(from: index)
                     }
                 }
@@ -446,7 +446,7 @@ open class Notice: UIWindow {
         
     }
     
-    convenience init() {
+    public convenience init() {
         let width = min(UIScreen.main.bounds.size.width - 2 * margin, maxWidth)
         let marginX = (UIScreen.main.bounds.size.width - width) / 2
         let preferredFrame = CGRect.init(x: marginX, y: margin, width: width, height: titleHeight)
@@ -528,7 +528,7 @@ internal extension Notice {
         
     }
     
-    internal func translate(_ animateStyle: NoticeBoard.AnimationStyle, _ buildInOut: NoticeBoard.BuildInOut){
+    func translate(_ animateStyle: NoticeBoard.AnimationStyle, _ buildInOut: NoticeBoard.BuildInOut){
         switch animateStyle {
         case .slide:
             move(buildInOut)
@@ -537,7 +537,7 @@ internal extension Notice {
         }
     }
     
-    internal func move(_ animate: NoticeBoard.BuildInOut){
+    func move(_ animate: NoticeBoard.BuildInOut){
         switch animate {
         case .buildIn:
             transform = .identity
@@ -549,7 +549,7 @@ internal extension Notice {
         }
     }
     
-    internal func fade(_ animate: NoticeBoard.BuildInOut){
+    func fade(_ animate: NoticeBoard.BuildInOut){
         switch animate {
         case .buildIn:
             self.alpha = 1

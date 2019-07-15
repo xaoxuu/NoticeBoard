@@ -14,6 +14,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CD25CA3E22DC0E2000F12E3E /* NoticeBoard.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = NoticeBoard.podspec; sourceTree = "<group>"; };
 		CD61A3AD20DA4FCD00498146 /* Notice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notice.swift; sourceTree = "<group>"; };
 		CDA4E00A20D38BC700CD2A0C /* NoticeBoard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NoticeBoard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA4E00D20D38BC700CD2A0C /* NoticeBoard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoticeBoard.h; sourceTree = "<group>"; };
@@ -36,6 +37,7 @@
 		CDA4E00020D38BC700CD2A0C = {
 			isa = PBXGroup;
 			children = (
+				CD25CA3E22DC0E2000F12E3E /* NoticeBoard.podspec */,
 				CDA4E00C20D38BC700CD2A0C /* NoticeBoard */,
 				CDA4E00B20D38BC700CD2A0C /* Products */,
 			);
@@ -295,7 +297,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -323,7 +325,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
