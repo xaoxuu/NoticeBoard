@@ -246,7 +246,7 @@ modifyNotice?.title = "设备已断开"
 modifyNotice?.body = "请重新连接设备"
 modifyNotice?.theme = .error
 modifyNotice?.icon = UIImage.init(named: "alert-circle")
-modifyNotice?.allowRemoveByGesture = false
+modifyNotice?.enableGesture = false
 NoticeBoard.post(modifyNotice!)
 ```
 

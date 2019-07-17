@@ -1,0 +1,6 @@
+framework module Inspire {
+  umbrella header "Inspire-umbrella.h"
+
+  export *
+  module * { export * }
+}

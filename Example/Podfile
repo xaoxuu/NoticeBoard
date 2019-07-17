@@ -2,14 +2,15 @@ platform :ios, '9.0'
 use_frameworks!
 
 target 'Example' do
-
-pod 'NoticeBoard',   :path => '..'
-
-pod 'AXKit', '0.3.4'
-pod 'AXTableKit', '0.0.3'
-
-pod 'MarkdownView', '1.3.0'
-
+    
+    pod 'NoticeBoard',   :path => '..'
+    
+    pod 'AXKit', '0.3.10'
+    pod 'AXTableKit', '0.0.3'
+    
+    pod 'MarkdownView', '1.3.0'
+    pod 'Inspire', :path => "../../Inspire/"
+    
 end
 
 

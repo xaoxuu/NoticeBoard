@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NoticeBoard
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,7 +17,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+//        Notice.config.titleFont = .boldSystemFont(ofSize: 44)
+//        Notice.config.bodyFont = .boldSystemFont(ofSize: 28)
+//        let n = Notice()
+//        NoticeBoard.shared.notice(identifier: "hehe") ?? Notice(scheme: .error, title: "hehe", message: "h")
         
+//        NoticeBoard.shared.post(.error, message: "").identifier("hehe").didTapped {
+//
+//        }.didDisappear {
+//
+//        }
+//        Notice.config.bodyMaxLines = 2
+//        Notice.config.iconSize = .init(width: 22, height: 22)
+        
+        
+        
+        
+        Notice.config.loadSubviews { (n, s, m) in
+            n.setupViews(scene: s, model: m)
+            n.imageView.image = UIImage(named: "icon_download")
+        }
+//        Notice.config.setupModel { (n, s, m) in
+//            
+//        }
         
         return true
     }

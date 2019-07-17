@@ -74,7 +74,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         case icon = 22
         
         case duration = 30
-        case color = 31
+        case scheme = 31
         case blur = 32
         case level = 33
         case layout = 34
@@ -95,8 +95,8 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
                 return "cache.icon"
             case .duration:
                 return "cache.duration"
-            case .color:
-                return "cache.color"
+            case .scheme:
+                return "cache.scheme"
             case .blur:
                 return "cache.blur"
             case .level:
@@ -116,8 +116,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
     lazy var s_duration = UISlider()
 
     lazy var seg_icon = UISegmentedControl.init()
-    lazy var seg_color = UISegmentedControl.init()
-    lazy var seg_blur = UISegmentedControl.init()
+    lazy var seg_scheme = UISegmentedControl.init()
     lazy var seg_level = UISegmentedControl.init()
     lazy var seg_layout = UISegmentedControl.init()
     lazy var seg_bg = UISegmentedControl.init()
@@ -193,7 +192,7 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
             UserDefaults.standard.set("this is body", forKey: Tag.body.cacheKey)
             UserDefaults.standard.set(1, forKey: Tag.icon.cacheKey)
             UserDefaults.standard.set(2, forKey: Tag.duration.cacheKey)
-            UserDefaults.standard.set(1, forKey: Tag.color.cacheKey)
+            UserDefaults.standard.set(1, forKey: Tag.scheme.cacheKey)
             UserDefaults.standard.set(1, forKey: Tag.level.cacheKey)
         }
         
@@ -258,29 +257,14 @@ class DebuggerWindow: UIWindow,UITextViewDelegate,MyTableViewDelegate {
         // color
         f.origin.y += f.size.height + margin
         f.origin.x = margin
-        seg_color = loadSegment(y: newLine(), title: "color", items: ["clear", "normal", "warning", "error"], tag: Tag.color.rawValue)
-        seg_color.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.color.cacheKey)
-        vc.view.addSubview(seg_color)
-        
-        
-        // blur
-        f.origin.y += f.size.height + margin
-        seg_blur = loadSegment(y: newLine(), title: "blur", items: ["none", "light", "extraLight", "dark"], tag: Tag.blur.rawValue)
-        seg_blur.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.blur.cacheKey)
-        vc.view.addSubview(seg_blur)
-        
-        
-        
-        // level
-        f.origin.y += f.size.height + margin
-        seg_level = loadSegment(y: newLine(), title: "level", items: ["low", "normal", "high"], tag: Tag.level.rawValue)
-        seg_level.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.level.cacheKey)
-        vc.view.addSubview(seg_level)
+        seg_scheme = loadSegment(y: newLine(), title: "scheme", items: ["plain", "loading", "success", "warning", "error"], tag: Tag.scheme.rawValue)
+        seg_scheme.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.scheme.cacheKey)
+        vc.view.addSubview(seg_scheme)
         
         
         // layout
         f.origin.y += f.size.height + margin
-        seg_layout = loadSegment(y: newLine(), title: "layout", items: ["tile", "replace", "remove", "stack"], tag: Tag.layout.rawValue)
+        seg_layout = loadSegment(y: newLine(), title: "layout", items: ["tile", "stack"], tag: Tag.layout.rawValue)
         seg_layout.selectedSegmentIndex = UserDefaults.standard.integer(forKey: Tag.layout.cacheKey)
         vc.view.addSubview(seg_layout)
         
@@ -542,74 +526,44 @@ extension DebuggerWindow{
     @objc func tapBtn(_ sender: UIButton) {
         if let t = sender.titleLabel?.text {
             if t == "post" || t == "progress" {
-                let n = Notice.init(title: tf_title.text, icon: nil, body: tv_body.text)
-                if let iconName = seg_icon.titleForSegment(at: seg_icon.selectedSegmentIndex) {
-                    if let i = UIImage.init(named: iconName) {
-                        n.icon = i
-                    }
-                }
+//                let n = Notice(scheme: .plain, title: tf_title.text, message: tv_body.text)
+//                if let iconName = seg_icon.titleForSegment(at: seg_icon.selectedSegmentIndex) {
+//                    if let i = UIImage.init(named: iconName) {
+////                        n.icon = i
+//                    }
+//                }
+//
                 
-                let duration = TimeInterval(s_duration.value)
-                func setTheme(notice: Notice, seg: UISegmentedControl){
-                    let selectedSegmentIndex = seg.selectedSegmentIndex
-                    if seg == seg_color {
-                        if selectedSegmentIndex == 1 {
-                            notice.theme = .normal
-                        } else if selectedSegmentIndex == 2 {
-                            notice.theme = .warning
-                        } else if selectedSegmentIndex == 3 {
-                            notice.theme = .error
-                        }
-                    } else if seg == seg_blur {
-                        if selectedSegmentIndex == 1 {
-                            notice.blurEffectStyle = .light
-                        } else if selectedSegmentIndex == 2 {
-                            notice.blurEffectStyle = .extraLight
-                        } else if selectedSegmentIndex == 3 {
-                            notice.blurEffectStyle = .dark
-                        }
-                    }
+                var n: Notice
+                switch seg_scheme.selectedSegmentIndex {
+                case 1:
+                    n = Notice(scene: .loading, title: tf_title.text, message: tv_body.text)
+                case 2:
+                    n = Notice(scene: .success, title: tf_title.text, message: tv_body.text)
+                case 3:
+                    n = Notice(scene: .warning, title: tf_title.text, message: tv_body.text)
+                case 4:
+                    n = Notice(scene: .error, title: tf_title.text, message: tv_body.text)
+                default:
+                    n = Notice(scene: .default, title: tf_title.text, message: tv_body.text)
+                } 
+                n.duration(TimeInterval(s_duration.value))
+                n.didTapped { [weak n] in
+                    debugPrint("点击了")
+                    n?.alert()
+                }.didDisappear {
+                    debugPrint("消失了")
                 }
-                setTheme(notice: n, seg: seg_color)
-                setTheme(notice: n, seg: seg_blur)
+                if seg_layout.selectedSegmentIndex == 1 {
+                    NoticeBoard.shared.layout = .stack
+                } else {
+                    NoticeBoard.shared.layout = .tile
+                }
+                NoticeBoard.shared.post(n)
                 
-                func level(index: Int) -> NoticeBoard.Level {
-                    if index == 0 {
-                        return NoticeBoard.Level.low
-                    } else if index == 1 {
-                        return NoticeBoard.Level.normal
-                    } else if index == 2 {
-                        return NoticeBoard.Level.high
-                    }
-                    return NoticeBoard.Level.normal
-                }
-                n.level = level(index: seg_level.selectedSegmentIndex)
-                
-                func layout(index: Int) -> NoticeBoard.LayoutStyle {
-                    if index == 0 {
-                        return NoticeBoard.LayoutStyle.tile
-                    } else if index == 1 {
-                        return NoticeBoard.LayoutStyle.replace
-                    } else if index == 2 {
-                        return NoticeBoard.LayoutStyle.remove
-                    } else if index == 3 {
-                        return NoticeBoard.LayoutStyle.stack
-                    }
-                    return NoticeBoard.LayoutStyle.tile
-                }
-                if t == "progress" {
-                    updateProgress(notice: n, pro: 0, showTitle: n.title.count == 0)
-                }
-                
-                NoticeBoard.shared.layoutStyle = layout(index: seg_layout.selectedSegmentIndex)
-                NoticeBoard.shared.post(n, duration: duration)
-                
-                n.actionButtonDidTapped { (notice, sender) in
-                    notice.body = notice.body + "\n\(Date.init().description(with: Locale.current)) 点击了\"→\""
-                }
                 
             } else if t == "clean" {
-                NoticeBoard.clean()
+                NoticeBoard.shared.remove(.all)
             }
             
         }
@@ -670,22 +624,6 @@ extension DebuggerWindow{
     }
     
     
-    
-    @objc func updateProgress(notice: Notice, pro: CGFloat, showTitle: Bool){
-        notice.progress = pro
-        if showTitle {
-            notice.title = "已完成：\(Int(pro*100))%\n"
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            if pro <= 1 {
-                self.updateProgress(notice: notice, pro: pro + 0.02, showTitle: showTitle)
-            } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    NoticeBoard.remove(notice)
-                }
-            }
-        }
-    }
     @objc func keyboardWillShow(note: Notification){
         //获取键盘的高度
         if let userinfo = note.userInfo {

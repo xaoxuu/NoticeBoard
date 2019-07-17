@@ -11,4 +11,7 @@ Pod::Spec.new do |s|
   s.source_files = 'NoticeBoard/*.swift'
 
   s.requires_arc = true
+
+  s.dependency 'Inspire' 
+
 end

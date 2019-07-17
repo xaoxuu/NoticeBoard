@@ -7,44 +7,36 @@
 //
 
 import UIKit
+import Inspire
 
 // MARK: - 定义
 public extension NoticeBoard {
+    
     /// 布局样式
     ///
     /// - tile:  平铺，默认（所有通知都可见，但是通知过多会超出屏幕）
-    /// - replace: 取代旧的通知（旧的采用fade动画淡出）
-    /// - remove: 移除旧的通知（旧的采用moveout动画移出屏幕）
-    /// - overlay: 覆盖在旧的通知上层（切勿堆积过多）
     /// - stack: 堆叠（最新的通知会遮挡旧的通知）
-    enum LayoutStyle {
-        case tile,replace,remove,overlay,stack
+    enum Layout {
+        case tile,stack
     }
     
-    enum Level: CGFloat {
-        
-        case low = 4000
-        case normal = 4100
-        case high = 4200
-        case veryHigh = 4300
-        
-        var stringValue : String {
-            switch self {
-            case .low:
-                return "low"
-            case .normal:
-                return "normal"
-            case .high:
-                return "high"
-            case .veryHigh:
-                return "veryHigh"
-            }
-        }
+    /// 离开动画还是进入动画
+    ///
+    /// - buildIn: buildIn动画
+    /// - buildOut: buildOut动画
+    enum BuildInOut {
+        case `in`, out
     }
+    
+    enum NoticeIndex {
+        case first, last, all
+    }
+    
 }
 
+
 /// NoticeBoard: 用来管理多个Notice视图的管理器，不在视图层级中显示。
-open class NoticeBoard {
+public class NoticeBoard {
     
     /// shared instance
     public static let shared = NoticeBoard()
@@ -53,50 +45,92 @@ open class NoticeBoard {
     public var notices = [Notice]()
     
     /// 布局样式
-    public var layoutStyle = LayoutStyle.tile
+    public var layout = Layout.tile
     
-    /// post一条通知
-    ///
-    /// - Parameters:
-    ///   - notice: 通知
-    ///   - duration: 持续时间
-    open class func post(_ notice: Notice, duration: TimeInterval = 0){
-        shared.post(notice, duration: duration)
-    }
-    
-    /// post一条通知
-    ///
-    /// - Parameters:
-    ///   - notice: 通知
-    ///   - duration: 持续时间
-    open func post(_ notice: Notice, duration: TimeInterval = 0){
-        post(notice, duration: duration, animate:.slide)
-    }
-    
-    /// 移除所有通知
-    open class func clean() {
-        shared.clean(animate: .slide, delay: 0)
-    }
-    
-    /// 移除所有通知
-    open func clean() {
-        clean(animate: .slide, delay: 0)
-    }
-    
-    /// 移除某个通知
-    ///
-    /// - Parameters:
-    ///   - notice: 通知
-    open class func remove(_ notice: Notice?) {
-        shared.remove(notice, animate: .slide, delay: 0)
+    @discardableResult
+    public func post(_ notice: Notice) -> Notice {
+        // FIXME: 弹出
+        // 如果已经显示在页面上，就重新设置消失的时间
+        if notices.contains(notice) {
+            notice.startCountdown()
+        } else {
+            //            notice.updateContentFrame()
+            // 准备显示
+            notice.makeKeyAndVisible()
+//            UIWindow.mainWindow.makeKeyAndVisible() 
+            notice.layoutIfNeeded()
+            notice.translate(.out)
+            // 进入的动画
+            DispatchQueue.main.async {
+                UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
+                    notice.translate(.in)
+                    if self.notices.contains(notice) == false {
+                        self.notices.append(notice)
+                    }
+                    self.privUpdateLayout(from: 0)
+                }) { (completed) in
+                    notice.startCountdown()
+                }
+            }
+        }
+        return notice
     }
     
     /// 移除某个通知
     ///
     /// - Parameters:
     ///   - notice: 通知
-    open func remove(_ notice: Notice?) {
-        remove(notice, animate: .slide, delay: 0)
+    public func remove(_ notice: Notice?) {
+        if let bar = notice {
+            if bar.isHidden == false {
+                UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
+                    bar.translate(.out)
+                }) { (completed) in
+                    bar.removeFromSuperview()
+                }
+            }
+            if let index = notices.firstIndex(of: bar) {
+                notices.remove(at: index)
+                privUpdateLayout(from: index)
+                NotificationCenter.default.post(name: Notice.didRemoved, object: notice)
+            }
+        }
+    }
+    
+    public func remove(_ identifier: String) {
+        for n in notices(identifier: identifier) {
+            remove(n)
+        }
+    }
+    
+    public func remove(_ index: NoticeIndex) {
+        switch index {
+        case .first:
+            if let n = notices.first {
+                remove(n)
+            }
+        case .last:
+            if let n = notices.last {
+                remove(n)
+            }
+        case .all:
+            for n in notices {
+                remove(n)
+            }
+        }
+    }
+    
+    
+    /// 获取已经post出的notice实例
+    /// - Parameter identifier: id标识
+    public func notices(identifier: String) -> [Notice] {
+        var ns = [Notice]()
+        for n in notices {
+            if n.identifier == identifier {
+                ns.append(n)
+            }
+        }
+        return ns
     }
     
     // init
@@ -112,103 +146,40 @@ open class NoticeBoard {
 }
 
 
-// MARK: - 快速post
+// MARK: - 快速post和remove
 public extension NoticeBoard {
-    
-    /// post一条纯文本消息，默认主题
-    ///
-    /// - Parameters:
-    ///   - message: 消息内容
-    ///   - duration: 持续时间
+    // MARK: POST
     @discardableResult
-    class func post(_ message: String?, duration: TimeInterval = 0) -> Notice {
-        return post(.light, icon: nil, title: nil, message: message, duration: duration)
+    class func post(_ notice: Notice) -> Notice {
+        return shared.post(notice)
     }
     
-    /// post一条消息（纯色主题+消息内容）
-    ///
-    /// - Parameters:
-    ///   - theme: 主题
-    ///   - message: 消息内容
-    ///   - duration: 持续时间
     @discardableResult
-    class func post(_ theme: Notice.Theme, message: String?, duration: TimeInterval) -> Notice {
-        return post(theme, icon: nil, title: nil, message: message, duration: duration)
+    func post(_ scene: Notice.Scene = .default, title: String? = nil, message: String? = nil, icon: UIImage? = nil) -> Notice {
+        return post(Notice(scene: scene, title: title, message: message, icon: icon))
     }
     
-    /// post一条消息（UIBlurEffect主题+消息内容）
-    ///
-    /// - Parameters:
-    ///   - blurEffectStyle: 主题
-    ///   - message: 消息内容
-    ///   - duration: 持续时间
     @discardableResult
-    class func post(_ theme: UIBlurEffect.Style, message: String?, duration: TimeInterval) -> Notice {
-        return post(theme, icon: nil, title: nil, message: message, duration: duration)
+    class func post(_ scene: Notice.Scene = .default, title: String? = nil, message: String? = nil, icon: UIImage? = nil) -> Notice {
+        return shared.post(scene, title: title, message: message, icon: icon)
     }
     
-    /// post一条消息（纯色主题+消息标题+消息内容）
+    
+    // MARK: REMOVE
+    /// 移除某个通知
     ///
     /// - Parameters:
-    ///   - theme: 主题
-    ///   - title: 标题
-    ///   - message: 消息内容
-    ///   - duration: 持续时间
-    @discardableResult
-    class func post(_ theme: Notice.Theme, title: String?, message: String?, duration: TimeInterval) -> Notice {
-        return post(theme, icon: nil, title: title, message: message, duration: duration)
+    ///   - notice: 通知
+    class func remove(_ notice: Notice?) {
+        shared.remove(notice)
     }
     
-    /// post一条消息（UIBlurEffect主题+消息标题+消息内容）
-    ///
-    /// - Parameters:
-    ///   - blurEffectStyle: 主题
-    ///   - title: 标题
-    ///   - message: 消息内容
-    ///   - duration: 持续时间
-    @discardableResult
-    class func post(_ theme: UIBlurEffect.Style, title: String?, message: String?, duration: TimeInterval) -> Notice {
-        return post(theme, icon: nil, title: title, message: message, duration: duration)
+    class func remove(_ identifier: String) {
+        shared.remove(identifier)
     }
     
-    /// post一条消息（纯色主题+icon+消息标题+消息内容+按钮）
-    ///
-    /// - Parameters:
-    ///   - theme: 主题
-    ///   - icon: 图标
-    ///   - title: 标题
-    ///   - message: 消息内容
-    ///   - duration: 持续时间
-    ///   - action: 按钮事件
-    @discardableResult
-    static func post(_ theme: Notice.Theme, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
-        let notice = Notice.init(title: title, icon: icon, body: message)
-        notice.theme = theme
-        if let ac = action {
-            notice.actionButtonDidTapped(action: ac)
-        }
-        shared.post(notice, duration: duration)
-        return notice
-    }
-    
-    /// post一条消息（UIBlurEffectStyle主题+icon+消息标题+消息内容+按钮）
-    ///
-    /// - Parameters:
-    ///   - blurEffectStyle: 主题
-    ///   - icon: 图标
-    ///   - title: 标题
-    ///   - message: 消息内容
-    ///   - duration: 持续时间
-    ///   - action: 按钮事件
-    @discardableResult
-    static func post(_ theme: UIBlurEffect.Style, icon: UIImage?, title: String?, message: String?, duration: TimeInterval, action: ((Notice, UIButton) -> Void)? = nil) -> Notice {
-        let notice = Notice.init(title: title, icon: icon, body: message)
-        notice.blurEffectStyle = theme
-        if let ac = action {
-            notice.actionButtonDidTapped(action: ac)
-        }
-        shared.post(notice, duration: duration)
-        return notice
+    class func remove(_ index: NoticeIndex) {
+        shared.remove(index)
     }
     
 }
@@ -216,87 +187,22 @@ public extension NoticeBoard {
 // MARK: - post / remove / update layout
 internal extension NoticeBoard {
     
-    func post(_ notice: Notice, duration: TimeInterval, animate: AnimationStyle) {
-        // 如果已经显示在页面上，就重新设置消失的时间
-        if notices.contains(notice) {
-            DispatchWorkItem.cancel(notice.workItem)
-            if duration > 0 {
-                weak var n = notice
-                notice.workItem = DispatchWorkItem.postpone(duration, block: {
-                    self.remove(n, animate: animate)
-                })
-            }
-        } else {
-            if layoutStyle == .remove {
-                clean(animate: animate, delay: 0)
-            }
-            notice.updateContentFrame()
-            notice.translate(animate, .buildOut)
-            notice.duration = duration
-            DispatchQueue.main.async {
-                UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
-                    notice.makeKeyAndVisible()
-                    UIWindow.mainWindow.makeKeyAndVisible()
-                    notice.translate(animate, .buildIn)
-                    if self.layoutStyle == .replace {
-                        self.clean(animate: .fade, delay: 0.5)
-                    }
-                    if self.notices.contains(notice) == false {
-                        self.notices.append(notice)
-                    }
-                    self.updateLayout(from: 0)
-                }) { (completed) in
-                    DispatchWorkItem.cancel(notice.workItem)
-                    if duration > 0 {
-                        weak var n = notice
-                        notice.workItem = DispatchWorkItem.postpone(duration, block: {
-                            self.remove(n, animate: animate)
-                        })
-                    }
-                }
-            }
-        }
-    }
-    
-    func clean(animate: AnimationStyle, delay: TimeInterval) {
-        if let notice = notices.first {
-            remove(notice, animate: animate, delay: delay)
-            clean(animate: animate, delay: delay)
-        }
-    }
-    
-    func remove(_ notice: Notice?, animate: AnimationStyle, delay: TimeInterval = 0) {
-        if let bar = notice {
-            if bar.isHidden == false {
-                UIView.animate(withDuration: 1, delay: delay, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
-                    bar.translate(animate, .buildOut)
-                }) { (completed) in
-                    bar.removeFromSuperview()
-                }
-            }
-            if let index = notices.firstIndex(of: bar) {
-                notices.remove(at: index)
-                updateLayout(from: index)
-                NotificationCenter.default.post(name: Notice.didRemoved, object: notice)
-            }
-        }
-    }
-    
-    func updateLayout(from: Int){
+    func privUpdateLayout(from: Int){
         for i in from ..< notices.count {
-            var y = margin
+            let n = notices[i]
+            var y = Notice.config.margin
             if i > 0 {
-                if layoutStyle == .stack {
+                if layout == .stack {
                     y += notices[i-1].frame.minY
-                } else if layoutStyle == .tile {
+                } else if layout == .tile {
                     y += notices[i-1].frame.maxY
                 } else {
-                    y = topSafeMargin()
+                    y += Inspire.shared.screen.safeAreaInsets.top
                 }
             } else {
-                y = topSafeMargin()
+                y += Inspire.shared.screen.safeAreaInsets.top
             }
-            let n = notices[i]
+            
             UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
                 n.originY = y
             }) { (completed) in
@@ -316,7 +222,7 @@ fileprivate extension NoticeBoard {
                     notice.setNeedsLayout()
                 }
             }, completion: nil)
-            self.updateLayout(from: 0)
+            self.privUpdateLayout(from: 0)
         }
     }
     

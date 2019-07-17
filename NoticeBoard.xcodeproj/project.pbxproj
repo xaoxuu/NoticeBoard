@@ -7,20 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6545676FB5F51FAD3F087737 /* Pods_NoticeBoard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB45522CEEDB19E6ABB45C8C /* Pods_NoticeBoard.framework */; };
 		CD61A3AE20DA4FCD00498146 /* Notice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD61A3AD20DA4FCD00498146 /* Notice.swift */; };
 		CDA4E00F20D38BC700CD2A0C /* NoticeBoard.h in Headers */ = {isa = PBXBuildFile; fileRef = CDA4E00D20D38BC700CD2A0C /* NoticeBoard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CDA4E02C20D38C5B00CD2A0C /* NoticeBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA4E02B20D38C5B00CD2A0C /* NoticeBoard.swift */; };
-		CDA4E05020D399CE00CD2A0C /* NoticeBoard+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA4E04F20D399CE00CD2A0C /* NoticeBoard+Helper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		451C882E6C922390CA26B750 /* Pods-NoticeBoard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NoticeBoard.release.xcconfig"; path = "Pods/Target Support Files/Pods-NoticeBoard/Pods-NoticeBoard.release.xcconfig"; sourceTree = "<group>"; };
+		5D7AADF51CE950B16DFBB15D /* Pods-NoticeBoard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NoticeBoard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-NoticeBoard/Pods-NoticeBoard.debug.xcconfig"; sourceTree = "<group>"; };
 		CD25CA3E22DC0E2000F12E3E /* NoticeBoard.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = NoticeBoard.podspec; sourceTree = "<group>"; };
 		CD61A3AD20DA4FCD00498146 /* Notice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notice.swift; sourceTree = "<group>"; };
 		CDA4E00A20D38BC700CD2A0C /* NoticeBoard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NoticeBoard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDA4E00D20D38BC700CD2A0C /* NoticeBoard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoticeBoard.h; sourceTree = "<group>"; };
 		CDA4E00E20D38BC700CD2A0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CDA4E02B20D38C5B00CD2A0C /* NoticeBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeBoard.swift; sourceTree = "<group>"; };
-		CDA4E04F20D399CE00CD2A0C /* NoticeBoard+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NoticeBoard+Helper.swift"; sourceTree = "<group>"; };
+		FB45522CEEDB19E6ABB45C8C /* Pods_NoticeBoard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NoticeBoard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -28,18 +30,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6545676FB5F51FAD3F087737 /* Pods_NoticeBoard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		111C0AB189865904EFA3C57F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5D7AADF51CE950B16DFBB15D /* Pods-NoticeBoard.debug.xcconfig */,
+				451C882E6C922390CA26B750 /* Pods-NoticeBoard.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		4DDC8D3CB5AD72B0B2109400 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FB45522CEEDB19E6ABB45C8C /* Pods_NoticeBoard.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		CDA4E00020D38BC700CD2A0C = {
 			isa = PBXGroup;
 			children = (
 				CD25CA3E22DC0E2000F12E3E /* NoticeBoard.podspec */,
 				CDA4E00C20D38BC700CD2A0C /* NoticeBoard */,
 				CDA4E00B20D38BC700CD2A0C /* Products */,
+				111C0AB189865904EFA3C57F /* Pods */,
+				4DDC8D3CB5AD72B0B2109400 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,7 +78,6 @@
 			children = (
 				CDA4E00D20D38BC700CD2A0C /* NoticeBoard.h */,
 				CDA4E02B20D38C5B00CD2A0C /* NoticeBoard.swift */,
-				CDA4E04F20D399CE00CD2A0C /* NoticeBoard+Helper.swift */,
 				CD61A3AD20DA4FCD00498146 /* Notice.swift */,
 				CDA4E00E20D38BC700CD2A0C /* Info.plist */,
 			);
@@ -81,10 +102,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CDA4E01220D38BC700CD2A0C /* Build configuration list for PBXNativeTarget "NoticeBoard" */;
 			buildPhases = (
+				B4B012EC9B4B5DCA2156D8A8 /* [CP] Check Pods Manifest.lock */,
 				CDA4E00520D38BC700CD2A0C /* Sources */,
 				CDA4E00620D38BC700CD2A0C /* Frameworks */,
 				CDA4E00720D38BC700CD2A0C /* Headers */,
 				CDA4E00820D38BC700CD2A0C /* Resources */,
+				8D5D90618C556EA53250CCA2 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -139,12 +162,55 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		8D5D90618C556EA53250CCA2 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-NoticeBoard/Pods-NoticeBoard-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B4B012EC9B4B5DCA2156D8A8 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NoticeBoard-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CDA4E00520D38BC700CD2A0C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDA4E05020D399CE00CD2A0C /* NoticeBoard+Helper.swift in Sources */,
 				CDA4E02C20D38C5B00CD2A0C /* NoticeBoard.swift in Sources */,
 				CD61A3AE20DA4FCD00498146 /* Notice.swift in Sources */,
 			);
@@ -275,6 +341,7 @@
 		};
 		CDA4E01320D38BC700CD2A0C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5D7AADF51CE950B16DFBB15D /* Pods-NoticeBoard.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -304,6 +371,7 @@
 		};
 		CDA4E01420D38BC700CD2A0C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 451C882E6C922390CA26B750 /* Pods-NoticeBoard.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";

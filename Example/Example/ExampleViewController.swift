@@ -15,7 +15,6 @@ import WebKit
 
 class ExampleViewController: UIViewController {
     
-    let progressNotice = Notice.init(theme: .error)
     
     var placeholder = UIImageView()
     let web = WKWebView()
@@ -78,8 +77,6 @@ class ExampleViewController: UIViewController {
                         if let cmd = url.host, let idx = url.port {
                             if cmd == "fastpost" {
                                 self!.postSimpleNotice(idx)
-                            } else if cmd == "postpro" {
-                                self!.postProgress(idx)
                             } else if cmd == "postcustom" {
                                 self!.postCustomView(idx)
                             } else if cmd == "alert" {
@@ -151,58 +148,29 @@ class ExampleViewController: UIViewController {
         }
     }
     func postSimpleNotice(_ idx: Int){
-        let img = UIImage.init(named: "alert-circle")
-        switch idx {
-        case 1:
-            NoticeBoard.post("Hello World!")
-        case 2:
-            NoticeBoard.post("Hello World!", duration: 2)
-        case 11:
-            NoticeBoard.post(.error, message: "Something Happend", duration: 5)
-        case 12:
-            NoticeBoard.post(.dark, message: "Good evening", duration: 2)
-        case 21:
-            NoticeBoard.post(.light, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
-        case 31:
-            NoticeBoard.post(.light, icon:img, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
-        case 41:
-            NoticeBoard.post(.warning, icon: img, title: "Warning", message: "Please see more info", duration: 0) { (notice, sender) in
-                NoticeBoard.post("button tapped", duration: 1)
-            }
-        default:
-            print("xxx")
-        }
+//        let img = UIImage.init(named: "alert-circle")
+//        switch idx {
+//        case 1:
+//            NoticeBoard.post("Hello World!")
+//        case 2:
+//            NoticeBoard.post("Hello World!", duration: 2)
+//        case 11:
+//            NoticeBoard.post(.error, message: "Something Happend", duration: 5)
+//        case 12:
+//            NoticeBoard.post(.dark, message: "Good evening", duration: 2)
+//        case 21:
+//            NoticeBoard.post(.light, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
+//        case 31:
+//            NoticeBoard.post(.light, icon:img, title: "Hello World", message: "I'm NoticeBoard.", duration: 2)
+//        case 41:
+////            NoticeBoard.post(.warning, icon: img, title: "Warning", message: "Please see more info", duration: 0) { (notice, sender) in
+////                NoticeBoard.post("button tapped", duration: 1)
+////            }
+//            break
+//        default:
+//            print("xxx")
+//        }
     }
-    
-    func postProgress(_ idx: Int){
-        if idx == 1000 {
-            let n = Notice()
-            n.theme = .normal
-            func updateProgress(nn: Notice, pro: CGFloat, showTitle: Bool){
-                nn.progress = pro
-                if showTitle {
-                    nn.title = "已完成：\(Int(pro*100))%\n"
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                    if pro <= 1 {
-                        updateProgress(nn: nn, pro: pro + 0.02, showTitle: showTitle)
-                    } else {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            NoticeBoard.remove(nn)
-                        }
-                    }
-                }
-            }
-            NoticeBoard.post(n)
-            updateProgress(nn: n, pro: 0, showTitle: n.title.count == 0)
-            
-        } else if idx <= 100 {
-            progressNotice.title = "已完成：\(idx)%\n"
-            progressNotice.progress = CGFloat(idx)/100.0
-            NoticeBoard.post(progressNotice, duration: 2)
-        }
-    }
-    
     
     func postCustomView(_ idx: Int){
         let notice = Notice()
@@ -210,21 +178,21 @@ class ExampleViewController: UIViewController {
         
         if idx == 1 {
             let h = w * 0.25
-            notice.blurEffectStyle = .extraLight
+            notice.blurMask(.extraLight)
             let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
-            let ww = view.width * 0.7
+            let ww = view.frame.size.width * 0.7
             let hh = CGFloat(h)
             let imgv = UIImageView.init(frame: .init(x: (w-ww)/2, y: (h-hh)/2, width: ww, height: hh))
             imgv.image = UIImage.init(named: "header_center")
             imgv.contentMode = .scaleAspectFit
             view.addSubview(imgv)
             notice.rootViewController?.view.addSubview(view)
-            notice.actionButtonDidTapped(action: { (notice, sender) in
-                if let url = URL.init(string: "https://xaoxuu.com/docs/noticeboard") {
-                    UIApplication.shared.openURL(url)
-                }
-            })
-            notice.actionButton?.setTitle("→", for: .normal)
+//            notice.actionButtonDidTapped(action: { (notice, sender) in
+//                if let url = URL.init(string: "https://xaoxuu.com/docs/noticeboard") {
+//                    UIApplication.shared.openURL(url)
+//                }
+//            })
+//            notice.actionButton?.setTitle("→", for: .normal)
         } else if idx == 2 {
             let h = w * 0.6
             let view = UIView.init(frame: .init(x: 0, y: 0, width: w, height: h))
@@ -248,25 +216,26 @@ class ExampleViewController: UIViewController {
             lb.text = "\(Bundle.init(for: NoticeBoard.self).bundleName()!) \(Bundle.init(for: NoticeBoard.self).bundleShortVersionString()!)"
             view.addSubview(lb)
             // button
-            notice.actionButtonDidTapped(action: { (notice, sender) in
-                UIView.animate(withDuration: 0.68, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
-                    if sender.transform == .identity {
-                        sender.transform = CGAffineTransform.init(rotationAngle: CGFloat.pi / 4 * 3)
-                    } else {
-                        sender.transform = .identity
-                    }
-                }, completion: nil)
-            })
-            notice.actionButton?.setTitle("＋", for: .normal)
-            notice.actionButton?.setTitleColor(.white, for: .normal)
+//            notice.actionButtonDidTapped(action: { (notice, sender) in
+//                UIView.animate(withDuration: 0.68, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0.7, options: [.allowUserInteraction, .curveEaseOut], animations: {
+//                    if sender.transform == .identity {
+//                        sender.transform = CGAffineTransform.init(rotationAngle: CGFloat.pi / 4 * 3)
+//                    } else {
+//                        sender.transform = .identity
+//                    }
+//                }, completion: nil)
+//            })
+//            notice.actionButton?.setTitle("＋", for: .normal)
+//            notice.actionButton?.setTitleColor(.white, for: .normal)
         }
+        
         NoticeBoard.post(notice)
         
     }
     
     func alert(_ idx: Int){
         if NoticeBoard.shared.notices.count == 0 {
-            NoticeBoard.post(.error, title: "这是一条测试消息", message: "这是一条测试消息", duration: 0)
+            NoticeBoard.post(title: "消息", message: "这是一条测试消息").duration(0)
         }
         DispatchQueue.main.async {
             for notice in NoticeBoard.shared.notices {
@@ -306,27 +275,27 @@ class ExampleViewController: UIViewController {
     var modifyNotice: Notice?
     func modify(_ idx: Int){
         func post(){
-            modifyNotice?.allowRemoveByGesture = true
-            if idx == 101 {
-                modifyNotice?.title = "连接成功"
-                modifyNotice?.body = "你现在可以愉快的使用了"
-                modifyNotice?.theme = .success
-                modifyNotice?.icon = UIImage.init(named: "alert-circle")
-                NoticeBoard.post(modifyNotice!, duration: 2)
-            } else if idx == 102 {
-                modifyNotice?.title = "设备已断开"
-                modifyNotice?.body = "请重新连接设备"
-                modifyNotice?.theme = .error
-                modifyNotice?.icon = UIImage.init(named: "alert-circle")
-                modifyNotice?.allowRemoveByGesture = false
-                NoticeBoard.post(modifyNotice!)
-            } else if idx == 103 {
-                modifyNotice?.title = "电量过低"
-                modifyNotice?.body = "电量不足10%，请及时给设备充电。"
-                modifyNotice?.theme = .warning
-                modifyNotice?.icon = UIImage.init(named: "alert-circle")
-                NoticeBoard.post(modifyNotice!, duration: 5)
-            }
+            modifyNotice?.enableGesture = true
+//            if idx == 101 {  
+//                modifyNotice?.title = "连接成功"
+//                modifyNotice?.body = "你现在可以愉快的使用了"
+//                modifyNotice?.theme = .success
+//                modifyNotice?.icon = UIImage.init(named: "alert-circle")
+//                NoticeBoard.post(modifyNotice!, duration: 2)
+//            } else if idx == 102 {
+//                modifyNotice?.title = "设备已断开"
+//                modifyNotice?.body = "请重新连接设备"
+//                modifyNotice?.theme = .error
+//                modifyNotice?.icon = UIImage.init(named: "alert-circle")
+//                modifyNotice?.enableGesture = false
+//                NoticeBoard.post(modifyNotice!)
+//            } else if idx == 103 {
+//                modifyNotice?.title = "电量过低"
+//                modifyNotice?.body = "电量不足10%，请及时给设备充电。"
+//                modifyNotice?.theme = .warning
+//                modifyNotice?.icon = UIImage.init(named: "alert-circle")
+//                NoticeBoard.post(modifyNotice!, duration: 5)
+//            }
         }
         if modifyNotice == nil {
             modifyNotice = Notice()
